@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Addresses" xml:space="preserve">
+    <value>عناوين التوصيل</value>
+  </data>
+  <data name="Header_Link_1" xml:space="preserve">
+    <value>مطاعم</value>
+  </data>
+  <data name="Header_Link_2" xml:space="preserve">
+    <value>عروض</value>
+  </data>
+  <data name="Header_Link_3" xml:space="preserve">
+    <value>كن شريكاً</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>تسجيل الخروج</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>طلباتى السابقة</value>
+  </data>
+  <data name="GoogleSignUp" xml:space="preserve">
+    <value>التسجيل باستخدام Google</value>
+  </data>
+  <data name="GoogleSignIn" xml:space="preserve">
+    <value>تسجيل الدخول باستخدام Google</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>معلومات الحساب</value>
+  </data>
+  <data name="Footer_Col1_Title" xml:space="preserve">
+    <value>Fast Delivery</value>
+  </data>
+  <data name="Footer_Col1_Link1" xml:space="preserve">
+    <value>وظائف</value>
+  </data>
+  <data name="Footer_Col1_Link2" xml:space="preserve">
+    <value>الشروط والأحكام</value>
+  </data>
+  <data name="Footer_Col1_Link3" xml:space="preserve">
+    <value>سياسة الخصوصية</value>
+  </data>
+  <data name="Footer_Col1_Link4" xml:space="preserve">
+    <value>الأسئلة الشائعة</value>
+  </data>
+  <data name="Footer_Col2_Title" xml:space="preserve">
+    <value>مطاعم شهيرة</value>
+  </data>
+  <data name="Footer_Col2_Rest1" xml:space="preserve">
+    <value>ماكدونالدز</value>
+  </data>
+  <data name="Footer_Col2_Rest2" xml:space="preserve">
+    <value>كنتاكي</value>
+  </data>
+  <data name="Footer_Col2_Rest3" xml:space="preserve">
+    <value>بيتزا هت</value>
+  </data>
+  <data name="Footer_Col2_Rest4" xml:space="preserve">
+    <value>برجر كنج</value>
+  </data>
+  <data name="Footer_Col3_Title" xml:space="preserve">
+    <value>مدن مصر</value>
+  </data>
+  <data name="Footer_Col3_City1" xml:space="preserve">
+    <value>دمنهور</value>
+  </data>
+  <data name="Footer_Col3_City2" xml:space="preserve">
+    <value>طنطا</value>
+  </data>
+  <data name="Footer_Col3_City3" xml:space="preserve">
+    <value>القاهره</value>
+  </data>
+  <data name="Footer_Col3_City4" xml:space="preserve">
+    <value>الاسكندريه</value>
+  </data>
+  <data name="Footer_CopyRight" xml:space="preserve">
+    <value>© 2025 Fast Delivery</value>
+  </data>
+  <data name="Default_PageTitle" xml:space="preserve">
+    <value>اطلب الطعام والبقالة اون لاين من مطاعم ومحلات التوصيل في مصر | توصيل سريع</value>
+  </data>
+  <data name="Hero_Title" xml:space="preserve">
+    <value>أسرع توصيل للمأكولات، البقالة والمزيد</value>
+  </data>
+  <data name="Hero_Desc" xml:space="preserve">
+    <value>اطلب طعامك المفضل عبر الإنترنت من آلاف المطاعم والمتاجر في منطقتك.</value>
+  </data>
+  <data name="Section1_Title" xml:space="preserve">
+    <value>اطلب كل ما تحتاجه</value>
+  </data>
+  <data name="Section2_Title" xml:space="preserve">
+    <value>انضم إلينا</value>
+  </data>
+  <data name="Partner_Title" xml:space="preserve">
+    <value>كن شريك مطعم</value>
+  </data>
+  <data name="Partner_Desc" xml:space="preserve">
+    <value>تواصل مع المزيد من العملاء وحقق نموًا ملحوظًا.</value>
+  </data>
+  <data name="Partner_Link" xml:space="preserve">
+    <value>اكتشف المزيد</value>
+  </data>
+  <data name="Delivery_Title" xml:space="preserve">
+    <value>انضم إلى فريق التوصيل</value>
+  </data>
+  <data name="Delivery_Desc" xml:space="preserve">
+    <value>ابدأ العمل معنا واكسب دخلاً إضافياً.</value>
+  </data>
+  <data name="Delivery_Link" xml:space="preserve">
+    <value>سجل الآن</value>
+  </data>
+  <data name="Cities_Title" xml:space="preserve">
+    <value>المدن التي نخدمها في مصر</value>
+  </data>
+  <data name="Cities_List" xml:space="preserve">
+    <value>
+
+&lt;a href='/egypt/city/cairo' class='city-card'&gt;القاهرة&lt;/a&gt;
+&lt;a href='/egypt/city/alexandria' class='city-card'&gt;الإسكندرية&lt;/a&gt;
+&lt;a href='/egypt/city/giza' class='city-card'&gt;الجيزة&lt;/a&gt;
+&lt;a href='/egypt/city/mansoura' class='city-card'&gt;المنصورة&lt;/a&gt;
+&lt;a href='/egypt/city/tanta' class='city-card'&gt;طنطا&lt;/a&gt;
+&lt;a href='/egypt/city/zagazig' class='city-card'&gt;الزقازيق&lt;/a&gt;
+&lt;a href='/egypt/city/ismailia' class='city-card'&gt;الإسماعيلية&lt;/a&gt;
+&lt;a href='/egypt/city/port-said' class='city-card'&gt;بورسعيد&lt;/a&gt;
+&lt;a href='/egypt/city/suez' class='city-card'&gt;السويس&lt;/a&gt;
+&lt;a href='/egypt/city/assiut' class='city-card'&gt;أسيوط&lt;/a&gt;
+&lt;a href='/egypt/city/minya' class='city-card'&gt;المنيا&lt;/a&gt;
+&lt;a href='/egypt/city/luxor' class='city-card'&gt;الأقصر&lt;/a&gt;
+
+</value>
+  </data>
+  <data name="Select_Location" xml:space="preserve">
+    <value>اختر موقعك</value>
+  </data>
+  <data name="ErrorLocatingAddress" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LocatingAddress" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnableToGetLocation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Page_Places_Title" xml:space="preserve">
+    <value>جميع المطاعم والبقالة في مصر | توصيل سريع</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>الرئيسية</value>
+  </data>
+  <data name="DeliveryFrom" xml:space="preserve">
+    <value>توصيل</value>
+  </data>
+  <data name="NearMe" xml:space="preserve">
+    <value>من الأماكن القريبة مني في</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>رتب حسب:</value>
+  </data>
+  <data name="Sort_Alpha" xml:space="preserve">
+    <value>من الألف للياء</value>
+  </data>
+  <data name="Sort_DeliveryFee" xml:space="preserve">
+    <value>رسوم التوصيل</value>
+  </data>
+  <data name="Sort_Time" xml:space="preserve">
+    <value>وقت التوصيل</value>
+  </data>
+  <data name="Sort_MinOrder" xml:space="preserve">
+    <value>الحد الأدنى للطلب</value>
+  </data>
+  <data name="Sort_Rating" xml:space="preserve">
+    <value>التقييم</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>لا توجد نتائج مطابقة للبحث</value>
+  </data>
+  <data name="ReceiveIn" xml:space="preserve">
+    <value>إستلام خلال</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>دقيقة</value>
+  </data>
+  <data name="DeliveryService" xml:space="preserve">
+    <value>خدمة توصيل:</value>
+  </data>
+  <data name="MinOrder" xml:space="preserve">
+    <value>الحد الأدني للطلب:</value>
+  </data>
+  <data name="LiveTracking" xml:space="preserve">
+    <value>تتبع مباشر</value>
+  </data>
+  <data name="SafeDelivery" xml:space="preserve">
+    <value>توصيل آمن</value>
+  </data>
+  <data name="FirstOrderFree" xml:space="preserve">
+    <value>أول توصيل مجانا</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>قائمة الطعام</value>
+  </data>
+  <data name="Reviews" xml:space="preserve">
+    <value>تقييم المطعم</value>
+  </data>
+  <data name="ShopInfo" xml:space="preserve">
+    <value>معلومات المطعم</value>
+  </data>
+  <data name="MenuTitle" xml:space="preserve">
+    <value>قائمة الطعام</value>
+  </data>
+  <data name="ViewCart" xml:space="preserve">
+    <value>عرض السلة</value>
+  </data>
+  <data name="PagePlaceShopTitle" xml:space="preserve">
+    <value>منيو التوصيل | توصيل سريع</value>
+  </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>المبلغ الإجمالي</value>
+  </data>
+  <data name="Checkout" xml:space="preserve">
+    <value>تنفيذ الطلب</value>
+  </data>
+  <data name="EmptyCart" xml:space="preserve">
+    <value>تفريغ السلة</value>
+  </data>
+  <data name="ReceiveInMinutes" xml:space="preserve">
+    <value>دقيقة</value>
+  </data>
+    <data name="Open" xml:space="preserve">
+    <value>مفتوح</value>
+  </data>
+    <data name="Closed" xml:space="preserve">
+    <value>مغلق الآن</value>
+  </data>
+  <data name="ShoppingCartTitle" xml:space="preserve">
+    <value>سلة مشترياتك</value>
+  </data>
+  <data name="EmptyCartMessage" xml:space="preserve">
+    <value>لا يوجد أصناف في سلة المشتريات</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>إجمالي الأصناف</value>
+  </data>
+  <data name="DeliveryFee" xml:space="preserve">
+    <value>رسوم التوصيل</value>
+  </data>
+  <data name="CheckoutTitle" xml:space="preserve">
+    <value>تنفيذ الطلب</value>
+  </data>
+  <data name="OrderDetails" xml:space="preserve">
+    <value>تفاصيل الطلب</value>
+  </data>
+  <data name="EditOrder" xml:space="preserve">
+    <value>تعديل الطلب</value>
+  </data>
+  <data name="DeliveryAddress" xml:space="preserve">
+    <value>عنوان التوصيل</value>
+  </data>
+  <data name="ExecuteOrderBtn" xml:space="preserve">
+    <value>تنفيذ الطلب</value>
+  </data>
+  <data name="PaymentDetails" xml:space="preserve">
+    <value>تفاصيل الدفع</value>
+  </data>
+  <data name="LoaderText" xml:space="preserve">
+    <value>جارٍ التنفيذ...</value>
+  </data>
+  <data name="ExecuteOrder" xml:space="preserve">
+    <value>تنفيذ الطلب</value>
+  </data>
+  <data name="OrderDetailsTitle" xml:space="preserve">
+    <value>تفاصيل الطلب</value>
+  </data>
+  <data name="Item" xml:space="preserve">
+    <value>الصنف</value>
+  </data>
+  <data name="SpecialOrder" xml:space="preserve">
+    <value>طلب خاص</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>الكمية</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>السعر</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>الإجمالي الكلي</value>
+  </data>
+  <data name="AddEditAddress" xml:space="preserve">
+    <value>إضافة/تعديل العنوان</value>
+  </data>
+  <data name="ChooseDeliveryLocation" xml:space="preserve">
+    <value>اختر موقع التوصيل لإرسال طلبك بسهولة</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>العنوان</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>شارع</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>البناية: </value>
+  </data>
+  <data name="Floor" xml:space="preserve">
+    <value>الطابق: </value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>شقة</value>
+  </data>
+  <data name="Governorate" xml:space="preserve">
+    <value>المحافظة</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>المنطقة</value>
+  </data>
+  <data name="Instructions" xml:space="preserve">
+    <value>تعليمات</value>
+  </data>
+  <data name="AddressType" xml:space="preserve">
+    <value>نوع العنوان</value>
+  </data>
+  <data name="PaymentDetailsTitle" xml:space="preserve">
+    <value>تفاصيل الدفع</value>
+  </data>
+  <data name="PaymentWarning" xml:space="preserve">
+    <value>الدفع نقدا عند الإستلام او عن طريق انستا باى على الرقم 01044116848</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>عناوين التوصيل</value>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>حسابي</value>
+  </data>
+  <data name="AccountInfo" xml:space="preserve">
+    <value>معلومات الحساب</value>
+  </data>
+  <data name="DeliveryAddresses" xml:space="preserve">
+    <value>عناوين التوصيل</value>
+  </data>
+  <data name="PreviousOrders" xml:space="preserve">
+    <value>طلباتي السابقة</value>
+  </data>
+  <data name="NoAddress" xml:space="preserve">
+    <value>لا يوجد عنوان مسجل</value>
+  </data>
+  <data name="AddNewAddress" xml:space="preserve">
+    <value>إضافة عنوان جديد</value>
+  </data>
+  <data name="House" xml:space="preserve">
+    <value>منزل</value>
+  </data>
+  <data name="Office" xml:space="preserve">
+    <value>مكتب</value>
+  </data>
+  <data name="LocationType" xml:space="preserve">
+    <value>نوع المكان</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>هل أنت متأكد من حذف هذا العنوان؟</value>
+  </data>
+  <data name="AddressName" xml:space="preserve">
+    <value>اسم العنوان</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="ContactInfo" xml:space="preserve">
+    <value>معلومات الاتصال</value>
+  </data>
+  <data name="MobilePlaceholder" xml:space="preserve">
+    <value>رقم الهاتف المتنقل</value>
+  </data>
+  <data name="PhoneOptional" xml:space="preserve">
+    <value>رقم الهاتف الأرضي (إختياري)</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>مطلوب</value>
+  </data>
+  <data name="NumbersOnly" xml:space="preserve">
+    <value>يُسمح فقط بالأرقام</value>
+  </data>
+  <data name="GovRequired" xml:space="preserve">
+    <value>المحافظة مطلوب</value>
+  </data>
+  <data name="AreaRequired" xml:space="preserve">
+    <value>المنطقة مطلوب</value>
+  </data>
+  <data name="AddressPlaceholder" xml:space="preserve">
+    <value>أدخل منطقتك أو الشارع</value>
+  </data>
+  <data name="AddressNameOptional" xml:space="preserve">
+    <value>إسم العنوان (إختياري)</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>إسم الشارع</value>
+  </data>
+  <data name="BuildingName" xml:space="preserve">
+    <value>إسم البناية</value>
+  </data>
+  <data name="FloorNumber" xml:space="preserve">
+    <value>رقم الطابق</value>
+  </data>
+  <data name="ApartmentNumber" xml:space="preserve">
+    <value>رقم الشقة</value>
+  </data>
+  <data name="InstructionsOptional" xml:space="preserve">
+    <value>ارشادات إضافية (إختياري)</value>
+  </data>
+  <data name="BackToMap" xml:space="preserve">
+    <value>عرض الخريطة</value>
+  </data>
+  <data name="SaveAddress" xml:space="preserve">
+    <value>حفظ العنوان</value>
+  </data>
+  <data name="MyLocation" xml:space="preserve">
+    <value>📍 موقعى الحالى</value>
+  </data>
+  <data name="ConfirmLocation" xml:space="preserve">
+    <value>💾 تأكيد الموقع</value>
+  </data>
+  <data name="SelectGov" xml:space="preserve">
+    <value>اختر المحافظة</value>
+  </data>
+  <data name="SelectArea" xml:space="preserve">
+    <value>اختر المنطقة</value>
+  </data>
+  <data name="AccountInfoPageTitle" xml:space="preserve">
+    <value>معلومات الحساب</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>الحساب</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+  <data name="ChangeEmail" xml:space="preserve">
+    <value>تغيير البريد</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>الاسم الأول</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>اسم العائلة</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>الجنس</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>ذكر</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>أنثى</value>
+  </data>
+  <data name="SelectGender" xml:space="preserve">
+    <value>اختر الجنس</value>
+  </data>
+  <data name="Birthday" xml:space="preserve">
+    <value>تاريخ الميلاد</value>
+  </data>
+  <data name="SelectDate" xml:space="preserve">
+    <value>اختر التاريخ</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>كلمة المرور الحالية</value>
+  </data>
+  <data name="PasswordPlaceholder" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>كلمة المرور مطلوبة</value>
+  </data>
+  <data name="NewEmail" xml:space="preserve">
+    <value>البريد الجديد</value>
+  </data>
+  <data name="NewEmailPlaceholder" xml:space="preserve">
+    <value>أدخل البريد الجديد</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>البريد الإلكترونى مطلوب</value>
+  </data>
+  <data name="EmailInvalid" xml:space="preserve">
+    <value>ادخل البريد الالكترونى بطريقة صحيحة</value>
+  </data>
+  <data name="ConfirmEmail" xml:space="preserve">
+    <value>تأكيد البريد</value>
+  </data>
+  <data name="ConfirmEmailPlaceholder" xml:space="preserve">
+    <value>أعد إدخال البريد</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>كلمة المرور الجديدة</value>
+  </data>
+  <data name="NewPasswordPlaceholder" xml:space="preserve">
+    <value>أدخل كلمة المرور الجديدة</value>
+  </data>
+  <data name="PasswordMin6" xml:space="preserve">
+    <value>يجب أن تكون كلمة المرور 6 أحرف على الأقل</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>تأكيد كلمة المرور</value>
+  </data>
+  <data name="ConfirmPasswordPlaceholder" xml:space="preserve">
+    <value>أعد إدخال كلمة المرور</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>ج.م</value>
+  </data>
+  <data name="Oldinncorrect" xml:space="preserve">
+    <value>كلمة المرور القديمة غير صحيحة</value>
+  </data>
+  <data name="Orecords" xml:space="preserve">
+    <value>سجل الطلبات</value>
+  </data>
+  <data name="PageOtitle" xml:space="preserve">
+    <value>الطلبات السابقة | توصيل سريع</value>
+  </data>
+  <data name="UpdatedSuccess" xml:space="preserve">
+    <value>تم التحديث بنجاح</value>
+  </data>
+  <data name="NoOrders" xml:space="preserve">
+    <value>لا يوجد طلبات مسبقة</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>اليوم</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>الأمس</value>
+  </data>
+  <data name="Last7" xml:space="preserve">
+    <value>آخر 7 أيام</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>الشهر الماضي</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>العام الماضي</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>إنشاء حساب | توصيل سريع</value>
+  </data>
+  <data name="SignUpHeading" xml:space="preserve">
+    <value>سجّل الآن</value>
+  </data>
+  <data name="PermissionDenied" xml:space="preserve">
+    <value>لم يتم منح الصلاحية.</value>
+  </data>
+  <data name="FacebookLogin" xml:space="preserve">
+    <value>تابع باستخدام فيسبوك</value>
+  </data>
+  <data name="OrText" xml:space="preserve">
+    <value>أو</value>
+  </data>
+  <data name="FirstNamePlaceholder" xml:space="preserve">
+    <value>الإسم الأول</value>
+  </data>
+  <data name="FirstNameRequired" xml:space="preserve">
+    <value>الإسم الأول مطلوب</value>
+  </data>
+  <data name="LastNamePlaceholder" xml:space="preserve">
+    <value>إسم العائلة</value>
+  </data>
+  <data name="LastNameRequired" xml:space="preserve">
+    <value>إسم العائلة مطلوب</value>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>إظهار</value>
+  </data>
+  <data name="PasswordLengthError" xml:space="preserve">
+    <value>لا يجب ان تقل كلمة المرور عن 6 احرف</value>
+  </data>
+  <data name="TermsText" xml:space="preserve">
+    <value>عند تسجيل الحساب فإنك توافق على </value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>خصوصية الموقع</value>
+  </data>
+  <data name="AndText" xml:space="preserve">
+    <value> و </value>
+  </data>
+  <data name="TermsOfUse" xml:space="preserve">
+    <value> شروط الاستخدام</value>
+  </data>
+  <data name="RegisterButton" xml:space="preserve">
+    <value>تسجيل مستخدم جديد</value>
+  </data>
+  <data name="HaveAccount" xml:space="preserve">
+    <value>هل لديك حساب؟</value>
+  </data>
+  <data name="LoginLink" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>نسيت كلمة المرور؟</value>
+  </data>
+  <data name="LoginButton" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="NoAccount" xml:space="preserve">
+    <value>ليس لديك حساب؟</value>
+  </data>
+  <data name="CreateAccountLink" xml:space="preserve">
+    <value>إنشاء حساب</value>
+  </data>
+  <data name="addtocart" xml:space="preserve">
+    <value>اضف الى العربة</value>
+  </data>
+  <data name="RestaurantnAvaliable" xml:space="preserve">
+    <value>بعض المطاعم غير متاحة حاليا:</value>
+  </data>
+  <data name="OrderNum" xml:space="preserve">
+    <value>رقم الطلب</value>
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>تاريخ الطلب</value>
+  </data>
+  <data name="ContactPhone" xml:space="preserve">
+    <value>رقم التواصل</value>
+  </data>
+  <data name="OrderStatusNow" xml:space="preserve">
+    <value>حالة الطلب الآن</value>
+  </data>
+  <data name="CartDetails" xml:space="preserve">
+    <value>تفاصيل السلة</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>سعر الوحدة</value>
+  </data>
+  <data name="DeliveryFees" xml:space="preserve">
+    <value>مصاريف التوصيل</value>
+  </data>
+  <data name="StatusDelivered" xml:space="preserve">
+    <value>تم التسليم</value>
+  </data>
+  <data name="StatusProcessing" xml:space="preserve">
+    <value>جاري المعالجة</value>
+  </data>
+  <data name="StepWait" xml:space="preserve">
+    <value>في الانتظار</value>
+  </data>
+  <data name="StepAcc" xml:space="preserve">
+    <value>مقبول</value>
+  </data>
+  <data name="StepPrep" xml:space="preserve">
+    <value>جاري التحضير</value>
+  </data>
+  <data name="StepWay" xml:space="preserve">
+    <value>في الطريق</value>
+  </data>
+  <data name="StepDev" xml:space="preserve">
+    <value>تم التسليم</value>
+  </data>
+  <data name="Build" xml:space="preserve">
+    <value>عمارة</value>
+  </data>
+  <data name="MultiOrderTag" xml:space="preserve">
+    <value>طلب مشترك</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="nav_favorites" xml:space="preserve">
+    <value>المفضلة</value>
+  </data>
+</root>

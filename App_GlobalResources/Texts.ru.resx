@@ -1,0 +1,837 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Addresses" xml:space="preserve">
+    <value>Адреса доставки</value>
+  </data>
+  <data name="Header_Link_1" xml:space="preserve">
+    <value>Рестораны</value>
+  </data>
+  <data name="Header_Link_2" xml:space="preserve">
+    <value>Акции</value>
+  </data>
+  <data name="Header_Link_3" xml:space="preserve">
+    <value>Стать партнером</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Выйти</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Мои предыдущие запросы</value>
+  </data>
+  <data name="GoogleSignUp" xml:space="preserve">
+    <value>Зарегистрироваться через Google</value>
+  </data>
+  <data name="GoogleSignIn" xml:space="preserve">
+    <value>Войти через Google</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Информация о профиле</value>
+  </data>
+  <data name="Footer_Col1_Title" xml:space="preserve">
+    <value>Fast Delivery</value>
+  </data>
+  <data name="Footer_Col1_Link1" xml:space="preserve">
+    <value>Вакансии</value>
+  </data>
+  <data name="Footer_Col1_Link2" xml:space="preserve">
+    <value>Условия использования</value>
+  </data>
+  <data name="Footer_Col1_Link3" xml:space="preserve">
+    <value>Политика конфиденциальности</value>
+  </data>
+  <data name="Footer_Col1_Link4" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="Footer_Col2_Title" xml:space="preserve">
+    <value>Популярные рестораны</value>
+  </data>
+  <data name="Footer_Col2_Rest1" xml:space="preserve">
+    <value>Макдональдс</value>
+  </data>
+  <data name="Footer_Col2_Rest2" xml:space="preserve">
+    <value>KFC</value>
+  </data>
+  <data name="Footer_Col2_Rest3" xml:space="preserve">
+    <value>Пицца Хат</value>
+  </data>
+  <data name="Footer_Col2_Rest4" xml:space="preserve">
+    <value>Бургер Кинг</value>
+  </data>
+  <data name="Footer_Col3_Title" xml:space="preserve">
+    <value>Города Египта</value>
+  </data>
+  <data name="Footer_Col3_City1" xml:space="preserve">
+    <value>Даманхур</value>
+  </data>
+  <data name="Footer_Col3_City2" xml:space="preserve">
+    <value>Танта</value>
+  </data>
+  <data name="Footer_Col3_City3" xml:space="preserve">
+    <value>Каир</value>
+  </data>
+  <data name="Footer_Col3_City4" xml:space="preserve">
+    <value>Александрия</value>
+  </data>
+  <data name="Footer_CopyRight" xml:space="preserve">
+    <value>© 2025 Fast Delivery</value>
+  </data>
+  <data name="Default_PageTitle" xml:space="preserve">
+    <value>Закажите еду и продукты онлайн из ресторанов и магазинов в Египте | Быстрая доставка</value>
+  </data>
+  <data name="Hero_Title" xml:space="preserve">
+    <value>Быстрая доставка еды, продуктов и не только</value>
+  </data>
+  <data name="Hero_Desc" xml:space="preserve">
+    <value>Заказывайте любимую еду онлайн из тысяч ресторанов и магазинов в вашем районе.</value>
+  </data>
+  <data name="Section1_Title" xml:space="preserve">
+    <value>Закажите все, что вам нужно</value>
+  </data>
+  <data name="Section2_Title" xml:space="preserve">
+    <value>Присоединяйтесь к нам</value>
+  </data>
+  <data name="Partner_Title" xml:space="preserve">
+    <value>Станьте партнёром ресторана</value>
+  </data>
+  <data name="Partner_Desc" xml:space="preserve">
+    <value>Привлекайте больше клиентов и значительно развивайте свой бизнес.</value>
+  </data>
+  <data name="Partner_Link" xml:space="preserve">
+    <value>Узнать больше</value>
+  </data>
+  <data name="Delivery_Title" xml:space="preserve">
+    <value>Присоединяйтесь к команде доставки</value>
+  </data>
+  <data name="Delivery_Desc" xml:space="preserve">
+    <value>Начните работать с нами и зарабатывайте дополнительно.</value>
+  </data>
+  <data name="Delivery_Link" xml:space="preserve">
+    <value>Зарегистрироваться сейчас</value>
+  </data>
+  <data name="Cities_Title" xml:space="preserve">
+    <value>Города, которые мы обслуживаем в Египте</value>
+  </data>
+  <data name="Cities_List" xml:space="preserve">
+    <value>
+
+&lt;a href='/egypt/city/cairo' class='city-card'&gt;Каир&lt;/a&gt;
+&lt;a href='/egypt/city/alexandria' class='city-card'&gt;Александрия&lt;/a&gt;
+&lt;a href='/egypt/city/giza' class='city-card'&gt;Гиза&lt;/a&gt;
+&lt;a href='/egypt/city/mansoura' class='city-card'&gt;Мансура&lt;/a&gt;
+&lt;a href='/egypt/city/tanta' class='city-card'&gt;Танта&lt;/a&gt;
+&lt;a href='/egypt/city/zagazig' class='city-card'&gt;Заказиг&lt;/a&gt;
+&lt;a href='/egypt/city/ismailia' class='city-card'&gt;Исмаилия&lt;/a&gt;
+&lt;a href='/egypt/city/port-said' class='city-card'&gt;Порт-Саид&lt;/a&gt;
+&lt;a href='/egypt/city/suez' class='city-card'&gt;Суэц&lt;/a&gt;
+&lt;a href='/egypt/city/assiut' class='city-card'&gt;Асьют&lt;/a&gt;
+&lt;a href='/egypt/city/minya' class='city-card'&gt;Минья&lt;/a&gt;
+&lt;a href='/egypt/city/luxor' class='city-card'&gt;Луксор&lt;/a&gt;
+
+</value>
+  </data>
+  <data name="Select_Location" xml:space="preserve">
+    <value>Выберите ваше местоположение</value>
+  </data>
+  <data name="LocatingAddress" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Select_Location1" xml:space="preserve">
+    <value>اختر موقعك</value>
+  </data>
+  <data name="UnableToGetLocation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Page_Places_Title" xml:space="preserve">
+    <value>Все рестораны и магазины в Египте | Быстрая доставка</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="DeliveryFrom" xml:space="preserve">
+    <value>Доставка</value>
+  </data>
+  <data name="NearMe" xml:space="preserve">
+    <value>рядом со мной в</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Сортировать по:</value>
+  </data>
+  <data name="Sort_Alpha" xml:space="preserve">
+    <value>От А до Я</value>
+  </data>
+  <data name="Sort_DeliveryFee" xml:space="preserve">
+    <value>Стоимость доставки</value>
+  </data>
+  <data name="Sort_Time" xml:space="preserve">
+    <value>Время доставки</value>
+  </data>
+  <data name="Sort_MinOrder" xml:space="preserve">
+    <value>Минимальный заказ</value>
+  </data>
+  <data name="Sort_Rating" xml:space="preserve">
+    <value>Рейтинг</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>Нет совпадающих результатов</value>
+  </data>
+  <data name="ReceiveIn" xml:space="preserve">
+    <value>Время получения</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>минут</value>
+  </data>
+  <data name="DeliveryService" xml:space="preserve">
+    <value>Стоимость доставки</value>
+  </data>
+  <data name="MinOrder" xml:space="preserve">
+    <value>Минимальный заказ</value>
+  </data>
+  <data name="LiveTracking" xml:space="preserve">
+    <value>Отслеживание в реальном времени</value>
+  </data>
+  <data name="SafeDelivery" xml:space="preserve">
+    <value>Безопасная доставка</value>
+  </data>
+  <data name="FirstOrderFree" xml:space="preserve">
+    <value>Первая доставка бесплатно</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Меню</value>
+  </data>
+  <data name="Reviews" xml:space="preserve">
+    <value>Отзывы</value>
+  </data>
+  <data name="ShopInfo" xml:space="preserve">
+    <value>Информация о магазине</value>
+  </data>
+  <data name="MenuTitle" xml:space="preserve">
+    <value>Список блюд</value>
+  </data>
+  <data name="ViewCart" xml:space="preserve">
+    <value>Просмотр корзины</value>
+  </data>
+  <data name="PagePlaceShopTitle" xml:space="preserve">
+    <value>Меню доставки | Быстрая доставка</value>
+  </data>
+  <data name="DeliveryFee" xml:space="preserve">
+    <value>Стоимость доставки</value>
+  </data>
+  <data name="ShoppingCartTitle" xml:space="preserve">
+    <value>Ваша корзина</value>
+  </data>
+  <data name="EmptyCartMessage" xml:space="preserve">
+    <value>В корзине нет товаров</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>Промежуточная сумма</value>
+  </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>Итоговая сумма</value>
+  </data>
+  <data name="Checkout" xml:space="preserve">
+    <value>Оформить заказ</value>
+  </data>
+  <data name="EmptyCart" xml:space="preserve">
+    <value>Очистить корзину</value>
+  </data>
+  <data name="ReceiveInMinutes" xml:space="preserve">
+    <value>мин</value>
+  </data>
+  <data name="CheckoutTitle" xml:space="preserve">
+    <value>Оформление заказа</value>
+  </data>
+  <data name="OrderDetails" xml:space="preserve">
+    <value>Детали заказа</value>
+  </data>
+  <data name="EditOrder" xml:space="preserve">
+    <value>Изменить заказ</value>
+  </data>
+  <data name="DeliveryAddress" xml:space="preserve">
+    <value>Адрес доставки</value>
+  </data>
+  <data name="ExecuteOrderBtn" xml:space="preserve">
+    <value>Оформить заказ</value>
+  </data>
+  <data name="PaymentDetails" xml:space="preserve">
+    <value>Детали оплаты</value>
+  </data>
+  <data name="LoaderText" xml:space="preserve">
+    <value>Обработка...</value>
+  </data>
+  <data name="ExecuteOrder" xml:space="preserve">
+    <value>Оформить заказ</value>
+  </data>
+  <data name="OrderDetailsTitle" xml:space="preserve">
+    <value>Детали заказа</value>
+  </data>
+  <data name="Item" xml:space="preserve">
+    <value>Товар</value>
+  </data>
+  <data name="SpecialOrder" xml:space="preserve">
+    <value>Особый заказ</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Количество</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Цена</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Итого</value>
+  </data>
+  <data name="AddEditAddress" xml:space="preserve">
+    <value>Добавить/Изменить адрес</value>
+  </data>
+  <data name="ChooseDeliveryLocation" xml:space="preserve">
+    <value>Выберите место доставки для удобства</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Адрес</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>Улица</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Здание: </value>
+  </data>
+  <data name="Floor" xml:space="preserve">
+    <value>Этаж: </value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Квартира</value>
+  </data>
+  <data name="Governorate" xml:space="preserve">
+    <value>Губерния</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>Район</value>
+  </data>
+  <data name="Instructions" xml:space="preserve">
+    <value>Инструкции</value>
+  </data>
+  <data name="AddressType" xml:space="preserve">
+    <value>Тип адреса</value>
+  </data>
+  <data name="PaymentDetailsTitle" xml:space="preserve">
+    <value>Детали оплаты</value>
+  </data>
+  <data name="PaymentWarning" xml:space="preserve">
+    <value>Оплата наличными при получении или через InstaPay 01044116848</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Адреса доставки</value>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>Мой аккаунт</value>
+  </data>
+  <data name="AccountInfo" xml:space="preserve">
+    <value>Информация аккаунта</value>
+  </data>
+  <data name="DeliveryAddresses" xml:space="preserve">
+    <value>Адреса доставки</value>
+  </data>
+  <data name="PreviousOrders" xml:space="preserve">
+    <value>Предыдущие заказы</value>
+  </data>
+  <data name="NoAddress" xml:space="preserve">
+    <value>Адрес не найден</value>
+  </data>
+  <data name="AddNewAddress" xml:space="preserve">
+    <value>Добавить новый адрес</value>
+  </data>
+  <data name="House" xml:space="preserve">
+    <value>Дом</value>
+  </data>
+  <data name="Office" xml:space="preserve">
+    <value>Офис</value>
+  </data>
+  <data name="LocationType" xml:space="preserve">
+    <value>Тип места</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Редактировать</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить этот адрес?</value>
+  </data>
+  <data name="AddressName" xml:space="preserve">
+    <value>Название адреса</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="ContactInfo" xml:space="preserve">
+    <value>Контактная информация</value>
+  </data>
+  <data name="MobilePlaceholder" xml:space="preserve">
+    <value>Мобильный номер</value>
+  </data>
+  <data name="PhoneOptional" xml:space="preserve">
+    <value>Стационарный телефон (необязательно)</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Обязательно</value>
+  </data>
+  <data name="NumbersOnly" xml:space="preserve">
+    <value>Только цифры</value>
+  </data>
+  <data name="GovRequired" xml:space="preserve">
+    <value>Требуется губернаторство</value>
+  </data>
+  <data name="AreaRequired" xml:space="preserve">
+    <value>Требуется район</value>
+  </data>
+  <data name="AddressPlaceholder" xml:space="preserve">
+    <value>Введите свой район или улицу</value>
+  </data>
+  <data name="AddressNameOptional" xml:space="preserve">
+    <value>Название адреса (необязательно)</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Название улицы</value>
+  </data>
+  <data name="BuildingName" xml:space="preserve">
+    <value>Название здания</value>
+  </data>
+  <data name="FloorNumber" xml:space="preserve">
+    <value>Номер этажа</value>
+  </data>
+  <data name="ApartmentNumber" xml:space="preserve">
+    <value>Номер квартиры</value>
+  </data>
+  <data name="InstructionsOptional" xml:space="preserve">
+    <value>Дополнительные инструкции (необязательно)</value>
+  </data>
+  <data name="BackToMap" xml:space="preserve">
+    <value>Показать карту</value>
+  </data>
+  <data name="SaveAddress" xml:space="preserve">
+    <value>Сохранить адрес</value>
+  </data>
+  <data name="MyLocation" xml:space="preserve">
+    <value>📍 Мое местоположение</value>
+  </data>
+  <data name="ConfirmLocation" xml:space="preserve">
+    <value>💾 Подтвердить местоположение</value>
+  </data>
+  <data name="SelectGov" xml:space="preserve">
+    <value>-- Выберите область --</value>
+  </data>
+  <data name="SelectArea" xml:space="preserve">
+    <value>-- Выберите район -- </value>
+  </data>
+  <data name="AccountInfoPageTitle" xml:space="preserve">
+    <value>Информация о аккаунте</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Аккаунт</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Электронная почта</value>
+  </data>
+  <data name="ChangeEmail" xml:space="preserve">
+    <value>Изменить электронную почту</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Изменить пароль</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Текущий пароль</value>
+  </data>
+  <data name="PasswordPlaceholder" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Пароль обязателен</value>
+  </data>
+  <data name="NewEmail" xml:space="preserve">
+    <value>Новый адрес электронной почты</value>
+  </data>
+  <data name="NewEmailPlaceholder" xml:space="preserve">
+    <value>Введите новый адрес электронной почты</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Электронная почта обязательна</value>
+  </data>
+  <data name="EmailInvalid" xml:space="preserve">
+    <value>Введите корректный адрес электронной почты</value>
+  </data>
+  <data name="ConfirmEmail" xml:space="preserve">
+    <value>Подтвердите адрес электронной почты</value>
+  </data>
+  <data name="ConfirmEmailPlaceholder" xml:space="preserve">
+    <value>Повторно введите адрес электронной почты</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Новый пароль</value>
+  </data>
+  <data name="NewPasswordPlaceholder" xml:space="preserve">
+    <value>Введите новый пароль</value>
+  </data>
+  <data name="PasswordMin6" xml:space="preserve">
+    <value>Пароль должен быть не менее 6 символов</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Подтвердите пароль</value>
+  </data>
+  <data name="ConfirmPasswordPlaceholder" xml:space="preserve">
+    <value>Повторно введите пароль</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Пол</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Мужской</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Женский</value>
+  </data>
+  <data name="SelectGender" xml:space="preserve">
+    <value>Выберите пол</value>
+  </data>
+  <data name="Birthday" xml:space="preserve">
+    <value>Дата рождения</value>
+  </data>
+  <data name="SelectDate" xml:space="preserve">
+    <value>Выберите дату</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="AddressTitle" xml:space="preserve">
+    <value>Название адреса</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Город</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Регион</value>
+  </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>Почтовый индекс</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Страна</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>EGP</value>
+  </data>
+  <data name="Oldinncorrect" xml:space="preserve">
+    <value>Старый пароль неверный.</value>
+  </data>
+  <data name="Orecords" xml:space="preserve">
+    <value>История заказов</value>
+  </data>
+  <data name="PageOtitle" xml:space="preserve">
+    <value>Предыдущие заказы | Быстрая доставка</value>
+  </data>
+  <data name="UpdatedSuccess" xml:space="preserve">
+    <value>Обновлено успешно</value>
+  </data>
+  <data name="NoOrders" xml:space="preserve">
+    <value>Предыдущих заказов нет</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Сегодня</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Вчера</value>
+  </data>
+  <data name="Last7" xml:space="preserve">
+    <value>Последние 7 дней</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>Прошлый месяц</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>Прошлый год</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Создать аккаунт | Быстрая доставка</value>
+  </data>
+  <data name="SignUpHeading" xml:space="preserve">
+    <value>Зарегистрируйтесь сейчас</value>
+  </data>
+  <data name="PermissionDenied" xml:space="preserve">
+    <value>Разрешение не предоставлено.</value>
+  </data>
+  <data name="FacebookLogin" xml:space="preserve">
+    <value>Продолжить с Facebook</value>
+  </data>
+  <data name="OrText" xml:space="preserve">
+    <value>ИЛИ</value>
+  </data>
+  <data name="FirstNamePlaceholder" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="FirstNameRequired" xml:space="preserve">
+    <value>Имя обязательно</value>
+  </data>
+  <data name="LastNamePlaceholder" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="LastNameRequired" xml:space="preserve">
+    <value>Фамилия обязательна</value>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>Электронная почта</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Показать</value>
+  </data>
+  <data name="PasswordLengthError" xml:space="preserve">
+    <value>Пароль должен содержать не менее 6 символов</value>
+  </data>
+  <data name="TermsText" xml:space="preserve">
+    <value>Регистрируясь, вы соглашаетесь с </value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>Политикой конфиденциальности</value>
+  </data>
+  <data name="AndText" xml:space="preserve">
+    <value> и </value>
+  </data>
+  <data name="TermsOfUse" xml:space="preserve">
+    <value>Условиями использования</value>
+  </data>
+  <data name="RegisterButton" xml:space="preserve">
+    <value>Зарегистрировать нового пользователя</value>
+  </data>
+  <data name="HaveAccount" xml:space="preserve">
+    <value>Уже есть аккаунт?</value>
+  </data>
+  <data name="LoginLink" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Вход</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Забыли пароль?</value>
+  </data>
+  <data name="LoginButton" xml:space="preserve">
+    <value>Войти</value>
+  </data>
+  <data name="NoAccount" xml:space="preserve">
+    <value>Нет аккаунта?</value>
+  </data>
+  <data name="CreateAccountLink" xml:space="preserve">
+    <value>Создать аккаунт</value>
+  </data>
+  <data name="addtocart" xml:space="preserve">
+    <value>добавить в корзину</value>
+  </data>
+  <data name="RestaurantnAvaliable" xml:space="preserve">
+    <value>Некоторые рестораны временно недоступны:</value>
+  </data>
+  <data name="OrderNum" xml:space="preserve">
+    <value>Номер заказа</value>
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>Дата заказа</value>
+  </data>
+  <data name="DeliveryAddress" xml:space="preserve">
+    <value>Адрес доставки</value>
+  </data>
+  <data name="ContactPhone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="OrderStatusNow" xml:space="preserve">
+    <value>Текущий статус</value>
+  </data>
+  <data name="CartDetails" xml:space="preserve">
+    <value>Детали корзины</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>Цена</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Кол-во</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>фунт</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>Стоимость</value>
+  </data>
+  <data name="DeliveryFees" xml:space="preserve">
+    <value>Доставка</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Итого</value>
+  </data>
+  <data name="StatusDelivered" xml:space="preserve">
+    <value>Доставлено</value>
+  </data>
+  <data name="StatusProcessing" xml:space="preserve">
+    <value>В обработке</value>
+  </data>
+  <data name="StepWait" xml:space="preserve">
+    <value>Ожидание</value>
+  </data>
+  <data name="StepAcc" xml:space="preserve">
+    <value>Принят</value>
+  </data>
+  <data name="StepPrep" xml:space="preserve">
+    <value>Готовится</value>
+  </data>
+  <data name="StepWay" xml:space="preserve">
+    <value>В пути</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Открыто</value>
+  </data>
+  <data name="Closed" xml:space="preserve">
+    <value>Сейчас закрыто</value>
+  </data>
+  <data name="StepDev" xml:space="preserve">
+    <value>Доставлено</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>ул.</value>
+  </data>
+  <data name="Build" xml:space="preserve">
+    <value>дом</value>
+  </data>
+  <data name="MultiOrderTag" xml:space="preserve">
+    <value>Общий заказ</value>
+  </data>
+<data name="nav_favorites" xml:space="preserve"><value>Избранное</value></data></root>

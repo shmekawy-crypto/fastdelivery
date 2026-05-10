@@ -1,0 +1,128 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="EmptyMasterPage.master.cs" Inherits="Admin_MasterPages_EmptyMasterPage" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html dir="rtl" class="mdl-js"><!-- BEGIN HEAD --><head id="Head1" runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>
+    <asp:Literal ID=ltcompany runat=server></asp:Literal>
+        <asp:ContentPlaceHolder ID=cphead runat=server></asp:ContentPlaceHolder>
+</title>
+	<!-- google font -->
+	<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet" type="text/css" />
+	<!-- icons -->
+	<link href="../Scripts/simple-line-icons.min.css" rel="stylesheet" type="text/css">
+	<link href="../Scripts/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="../Scripts/material-icon.css" rel="stylesheet" type="text/css">
+	<!--bootstrap -->
+	<link href="../Scripts/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../scripts/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
+	<link href="../Scripts/summernote.css" rel="stylesheet">
+	<link href="../Scripts/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="../Scripts/rtl.css" rel="stylesheet" />
+    <link href="../Scripts/formlayout.css" rel="stylesheet" />
+	<!-- Material Design Lite CSS -->
+	<link rel="stylesheet" href="../Scripts/material.min.css">
+	<link rel="stylesheet" href="../Scripts/material.rtl.min.css">
+	<link rel="stylesheet" href="../Scripts/material_style.css">
+	<!-- inbox style -->
+	<link href="../Scripts/inbox.min.css" rel="stylesheet" type="text/css">
+	<!-- Theme Styles -->
+	<link href="../Scripts/theme_style.css" rel="stylesheet" id="rt_style_components" type="text/css">
+	<link href="../Scripts/plugins.min.css" rel="stylesheet" type="text/css">
+	<link href="../Scripts/style.css" rel="stylesheet" type="text/css">
+	<link href="../Scripts/responsive.css" rel="stylesheet" type="text/css">
+	<link href="../Scripts/theme-color.css" rel="stylesheet" type="text/css">
+	<link href="../Scripts/rtl.css" rel="stylesheet" type="text/css">
+	<link href="../Scripts/rtl.css" rel="stylesheet" type="text/css">
+	<script src="../scripts/jquery-3.2.1.min.js"></script>
+	
+        <script src='../scripts/select2/dist/js/select2.min.js' type='text/javascript'></script>
+
+        <link href='../scripts/select2/dist/css/select2.min.css' rel='stylesheet' type='text/css'>
+        		
+   
+	</head>
+<!-- END HEAD -->
+
+<body class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md sidemenu-container-reversed header-white white-sidebar-color logo-indigo">
+	<div class="page-wrapper" style="padding-right:0px;margin-right:0px">
+ 
+		<div class="page-container" style="padding-right:0px;margin-right:0px">
+			
+			<!-- end sidebar menu -->
+			<!-- start page content -->
+			<div class="page-content-wrapper2" style="padding-right:0px">
+		<form id="form1" runat="server">
+   
+      
+	
+	
+<cc1:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
+</cc1:ToolkitScriptManager>
+
+<div class="page-content"  style="min-height:1489px;margin-right:0 !important">
+  
+
+    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+    </asp:ContentPlaceHolder>	
+    </div>
+    </form>
+			</div>
+			<!-- end page content -->
+			<!-- start chat sidebar -->
+			
+			<!-- end chat sidebar -->
+		</div>
+		<!-- end page container -->
+		<!-- start footer -->
+		
+		<!-- end footer -->
+	</div>
+	
+	
+	   
+	
+	<!-- start js include path -->
+	
+	
+	<script src="../scripts/popper.js"></script>
+	<script src="../scripts/bootstrap.min.js"></script>
+	<script src="../scripts/jquery.blockui.min.js"></script>
+	<script src="../scripts/jquery.slimscroll.js"></script>
+	<script src="../scripts/bootstrap-switch.min.js"></script>
+	<script src="../scripts/moment.min.js"></script>
+	<script src="../scripts/jquery.waypoints.min.js"></script>
+	<script src="../scripts/jquery.counterup.min.js"></script>
+	<!-- owl carousel -->
+	<script src="../scripts/owl.carousel.js"></script>
+	<script src="../scripts/owl_data.js"></script>
+		<!-- bootstrap -->
+	<script src="../scripts/bootstrap.min.js"></script>
+	<script src="../scripts/bootstrap-switch.min.js"></script>
+	<script src="../scripts/bootstrap-datepicker.js"></script>
+	<script src="../scripts/datepicker-init.js"></script>
+    
+    <script src="../Scripts/bootstrap-datetimepicker-init.js" type="text/javascript"></script>
+    <script src="../Scripts/bootstrap-datetimepicker.js" type="text/javascript"></script>
+    <!-- data tables -->
+	<script src="../scripts/jquery.dataTables.min.js"></script>
+	<script src="../scripts/dataTables.bootstrap4.min.js"></script>
+	<script src="../scripts/table_data.js"></script>
+	<!-- Common js-->
+	<script src="../scripts/app.js"></script>
+	<script src="../scripts/layout.js"></script>
+	<script src="../scripts/theme-color.js"></script>
+	<!-- Material -->
+	<script src="../scripts/material.min.js"></script>
+	<script src="../scripts/jquery.sparkline.js"></script>
+	<script src="../scripts/sparkline-data.js"></script>
+
+	<!-- summernote -->
+	<script src="../scripts/summernote.js"></script>
+	<script src="../scripts/summernote-data.js"></script>
+	
+
+</body></html>

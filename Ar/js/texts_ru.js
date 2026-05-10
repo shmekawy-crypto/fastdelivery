@@ -1,0 +1,57 @@
+const texts = {
+    CheckoutTitle: "Оформление заказа",
+    UpdateOrder: "Оформление заказа",
+    Hot: "Горячее",
+    SpecialOrder: "Специальный заказ",
+    Item: "Товар",
+    Quantity: "Количество",
+    Price: "Цена",
+    Total: "Сумма",
+    Remove: "Удалить",
+    EmptyCart: "Корзина пуста!",
+    Subtotal: "Промежуточный итог",
+    DeliveryFee: "Стоимость доставки",
+    FinalTotal: "Итоговая сумма",
+    AddToCartToast: "Добавлено в корзину!",
+    CartEmptyTotal: "Итого: EGP 00.00",
+    ConfirmEmptyCart: "Вы уверены, что хотите очистить корзину?",
+    CartEmptied: "Корзина очищена!",
+    AddItemDifferentShopTitle: "Товар из другого магазина",
+    AddItemDifferentShopText: "Хотите добавить этот товар из другого магазина?",
+    CannotAddDifferentAreaTitle: "Невозможно добавить",
+    CannotAddDifferentAreaText: "Вы не можете добавлять товары из другой зоны.",
+    YesAdd: "Да, добавить товар",
+    Cancel: "Отмена",
+    Ok: "ОК",
+    Total: "Итого",
+    Subtotal: "Промежуточный итог",
+    DeliveryFee: "Стоимость доставки",
+    FinalTotal: "Общая сумма",
+    Currency: "EGP", // Египетские фунты
+    UpdateOrder: "Обновить заказ",
+
+    // Сообщения Toast
+    AddedToCartDefault: "Добавлено в корзину!",
+    AddedToCartPrefix: "Добавлено",
+    AddedToCartSuffix: "в корзину!",
+    CartEmptied: "Корзина опустошена.",
+    AddedFromDifferentShop: "Товар добавлен из другого магазина!",
+
+    // Сообщения подтверждения и предупреждения (Swal)
+    CannotAddDifferentAreaTitle: "Ой!",
+    CannotAddDifferentAreaText: "Вы не можете добавить товары из двух разных регионов в один и тот же заказ.",
+    AddItemDifferentShopTitle: "Внимание!",
+    AddItemDifferentShopText: "У вас есть товары из другого магазина. Вы хотите добавить этот товар и продолжить с новым магазином?",
+    YesAdd: "Да, добавить",
+    ConfirmEmptyCart: "Вы уверены, что хотите очистить корзину?",
+
+    // Интерфейс страницы оформления заказа (Checkout)
+    CartIsEmpty: "Корзина пуста!",
+    DefaultShopName: "Магазин",
+    Item: "Товар",
+    SpecialOrder: "Спец. примечание",
+    Quantity: "Кол-во",
+    Price: "Цена",
+    Remove: "Удалить",
+    HotSpice: "Острый"
+};

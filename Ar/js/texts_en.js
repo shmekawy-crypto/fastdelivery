@@ -1,0 +1,57 @@
+const texts = {
+    CheckoutTitle: "Checkout",
+    UpdateOrder: "تعديل الطلب",
+    Hot: "Hot",
+    SpecialOrder: "Special Order",
+    Item: "Item",
+    Quantity: "Quantity",
+    Price: "Price",
+    Total: "Total",
+    Remove: "Remove",
+    EmptyCart: "Cart is empty!",
+    Subtotal: "Subtotal",
+    DeliveryFee: "Delivery Fee",
+    FinalTotal: "Final Total",
+    AddToCartToast: "Added to cart!",
+    CartEmptyTotal: "Total: EGP 00.00",
+    ConfirmEmptyCart: "Are you sure you want to empty the cart?",
+    CartEmptied: "Cart emptied!",
+    AddItemDifferentShopTitle: "Item from different shop",
+    AddItemDifferentShopText: "Do you want to add this item from another shop?",
+    CannotAddDifferentAreaTitle: "Cannot add",
+    CannotAddDifferentAreaText: "You cannot add items from a different area.",
+    YesAdd: "Yes, add item",
+    Cancel: "Cancel",
+    Ok: "OK",
+    Total: "Total",
+    Subtotal: "Subtotal",
+    DeliveryFee: "Delivery Fee",
+    FinalTotal: "Final Total",
+    Currency: "EGP", // Egyptian Pound
+    UpdateOrder: "Update Order",
+
+    // Toast Messages
+    AddedToCartDefault: "Added to cart!",
+    AddedToCartPrefix: "Added",
+    AddedToCartSuffix: "to cart!",
+    CartEmptied: "Shopping cart emptied.",
+    AddedFromDifferentShop: "Product added from a different shop!",
+
+    // Confirmation and Warning Messages (Swal)
+    CannotAddDifferentAreaTitle: "Oops!",
+    CannotAddDifferentAreaText: "You cannot add products from two different areas in the same order.",
+    AddItemDifferentShopTitle: "Alert!",
+    AddItemDifferentShopText: "You have items from another shop. Do you want to add this item and proceed with the new shop?",
+    YesAdd: "Yes, Add",
+    ConfirmEmptyCart: "Are you sure you want to empty the shopping cart?",
+
+    // Checkout Page Interface
+    CartIsEmpty: "The shopping cart is empty!",
+    DefaultShopName: "The Shop",
+    Item: "Item",
+    SpecialOrder: "Special Note",
+    Quantity: "Quantity",
+    Price: "Price",
+    Remove: "Remove",
+    HotSpice: "Spicy"
+};

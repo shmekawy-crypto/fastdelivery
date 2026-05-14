@@ -1,0 +1,82 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="Places_MasterPages_Site" %>
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head runat="server">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>لوحة التحكم</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.4.0/css/bootstrap-rtl.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f5f5f5; overflow-x: hidden; }
+        
+        /* السايد بار في الديسكتوب */
+        .sidebar-nav {
+            background: #2c3e50;
+            min-height: 100vh;
+            color: white;
+            padding: 0;
+            position: fixed; /* يفضل ثابت مكانه */
+            right: 0;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* تعديل المحتوى عشان ميبقاش تحت السايد بار في الديسكتوب */
+        .main-content {
+            padding: 20px;
+            margin-right: 16.66666667%; /* نفس عرض col-md-2 */
+        }
+
+        .sidebar-nav a { color: #bdc3c7; display: block; padding: 15px 20px; text-decoration: none; border-bottom: 1px solid #34495e; }
+        .sidebar-nav a:hover { background: #1a252f; color: white; }
+        .sidebar-nav .header { padding: 20px; background: #1a252f; font-weight: bold; text-align: center; }
+
+        /* الشغل كله هنا: الموبايل (أصغر من 768px) */
+        @media (max-width: 767px) {
+            .sidebar-nav {
+                min-height: auto;
+                position: relative; /* يرجع يترص فوق المحتوى */
+                width: 100% !important;
+            }
+            .main-content {
+                margin-right: 0 !important; /* يلغي الهامش في الموبايل */
+                width: 100% !important;
+            }
+            /* ممكن تخلي القائمة تظهر بالعرض في الموبايل */
+            .sidebar-nav ul li {
+                display: inline-block;
+                width: 32%;
+                text-align: center;
+                border-bottom: none;
+            }
+            .sidebar-nav a { font-size: 12px; padding: 10px 5px; }
+        }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="container-fluid">
+            <div class="row">
+                
+                <div class="col-md-2 col-sm-12 sidebar-nav">
+                    <div class="header">لوحة التحكم</div>
+                    <ul class="nav">
+                        <li><a href="Dashboard.aspx"><i class="glyphicon glyphicon-home"></i> الرئيسية</a></li>
+                        <li><a href="Orders.aspx"><i class="glyphicon glyphicon-shopping-cart"></i> الطلبات</a></li>
+                        <li><a href="Menu.aspx"><i class="glyphicon glyphicon-list"></i> المنيو</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-10 col-sm-12 main-content">
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</body>
+</html>

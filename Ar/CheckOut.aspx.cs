@@ -27,25 +27,9 @@ public partial class Ar_CheckOut : System.Web.UI.Page
         add.LoadByPrimaryKey(addId);
 
         // ترجمة نوع العقار حسب اللغة
-        string AType = "شقة"; // افتراضي عربي
-        if (lang == "en")
-        {
-            if (add.AType == 0) AType = "Apartment";
-            else if (add.AType == 1) AType = "House";
-            else if (add.AType == 2) AType = "Office";
-        }
-        else if (lang == "ru")
-        {
-            if (add.AType == 0) AType = "Квартира";
-            else if (add.AType == 1) AType = "Дом";
-            else if (add.AType == 2) AType = "Офис";
-        }
-        else
-        {
-            // عربي
-            if (add.AType == 1) AType = "منزل";
-            if (add.AType == 2) AType = "مكتب";
-        }
+        string AType = HttpContext.GetGlobalResourceObject("texts", "Apartment", new System.Globalization.CultureInfo(lang)).ToString();
+        if (add.AType == 1) AType = HttpContext.GetGlobalResourceObject("texts", "House", new System.Globalization.CultureInfo(lang)).ToString();
+        else if (add.AType == 2) AType = HttpContext.GetGlobalResourceObject("texts", "Office", new System.Globalization.CultureInfo(lang)).ToString();
 
         // تحميل المنطقة والحكومة
         Areas area = new Areas();

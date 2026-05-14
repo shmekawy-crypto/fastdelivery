@@ -10,6 +10,10 @@
            <style>
             .swal2-html-container{
                 padding: 0;
+                overflow-x: hidden;
+            }
+            #navShareBtn{
+                display: flex !important;
             }
             .header {
                 display: grid;
@@ -137,13 +141,63 @@
 
             .shopRating {
                 display: flex;
-                gap: 0.5rem !important;
+                gap: 0.25rem !important;
                 font-size: 0.9rem;
-                align-items: baseline;
+                align-items: center;
+                justify-content: center;
 
                 i {
-                    color: var(--fd-blue);
+                    color: #FFD700;
+                    font-size: 0.85rem;
                 }
+
+                .rating-number {
+                    margin-inline-start: 4px;
+                    font-weight: 700;
+                    color: #444;
+                    font-size: 0.95rem;
+                }
+            }
+
+            .favorite-heart, .share-shop {
+                position: absolute;
+                top: 10px;
+                width: 35px;
+                height: 35px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                transition: all 0.3s ease;
+                z-index: 10;
+            }
+
+            .favorite-heart {
+                inset-inline-end: 10px;
+            }
+
+            .share-shop {
+                inset-inline-end: 55px; /* Next to heart */
+                color: var(--fd-blue);
+            }
+
+            .favorite-heart:hover, .share-shop:hover {
+                transform: scale(1.1);
+                background: #fff;
+            }
+
+            .favorite-heart i {
+                font-size: 1.2rem;
+                color: #ccc;
+                transition: color 0.3s;
+            }
+
+            .favorite-heart.active i {
+                color: #ff4d4f;
+                font-weight: 900;
             }
 
 
@@ -257,7 +311,6 @@
                 will-change: auto;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                overscroll-behavior: contain;
                 touch-action: pan-y;
                 top: 100px;
                 line-height: 1.2;
@@ -513,6 +566,22 @@
                 .foodText{
                     pointer-events: none;
                 }
+                .shopRating {
+    .rating-number {
+        font-size:0.8rem;
+    }}
+
+                .icon-btn{
+                    width: 36px !important;
+                    height: 36px !important;
+                    font-size: 16px !important;
+                }
+                .lang-btn{
+                    font-size: 14px !important;
+                    padding: 10px !important;
+                }
+
+
 
 
                 .foodDrowdown {
@@ -745,6 +814,9 @@
 
             /* --- MODERN CLEAN CART DESIGN --- */
             #shoppingCart {
+                .orderedItemsWrapper{
+                    max-height: 350px;
+                }
                 /* Container overlay is handled in css_web.css, but we can override if needed */
             }
 
@@ -788,11 +860,10 @@
             }
 
             .orderedItemsWrapper {
-                max-height: 450px;
+                /* max-height: 450px; */
                 overflow-y: auto;
                 overflow-x: auto;
                 margin-bottom: 1.5rem;
-                padding-inline: 4px;
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
@@ -836,10 +907,9 @@
             .orderedItemName {
                 font-weight: 700;
                 color: #2c3e50;
-                font-size: 0.9rem;
+                font-size: 0.75rem !important;
                 line-height: 1.4;
                 text-align: initial !important;
-                white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 max-width: 250px;
@@ -848,7 +918,7 @@
             .totalItemPrice {
                 font-weight: 800;
                 color: var(--fd-blue);
-                font-size: 0.95rem;
+                font-size: 0.8rem !important;
                 white-space: nowrap;
                 text-align: center;
             }
@@ -937,11 +1007,11 @@
                 background: #fafbfc;
                 border-radius: 1.25rem;
   margin-bottom: 0px !important;
-                padding: 1.25rem;
+                padding: 1rem !important;
                 padding-top: 0px !important;
                 display: flex;
                 flex-direction: column;
-                gap: 0.8rem;
+                gap: 0 !important;
             }
 
             .preDeliveryFeeAmount, .deliveryAmount, .afterDeliveryFeeAmount {
@@ -1079,7 +1149,6 @@
                 display: flex;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
-                overscroll-behavior: contain;
                 touch-action: pan-x pan-y;
                 gap: 20px;
                 /* &#1605;&#1587;&#1575;&#1601;&#1577; &#1571;&#1603;&#1576;&#1585; &#1576;&#1610;&#1606; &#1575;&#1604;&#1603;&#1604;&#1605;&#1575;&#1578; */
@@ -1174,6 +1243,13 @@
                 height: 100%;
                 object-fit: cover;
             }
+            @media (max-width: 480px){
+                .logo-container{
+display: none !important;
+
+    }
+
+            }
         </style>
         <script>
             // Logic consolidated in initSidebarActiveState below
@@ -1181,9 +1257,9 @@
         <section id="openedShopFoods">
 
 <figure id="shopBanner">
-    
+
 <asp:Literal ID="ltBanner" runat="server"></asp:Literal>
-    
+
 </figure>
 
             <article id="foodImageModal">
@@ -1223,7 +1299,8 @@
             </div>
 
 
-            <a href="#" class="availableShop">
+            <article class="availableShop">
+
                 <div style="position: relative;">
                     <div class="shop-img-wrapper" style="position: relative; width: 130px; height: 130px;">
                         <asp:Image ID="imgplace" runat="server" style="width:100%; height:100%; border-radius:1rem; object-fit:cover;" />
@@ -1296,7 +1373,7 @@
                     </div>
 
                 </div>
-            </a>
+            </article>
 
 
             <div id="shopLists">
@@ -1385,6 +1462,9 @@
                                 <input type="text" name="selectedShopSearcher" id="selectedShopSearcher"
                                     placeholder=<%=Resources.Texts.Search %>>
                             </div>
+
+
+                            
 
                             <asp:Repeater ID="rptCategories" runat="server"
                                 OnItemDataBound="rptCategories_ItemDataBound">
@@ -1675,6 +1755,12 @@
                 </section>
             </div>
         </section>
+
+
+
+
+
+
         <div id="cartShower">
             <h3 id="totalPayAmount">
             </h3>
@@ -1735,6 +1821,13 @@
             }
             .icon-btn {
                 padding: 5px;
+            }
+        }
+
+        @media(max-width:480px){
+            .action-buttons{
+                 width: calc(100% - 88px);
+        justify-content: end;
             }
         }
 
@@ -1846,11 +1939,24 @@
 
         .upsell-add-btn:active { transform: scale(0.9); }
 
+        .upsell-info{
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            height: 100%;
+            max-height: 60px;
+        }
         .upsell-info h5 {
             font-size: 0.9rem;
             margin: 0;
             font-weight: 600;
             color: #333;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: fit-content;
+            text-overflow: ellipsis;
         }
 
         .upsell-info p {
@@ -1858,6 +1964,7 @@
             color: #666;
             margin: 2px 0 0;
             font-weight: 500;
+            margin-top: auto;
         }
 
         .related-products-swiper {
@@ -1937,6 +2044,13 @@
             background: #fff4e5;
             color: #ff9800;
             border: 1px solid #ffe8cc;
+        }
+
+        .addons-badge.suggestion-badge {
+            background: #fffdf0;
+            color: #d4a017;
+            border: 1px dashed #ffc119;
+            opacity: 0.9;
         }
 
         .addons-badge:hover, .notes-badge:hover {
@@ -2182,7 +2296,7 @@
         /* Nested Upsells in Cart */
         .cart-item-group {
             background: #fff;
-            border: 1px solid #f0f0f0;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 1.25rem;
             margin-bottom: 1rem;
             min-height: fit-content;
@@ -2299,6 +2413,12 @@ padding-inline: 1rem !important;
             display: grid;
             grid-template-columns: repeat(2, 1fr) !important;
         }
+        @media (max-width: 768px) {
+  .custom-grid {
+    display: none !important;
+  }
+}
+
         .cust-handlers button {
             width: 18px;
             height: 18px;
@@ -2430,6 +2550,22 @@ padding-inline: 1rem !important;
     <script>
         let currentTriggeringProduct = null;
 
+        function shareShop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: document.querySelector('.availableShopName').innerText,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                // Clipboard fallback
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'تم نسخ الرابط', showConfirmButton: false, timer: 1500 });
+                });
+            }
+        }
+
         function openProductModal(triggerEl, productName, description = "طعم لا يقاوم محضر من أجود المكونات", isCustom = false, price = 100) {
             currentTriggeringProduct = triggerEl;
             if (isCustom) {
@@ -2533,8 +2669,10 @@ padding-inline: 1rem !important;
         document.addEventListener('DOMContentLoaded', checkFavoriteStatus);
 
         let basePrice = 0;
+        let currentProductBasePrice = 130;
         let addonsPrice = 0;
         let quantity = 1;
+        let currentCustomization = { size: null, extras: [], upsells: [] };
 
         function selectModalOption(el, totalSizePrice, sizeId) {
             const rows = el.parentElement.querySelectorAll('.option-row');
@@ -2716,7 +2854,7 @@ padding-inline: 1rem !important;
                 return;
             }
 
-            const productName = popup.querySelector('h1')?.innerText || 'Product';
+            const productName = popup.querySelector('h1')?.innerText.split(' - ')[0] || 'Product';
             const notesEl = popup.querySelector('#product-notes') || popup.querySelector('textarea');
             const notes = notesEl?.value || '';
 
@@ -2724,15 +2862,25 @@ padding-inline: 1rem !important;
             const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
 
             // Unique ID based on product ID and size ID
-            const baseId = currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id.split('-size-')[0] : 'custom');
+            const baseId = currentCustomization?.baseItemId || currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id.split('-size-')[0] : 'custom');
             const sizeSuffix = (currentCustomization && currentCustomization.size) ? `-size-${currentCustomization.size.id}` : '';
             const uniqueId = baseId + sizeSuffix;
+
+            const isCustomProduct = !!(currentTriggeringProduct?.classList.contains('custom-item') || currentEditItem?.isCustomProduct);
+            const hasActualCustomizations = !!(currentCustomization && (
+                (currentCustomization.extras && currentCustomization.extras.length > 0) ||
+                (currentCustomization.upsells && currentCustomization.upsells.length > 0) ||
+                (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small')
+            ));
 
             const mainItem = {
                 id: uniqueId,
                 name: productName,
                 price: basePrice,
-                isCustomized: !!(currentCustomization && ((currentCustomization.upsells && currentCustomization.upsells.length > 0) || (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small'))),
+                productBasePrice: currentProductBasePrice,
+                isCustomProduct: isCustomProduct,
+                isCustomized: isCustomProduct || hasActualCustomizations,
+                hasActualCustomizations: hasActualCustomizations,
                 customization: currentCustomization ? {
                     size: currentCustomization.size,
                     extras: [...currentCustomization.extras],
@@ -2746,24 +2894,33 @@ padding-inline: 1rem !important;
             };
             mainItem.hasAddons = mainItem.isCustomized;
 
+            let addedStatus = false;
             if (window.cart) {
-                // If we are editing, replace the old item
                 if (currentEditItem) {
                     window.cart.removeItem(currentEditItem.id, currentEditItem.shopId);
                 }
-
-                window.cart.addItem(mainItem, quantity);
+                addedStatus = window.cart.addItem(mainItem, quantity, !!currentEditItem);
             }
 
-            Swal.close();
-            Swal.fire({
-                icon: 'success',
-                title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0628\u0646\u062c\u0627\u062d',
-                timer: 1500,
-                showConfirmButton: false,
-                toast: true,
-                position: 'top-end'
-            });
+            if (addedStatus === false) return;
+
+            // Force close current modal before showing success
+            if (typeof Swal !== 'undefined') {
+                Swal.close();
+            }
+
+            setTimeout(() => {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تمت الإضافة بنجاح',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                }
+            }, 100);
         }
 
         function addUpsellItem(btn, price, id, name) {
@@ -2816,11 +2973,14 @@ padding-inline: 1rem !important;
             }
         }
 
-        window.onpopstate = function() {
+        window.addEventListener('popstate', function() {
             if (Swal.isVisible()) {
                 Swal.close();
             }
-        };
+            if (typeof closeSideCart === 'function') {
+                closeSideCart();
+            }
+        });
 
         function openSizesModal(el, name) { openProductModal(el, name); }
         function selectSwalSize(el) {
@@ -3123,17 +3283,28 @@ padding-inline: 1rem !important;
 
         function openHardcodedModal(editItem = null, prodName = null, prodPrice = null, triggerEl = null, prodDesc = null, focusNotes = false) {
             currentTriggeringProduct = triggerEl;
-            // Reset modal state
             currentEditItem = editItem;
-            basePrice = prodPrice || 130;
+
+            // Determine the base price of the product (the "Small" price)
+            let productBasePrice = 130;
+            if (editItem) {
+                productBasePrice = editItem.productBasePrice || 130;
+            } else if (prodPrice) {
+                productBasePrice = prodPrice;
+            } else if (triggerEl) {
+                productBasePrice = parseFloat(triggerEl.getAttribute('data-price')) || 130;
+            }
+
+            currentProductBasePrice = productBasePrice;
+
+            basePrice = productBasePrice;
             addonsPrice = 0;
             quantity = editItem ? editItem.amount : 1;
             currentCustomization = {
-                size: null,
+                size: editItem ? { ...editItem.customization.size } : null,
                 extras: [],
                 upsells: []
             };
-            basePrice = 0;
 
             const actualName = prodName || (editItem ? editItem.name : '\u0631\u0628\u0639 \u0643\u064A\u0644\u0648 \u0634\u0627\u0648\u0631\u0645\u0627 \u0641\u0631\u0627\u062E');
             const actualImg = (triggerEl ? triggerEl.querySelector('img')?.src : null) || (editItem ? editItem.image : 'images/placeholderImage.webp');
@@ -3141,13 +3312,11 @@ padding-inline: 1rem !important;
 
             // If editing, populate state
             if (editItem && editItem.customization) {
-                currentCustomization.size = { ...editItem.customization.size };
-                currentCustomization.extras = [...editItem.customization.extras];
+                currentCustomization.extras = editItem.customization.extras ? [...editItem.customization.extras] : [];
                 currentCustomization.upsells = editItem.customization.upsells ? [...editItem.customization.upsells] : [];
 
-                basePrice = (prodPrice || 130) + (currentCustomization.size ? (currentCustomization.size.price || 0) : 0);
-                addonsPrice = currentCustomization.extras.reduce((s, x) => s + (x.price || 0), 0) +
-                              currentCustomization.upsells.reduce((s, x) => s + (x.price * x.qty), 0);
+                basePrice = currentCustomization.size ? (currentCustomization.size.price || productBasePrice) : productBasePrice;
+                recalculateAddonsPrice();
             }
 
             Swal.fire({
@@ -3179,6 +3348,19 @@ padding-inline: 1rem !important;
                             notesArea.focus();
                             notesArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }, 500);
+                    }
+
+                    // DYNAMICALLY UPDATE SIZE PRICES
+                    const sizeRows = popup.querySelectorAll('.option-row');
+                    if (sizeRows.length >= 3) {
+                        const prices = [currentProductBasePrice, currentProductBasePrice + 50, currentProductBasePrice + 100];
+                        sizeRows.forEach((row, idx) => {
+                            const p = prices[idx];
+                            const priceSpan = row.querySelector('.price-radio span');
+                            if (priceSpan) priceSpan.innerText = p + ' ج.م';
+
+                            row.onclick = () => selectModalOption(row, p, row.getAttribute('data-size-id'));
+                        });
                     }
 
                     // Pre-select size
@@ -3823,14 +4005,14 @@ padding-inline: 1rem !important;
             .swal2-popup.product-modal-popup {
                 width: 100vw !important;
                 max-width: 100vw !important;
-                height: 100vh !important;
-                max-height: 100vh !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
                 border-radius: 0 !important;
                 margin: 0 !important;
             }
             .full-modal-container {
-                height: 100vh !important;
-                max-height: 100vh !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
             }
         }
 
@@ -3914,6 +4096,8 @@ padding-inline: 1rem !important;
             color: #ffc119;
             font-weight: 700;
             margin: 0;
+                        margin-top: auto;
+
         }
         .qty-control.card-qty {
             background: #f8f9fa;
@@ -3932,9 +4116,9 @@ padding-inline: 1rem !important;
     </style>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script>
-            let currentCustomization = {
+            currentCustomization = {
                 baseItemId: null,
-                selectedSizeId: null, 
+                selectedSizeId: null,
                 extras: [],
                 upsells: [], // أضف هذا السطر هنا
                 quantity: 1,
@@ -3966,8 +4150,9 @@ padding-inline: 1rem !important;
 
     // اختيار نصوص اللغة الحالية (الافتراضية هي العربية إذا لم تكن إنجليزية أو روسية)
     const t = translations[currentLang] || translations.ar;
-            function openProductModal(itemId) {
-                let id = (typeof itemId === 'object') ? itemId.getAttribute('id') : itemId;
+            function openProductModal(triggerEl) {
+                let id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
+                currentTriggeringProduct = (typeof triggerEl === 'object') ? triggerEl : null;
                 Swal.fire({
                     title: t.loading,
                     allowOutsideClick: false,
@@ -3993,7 +4178,7 @@ padding-inline: 1rem !important;
                         }
                     }
                 });
-                
+
             }
 
             function renderProductModal(data) {
@@ -4009,7 +4194,7 @@ padding-inline: 1rem !important;
                 var sizesHtml = '';
                 if (data.sizes && data.sizes.length > 0) {
                     data.sizes.forEach(function (size, index) {
-                        var activeClass = index === 0 ? 'active' : ''; 
+                        var activeClass = index === 0 ? 'active' : '';
                         sizesHtml += `
                 <div class="option-row" data-item-id="${size.menuItemid}" data-size-id="${size.id}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
                     <span>${size.name}</span>
@@ -4021,7 +4206,7 @@ padding-inline: 1rem !important;
                     });
                 }
 
-                // 2. تجهيز كود المنتجات الإضافية (Upsell Section) 
+                // 2. تجهيز كود المنتجات الإضافية (Upsell Section)
                 var upsellHtml = '';
                 if (data.upsellItems && data.upsellItems.length > 0) {
                     var upsellSlides = '';
@@ -4132,5 +4317,55 @@ padding-inline: 1rem !important;
                 });
             }
 
+            function shareShop(e) {
+                if (e) e.stopPropagation();
+                const shopName = document.getElementById('shopName').innerText;
+                const shopUrl = window.location.href;
+                const template = texts.ShareMessage || "Order now from {0} via Fast Delivery! {1}";
+                const text = template.replace('{0}', shopName).replace('{1}', shopUrl);
+
+                if (navigator.share) {
+                    navigator.share({
+                        title: texts.ShareTitle || 'Fast Delivery',
+                        text: text,
+                        url: shopUrl,
+                    }).catch(console.error);
+                } else {
+                    const modalHtml = `
+                        <div class="share-modal" style="padding: 1rem; text-align: center;">
+                            <h3 style="margin-bottom: 1.5rem;">${texts.ShareTitle || 'مشاركة المتجر'}</h3>
+                            <div style="display: flex; justify-content: center; gap: 1.5rem; font-size: 2rem;">
+                                <a href="https://wa.me/?text=${encodeURIComponent(text)}" target="_blank" style="color: #25D366;"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shopUrl)}" target="_blank" style="color: #1877F2;"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}" target="_blank" style="color: #1DA1F2;"><i class="fa-brands fa-twitter"></i></a>
+                            </div>
+                            <div style="margin-top: 1.5rem;">
+                                <input type="text" value="${shopUrl}" id="shareUrlInput" readonly style="width: 100%; padding: 10px; border: 1px solid #eee; border-radius: 10px; text-align: center; margin-bottom: 10px;">
+                                <button onclick="copyToClipboard('${shopUrl}')" style="background: var(--fd-blue); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: 700;">Copy Link</button>
+                            </div>
+                        </div>
+                    `;
+                    Swal.fire({
+                        html: modalHtml,
+                        showConfirmButton: false,
+                        width: '320px',
+                        padding: '10px'
+                    });
+                }
+            }
+
+            window.copyToClipboard = function(url) {
+                navigator.clipboard.writeText(url).then(() => {
+                    Swal.fire({ icon: 'success', title: 'Copied!', timer: 1500, showConfirmButton: false });
+                });
+            };
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Show Global Share buttons on PlaceShop page
+                const desktopBtn = document.getElementById('navShareBtn');
+                const mobileBtn = document.getElementById('mobileNavShare');
+                if (desktopBtn) desktopBtn.style.display = 'inline-block';
+                if (mobileBtn) mobileBtn.style.display = 'flex';
+            });
         </script>
     </asp:Content>

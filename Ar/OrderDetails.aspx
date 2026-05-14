@@ -4,6 +4,20 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<style>
+    /* تنسيق وقت الحالة في الـ Stepper */
+.step-time {
+    font-size: 9px;
+    color: #999;
+    display: block;
+    margin-top: 2px;
+    font-weight: normal;
+}
+.step-item.completed .step-time {
+    color: #ff9800;
+    font-weight: bold;
+}
+</style>
     <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
     <div class="order-details-wrapper">
         <div class="container" style="max-width: 800px;">

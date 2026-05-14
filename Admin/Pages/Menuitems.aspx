@@ -3,7 +3,21 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cphead" Runat="Server">
     عناصر القوائم
-    <style>
+   
+    
+     
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+
+ <script type="text/javascript">
+    
+         Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(function(evt, args) {
+             $('#<%=ddlPlace.ClientID %>').select2();
+             $('#<%=ddlMenu.ClientID %>').select2();
+            });
+   </script>
+<style>
         /* تنسيق بسيط للتابز لضمان مظهر متناسق */
         .nav-tabs { border-bottom: 2px solid #ddd; margin-bottom: 20px; }
         .nav-tabs > li.active > a { border: none !important; border-bottom: 3px solid #57c7d4 !important; color: #57c7d4 !important; font-weight: bold; }
@@ -155,10 +169,6 @@
     padding: 4px;
 }
     </style>
-</asp:Content>
-
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-
 <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="UpdatePanel1" DisplayAfter="100" DynamicLayout="true">
     <ProgressTemplate>
         <div class="update"></div>

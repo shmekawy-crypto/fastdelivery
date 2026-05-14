@@ -35,7 +35,7 @@
   padding: 0;
   font-family: "Cairo", "Arial", "Helvetica Neue", Helvetica, sans-serif;
   scroll-behavior: smooth;
-  overscroll-behavior: contain;
+  /* overscroll-behavior: contain; */
 }
 
 body {
@@ -495,8 +495,6 @@ a {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   border-top: 0;
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
@@ -1597,7 +1595,7 @@ overflow: initial;
   text-decoration: line-through;
 }
 .swiper-wrapper:has(.upsell-card-new){
-  max-height: 180px;
+  max-height: 190px;
 }
 
 .addToCart {
@@ -1623,7 +1621,8 @@ overflow: initial;
 .orderedItemsWrapper {
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 280px;
+  /* max-height: 280px; */
+  padding-bottom: 1rem;
 }
 
 
@@ -1654,13 +1653,192 @@ overflow: initial;
   padding: 0.5rem;
 }
 
+#sideCartOverlay{
+position: fixed;
+background-color: rgba(0, 0, 0, 0.3);
+backdrop-filter: blur(4px);
+inset: 0;
+margin: auto;
+width: 100%;
+height: 100%;
+z-index: 1000;
+opacity: 0;
+pointer-events: none;
+visibility: hidden;
+transition: var(--transition);
+}
+
+#sideCart{
+position: absolute;
+height: 100dvh;
+width: 100%;
+max-width: 550px;
+background-color: #fff;
+display: flex;
+flex-direction: column;
+transition: var(--transition);
+bottom: 0;
+box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+z-index: 1001;
+#sideCartContent{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+#inCartItems{
+  flex: 1;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: start;
+  padding: 0 !important;
+  overflow: hidden;
+}
+.orderedItemsWrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    padding-bottom: 0px;
+}
+#emptyCart{
+  margin-block: auto !important;
+  padding: 1.5rem;
+
+}
+.side-cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: var(--fd-blue);
+    border-bottom: 1px solid #eee;
+
+    h1 {
+        font-size: 1.5rem;
+        font-weight: 900;
+        margin: 0;
+        color: white;
+        text-transform: uppercase;
+        background: transparent;
+    }
+
+    .close-side-cart {
+        background: #f8f9fa;
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        color: #333;
+
+        &:hover {
+            background: #e9ecef;
+            color: var(--fd-red);
+            transform: rotate(90deg);
+        }
+    }
+    }
+    .side-cart-footer-container {
+        margin-top: auto;
+        border-top: 2px dashed rgba(0, 0, 0, 0.15);
+        background: white;
+        padding: 1.5rem;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+
+        .preDeliveryFeeAmount, .deliveryAmount, .afterDeliveryFeeAmount {
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .totalAmount {
+            font-size: 1.25rem;
+            color: var(--fd-blue);
+            font-weight: 800;
+        }
+
+        .confirmCartActions {
+            /* margin-top: 1.5rem; */
+            display: flex;
+            gap: 1rem;
+
+            .submit {
+                flex: 1;
+                background-color: var(--fd-blue);
+                border-radius: 12px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition);
+
+                a {
+                    color: white;
+                    text-decoration: none;
+                    font-weight: 700;
+                    width: 100%;
+                    text-align: center;
+                }
+
+                &:hover {
+                    background-color: var(--fd-dark);
+                    transform: translateY(-2px);
+                }
+            }
+
+            #emptyCartBtn {
+                width: 50px;
+                height: 50px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #fff0f0;
+                color: #dc3545;
+                border: 1px solid #fecaca;
+                cursor: pointer;
+                font-size: 1.5rem;
+                transition: var(--transition);
+
+                &:hover {
+                    background: #dc3545;
+                    color: white;
+                }
+            }
+        }
+    }
+}
+
+
+html[dir='rtl'] #sideCart{
+  left: 0;
+  transform: translateX(-100%);
+}
+html[dir='ltr'] #sideCart{
+  right: 0;
+  transform: translateX(100%);
+}
+
+#sideCartOverlay.openSideCart{
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  #sideCart{
+    transform: translateX(0) !important;
+  }
+}
+
 
 #emptyCart {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
   align-items: center;
@@ -1883,7 +2061,19 @@ body:has(#openedShopFoods) #cartShower {
   font-weight: bold;
   text-align: center;
   font-size: 1.125rem;
+}
 
+#shopFloatingRating{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: white;
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  width: 20px;
+  text-align: center;
 }
 
 .preDeliveryFeeAmount,
@@ -1894,6 +2084,7 @@ body:has(#openedShopFoods) #cartShower {
   justify-content: space-between;
   align-items: center;
   padding-inline: 0.5rem;
+  margin-top: 0.5rem;
   font-size: 0.9rem;
 
   p {
@@ -1902,7 +2093,9 @@ body:has(#openedShopFoods) #cartShower {
     align-items: center;
   }
 }
-
+.afterDeliveryFeeAmount{
+  padding-block: 1rem !important;
+}
 .confirmCartActions {
   display: flex;
   align-items: center;
@@ -1934,7 +2127,7 @@ body:has(#openedShopFoods) #cartShower {
 
 
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .content-container {
     padding: 0 20px;
   }
@@ -2083,9 +2276,9 @@ body:has(#openedShopFoods) #cartShower {
     padding: 30px 0;
   }
 
-  .orderedItemsWrapper {
+  /* .orderedItemsWrapper {
     max-height: 460px !important;
-  }
+  } */
 
   #inCartItems {
     overflow: auto;
@@ -2463,14 +2656,14 @@ body:has(#openedShopFoods) #cartShower {
   }
 
   .orderName {
-    grid-column: span 1 !important;
+    grid-column: span 2 !important;
     justify-content: center;
     text-align: center !important;
   }
 
   .orderLabels,
   .orderStats {
-    grid-template-columns: repeat(5, 1fr) !important;
+    grid-template-columns: repeat(6, 1fr) !important;
   }
 }
 
@@ -2536,6 +2729,8 @@ body:has(#openedShopFoods) #cartShower {
     align-items: center;
     /* flex-wrap: wrap; */
     justify-content: center;
+        position: relative;
+    padding-bottom: 4rem;
     /* padding-top: 0; */
     /* padding-inline: 0; */
     .shopFoods,.shopDelivery{
@@ -2544,7 +2739,7 @@ body:has(#openedShopFoods) #cartShower {
 
   }
 .status-badge{
-  font-size: 0.6rem;
+  font-size: 0.5rem;
 }
 
 .availableShopDesc{
@@ -2557,7 +2752,11 @@ body:has(#openedShopFoods) #cartShower {
   .shopPayMethods {
     font-size: 0.6rem;
     white-space: nowrap;
-  }
+        position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+}
+
 
 
   .addToCart {
@@ -2576,6 +2775,15 @@ body:has(#openedShopFoods) #cartShower {
     font-size: 0.9rem;
   }
 
+
+
+}
+
+
+@media (max-width:360px){
+     .pay-badge {
+      font-size: 0.5rem !important;
+     }
 
 
 }

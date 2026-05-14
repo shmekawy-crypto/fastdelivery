@@ -368,7 +368,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 if (ViewState["EditID"] != null)
                 {
                     currentID = (int)ViewState["EditID"];
-                    sql = @"UPDATE MenuItems SET MenuID=@MenuID, PlaceID=@PlaceID, Name=@Name, NameEn=@NameEn, NameRu=@NameRu, 
+                    sql = @"UPDATE MenuItems SET MenuID=@MenuID, PlaceID=@PlaceID, Name=@Name, NameEn=@NameEn, NameRu=@NameRu,Price=@Price 
                         Description=@Desc, DescriptionEn=@DescEn, DescriptionRu=@DescRu,
                         DiscountValue=@Discount, PhotoUrl=@Photo, 
                         IsAvailable=@IsAvailable, PrepearMin=@PrepearMin
@@ -376,9 +376,9 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 }
                 else
                 {
-                    sql = @"INSERT INTO MenuItems (MenuID, PlaceID, Name, NameEn, NameRu, Description, DescriptionEn, DescriptionRu, 
+                    sql = @"INSERT INTO MenuItems (MenuID, PlaceID, Name, NameEn, NameRu, Description, DescriptionEn, DescriptionRu,Price, 
                         DiscountValue, PhotoUrl, IsAvailable, CreatedAt, PrepearMin)
-                        VALUES (@MenuID, @PlaceID, @Name, @NameEn, @NameRu, @Desc, @DescEn, @DescRu, 
+                        VALUES (@MenuID, @PlaceID, @Name, @NameEn, @NameRu, @Desc, @DescEn, @DescRu,@Price, 
                         @Discount, @Photo, @IsAvailable, @CreatedAt, @PrepearMin);
                         SELECT SCOPE_IDENTITY();";
                 }
@@ -389,6 +389,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@Name", txtName.Text.Trim());
                 cmd.Parameters.AddWithValue("@NameEn", txtNameEn.Text.Trim());
                 cmd.Parameters.AddWithValue("@NameRu", txtNameRu.Text.Trim());
+                cmd.Parameters.AddWithValue("@Price", string.IsNullOrEmpty(txtPrice.Text) ? 0 : decimal.Parse(txtPrice.Text));
                 cmd.Parameters.AddWithValue("@Desc", string.IsNullOrEmpty(txtDescription.Text) ? (object)DBNull.Value : txtDescription.Text.Trim());
                 cmd.Parameters.AddWithValue("@DescEn", string.IsNullOrEmpty(txtDescriptionEn.Text) ? (object)DBNull.Value : txtDescriptionEn.Text.Trim());
                 cmd.Parameters.AddWithValue("@DescRu", string.IsNullOrEmpty(txtDescriptionRu.Text) ? (object)DBNull.Value : txtDescriptionRu.Text.Trim());
@@ -454,7 +455,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 }
 
                 trans.Commit();
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alert", "alert('تم حفظ الصنف بنجاح يا هندسة')", true);
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alert", "alert('تم حفظ البيانات الصنف بنجاح ')", true);
                 ClearForm();
                 BindMenuItems(txtSearch.Text.Trim());
             }

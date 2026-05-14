@@ -40,17 +40,12 @@ const closeCartBtn = document.querySelector("#closeCartBtn");
 const removeCartItem = document.querySelectorAll(".removeCartItem");
 
 
-cartShower.addEventListener("click", () => {
-    shoppingCartPopup.classList.add("is-visible");
-    document.body.style.overflow = "hidden";
-});
-
 const closeCart = () => {
-    shoppingCartPopup.classList.remove("is-visible");
-    document.body.style.overflow = "auto";
+    if (shoppingCartPopup) {
+        shoppingCartPopup.classList.remove("is-visible");
+        document.body.style.overflow = "auto";
+    }
 };
-
-closeCartBtn.addEventListener("click", closeCart);
 
 // shoppingCartPopup.addEventListener("click", (e) => {
 //   if (!cartHolder.contains(e.target) && !inCartItems.contains(e.target)) {
@@ -140,32 +135,84 @@ foodImages.forEach((img) => {
     img.addEventListener("mouseleave", () => {
         foodImageModal.classList.remove("show");
     });
-
-
-
-
-
-
-    const shopData = JSON.parse(localStorage.getItem("selectedShop"));
-    if (!shopData) return;
-
-    const shopEl = document.querySelector(".availableShop");
-    if (!shopEl) return;
-
-    // Populate shop card
-    shopEl.id = shopData.id;
-    shopEl.querySelector("img").src = shopData.img;
-    shopEl.querySelector(".availableShopName").textContent = shopData.name;
-    shopEl.querySelector(".shopFoods").textContent = shopData.desc;
-    shopEl.querySelector(".shopRating").innerHTML = `<i class="fa-solid fa-face-smile"></i> ${shopData.rating}`;
-    shopEl.querySelector(".timer").textContent = shopData.deliveryTime;
-    shopEl.querySelector(".deliveryPayment").textContent = `توصيل: ${shopData.deliveryPayment}`;
-    shopEl.querySelector(".minPay").textContent = shopData.minPay;
-
-    // Save current shop globally for cart
-    localStorage.setItem("currentShopId", shopData.id);
-    localStorage.setItem("currentShopName", shopData.name);
-    localStorage.setItem("currentShopAreaId", shopData.areaId);
-
-
 });
+
+// Populate shop card from localStorage
+const shopDataStr = localStorage.getItem("selectedShop");
+if (shopDataStr) {
+    const shopData = JSON.parse(shopDataStr);
+    const shopEl = document.querySelector(".availableShop");
+    if (shopEl) {
+        // Populate shop card
+        shopEl.id = shopData.id;
+        const shopImg = shopEl.querySelector("img");
+        if (shopImg) shopImg.src = shopData.img;
+        
+        const shopNameEl = shopEl.querySelector(".availableShopName");
+        if (shopNameEl) shopNameEl.textContent = shopData.name;
+        
+        const shopDescEl = shopEl.querySelector(".shopFoods");
+        if (shopDescEl) shopDescEl.textContent = shopData.desc;
+        
+        const shopRatingEl = shopEl.querySelector(".shopRating");
+        if (shopRatingEl) {
+            let rating = parseFloat(shopData.rating) || 0;
+            let starsHtml = "";
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) starsHtml += "<i class='fa-solid fa-star' style='color:#FFD700;'></i>";
+                else if (i - 0.5 <= rating) starsHtml += "<i class='fa-solid fa-star-half-stroke' style='color:#FFD700;'></i>";
+                else starsHtml += "<i class='fa-regular fa-star' style='color:#FFD700;'></i>";
+            }
+            shopRatingEl.innerHTML = starsHtml + ` <span class='rating-number'>(${rating.toFixed(1)})</span>`;
+        }
+        
+        const shopTimerEl = shopEl.querySelector(".timer");
+        if (shopTimerEl) shopTimerEl.textContent = shopData.deliveryTime;
+        
+        const shopDeliveryPaymentEl = shopEl.querySelector(".deliveryPayment");
+        if (shopDeliveryPaymentEl) shopDeliveryPaymentEl.textContent = `توصيل: ${shopData.deliveryPayment}`;
+        
+        const shopMinPayEl = shopEl.querySelector(".minPay");
+        if (shopMinPayEl) shopMinPayEl.textContent = shopData.minPay;
+
+        // Save current shop globally for cart
+        localStorage.setItem("currentShopId", shopData.id);
+        localStorage.setItem("currentShopName", shopData.name);
+        localStorage.setItem("currentShopAreaId", shopData.areaId);
+    }
+}
+
+// Null checks for listeners
+if (cartShower) {
+    cartShower.addEventListener("click", () => {
+        shoppingCartPopup.classList.add("is-visible");
+        document.body.style.overflow = "hidden";
+    });
+}
+
+if (closeCartBtn) {
+    closeCartBtn.addEventListener("click", closeCart);
+}
+
+if (searchInput) {
+    searchInput.addEventListener("input", function () {
+        const searchValue = this.value.trim().toLowerCase();
+        const allFoodItems = document.querySelectorAll(".foodItem");
+
+        allFoodItems.forEach((item) => {
+            const foodName = item.querySelector(".foodName")?.textContent.trim().toLowerCase() || "";
+            if (foodName.includes(searchValue)) {
+                item.style.display = "flex";
+            } else {
+                item.style.display = "none";
+            }
+        });
+
+        const allLists = document.querySelectorAll(".foodList");
+        allLists.forEach((list) => {
+            const items = list.querySelectorAll(".foodItem");
+            const hasVisible = Array.from(items).some((item) => item.style.display !== "none");
+            list.style.display = hasVisible ? "block" : "none";
+        });
+    });
+}

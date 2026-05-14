@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 using System.Threading;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -35,8 +34,12 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
 
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            // تم إضافة LEFT JOIN مع جدول DeliveryMen لجلب بيانات المندوب
-            string sqlMaster = string.Format(@"SELECT o.Odate, o.Accepted, o.Prepared, o.InWay, o.Delivered, 
+            // تحديث الاستعلام لجلب أعمدة الوقت لكل حالة
+            string sqlMaster = string.Format(@"SELECT o.Odate, 
+                                     o.Accepted, o.AcceptedTime, 
+                                     o.Prepared, o.PreparedTime, 
+                                     o.InWay, o.InWayTime, 
+                                     o.Delivered, o.DeliveredTime, 
                                      o.DeliveryCost, a.Mobile, {0} as GovName, {1} as AreaName,
                                      a.StreetName, a.Build,
                                      d.DriverName, d.Phone as DriverPhone 
@@ -68,47 +71,79 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
 
                 litStatusHeader.Text = isDev ? GetGlobalResourceObject("texts", "StatusDelivered").ToString() : GetGlobalResourceObject("texts", "StatusProcessing").ToString();
 
-                // إظهار بيانات المندوب إذا كان الطلب في الطريق ولم يتم تسليمه بعد
                 if (isInWay && !isDev && dr["DriverName"] != DBNull.Value)
                 {
                     phDriverInfo.Visible = true;
                     litDriverName.Text = dr["DriverName"].ToString();
                     litDriverPhone.Text = dr["DriverPhone"].ToString();
                 }
-                else
-                {
-                    phDriverInfo.Visible = false;
-                }
+                else { phDriverInfo.Visible = false; }
 
+                // تمرير التوقيتات للميثود
                 BuildFullStepper(
-                    dr["Accepted"] != DBNull.Value && Convert.ToBoolean(dr["Accepted"]),
-                    dr["Prepared"] != DBNull.Value && Convert.ToBoolean(dr["Prepared"]),
-                    isInWay,
-                    isDev
+                    dr["Accepted"] != DBNull.Value && Convert.ToBoolean(dr["Accepted"]), dr["AcceptedTime"],
+                    dr["Prepared"] != DBNull.Value && Convert.ToBoolean(dr["Prepared"]), dr["PreparedTime"],
+                    isInWay, dr["InWayTime"],
+                    isDev, dr["DeliveredTime"],
+                    dr["Odate"] // وقت الطلب الأصلي
                 );
             }
             dr.Close();
 
-            string placeNameCol = lang == "en" ? "p.NameEn" : (lang == "ru" ? "p.NameRu" : "p.Name");
-            string sqlPlaces = string.Format(@"SELECT DISTINCT p.id, {0} as PlaceName FROM dbo.Places p 
+            // (باقي كود جلب الأصناف والأماكن كما هو بدون تغيير)
+            LoadItemsData(orderId, conn, lang);
+        }
+    }
+
+    // ميثود مساعدة لتنسيق الوقت
+    private string GetTimeOnly(object timeObj)
+    {
+        if (timeObj == null || timeObj == DBNull.Value) return "--:--";
+        return Convert.ToDateTime(timeObj).ToString("hh:mm tt");
+    }
+
+    private void BuildFullStepper(bool acc, object accTime, bool prep, object prepTime, bool way, object wayTime, bool dev, object devTime, object oDate)
+    {
+        string s1 = "completed";
+        string s2 = acc ? "completed" : "active";
+        string s3 = prep ? "completed" : (acc ? "active" : "");
+        string s4 = way ? "completed" : (prep ? "active" : "");
+        string s5 = dev ? "completed" : (way ? "active" : "");
+
+        litStepperHtml.Text = String.Format(@"
+            <div class='step-item {0}'><div class='step-icon'><i class='fas fa-hourglass-start'></i></div><div class='step-label'>{5}<span class='step-time'>{10}</span></div></div>
+            <div class='step-item {1}'><div class='step-icon'><i class='fas fa-thumbs-up'></i></div><div class='step-label'>{6}<span class='step-time'>{11}</span></div></div>
+            <div class='step-item {2}'><div class='step-icon'><i class='fas fa-utensils'></i></div><div class='step-label'>{7}<span class='step-time'>{12}</span></div></div>
+            <div class='step-item {3}'><div class='step-icon'><i class='fas fa-motorcycle'></i></div><div class='step-label'>{8}<span class='step-time'>{13}</span></div></div>
+            <div class='step-item {4}'><div class='step-icon'><i class='fas fa-check-double'></i></div><div class='step-label'>{9}<span class='step-time'>{14}</span></div></div>",
+            s1, s2, s3, s4, s5,
+            GetGlobalResourceObject("texts", "StepWait"), GetGlobalResourceObject("texts", "StepAcc"),
+            GetGlobalResourceObject("texts", "StepPrep"), GetGlobalResourceObject("texts", "StepWay"),
+            GetGlobalResourceObject("texts", "StepDev"),
+            GetTimeOnly(oDate), GetTimeOnly(accTime), GetTimeOnly(prepTime), GetTimeOnly(wayTime), GetTimeOnly(devTime));
+    }
+
+    // ميثود منفصلة لتنظيم الكود الخاص بالأصناف
+    private void LoadItemsData(int orderId, SqlConnection conn, string lang)
+    {
+        string placeNameCol = lang == "en" ? "p.NameEn" : (lang == "ru" ? "p.NameRu" : "p.Name");
+        string sqlPlaces = string.Format(@"SELECT DISTINCT p.id, {0} as PlaceName FROM dbo.Places p 
                                INNER JOIN dbo.MenuItems mi ON p.id = mi.PlaceID 
                                INNER JOIN dbo.Order_Details od ON mi.id = od.MenuItems_id 
                                WHERE od.Order_id = @oid", placeNameCol);
 
-            SqlDataAdapter da = new SqlDataAdapter(sqlPlaces, conn);
-            da.SelectCommand.Parameters.AddWithValue("@oid", orderId);
-            DataTable dtPlaces = new DataTable();
-            da.Fill(dtPlaces);
+        SqlDataAdapter da = new SqlDataAdapter(sqlPlaces, conn);
+        da.SelectCommand.Parameters.AddWithValue("@oid", orderId);
+        DataTable dtPlaces = new DataTable();
+        da.Fill(dtPlaces);
+        rptPlaces.DataSource = dtPlaces;
+        rptPlaces.DataBind();
 
-            rptPlaces.DataSource = dtPlaces;
-            rptPlaces.DataBind();
-
-            SqlCommand cmdTotal = new SqlCommand("SELECT ISNULL(SUM(Amount * Price), 0) FROM Order_Details WHERE Order_id = @oid", conn);
-            cmdTotal.Parameters.AddWithValue("@oid", orderId);
-            decimal subTotal = Convert.ToDecimal(cmdTotal.ExecuteScalar());
-            litSubTotal.Text = subTotal.ToString("N2");
-            litGrandTotal.Text = (subTotal + Convert.ToDecimal(litDeliveryFee.Text)).ToString("N2");
-        }
+        SqlCommand cmdTotal = new SqlCommand("SELECT ISNULL(SUM(Amount * Price), 0) FROM Order_Details WHERE Order_id = @oid", conn);
+        cmdTotal.Parameters.AddWithValue("@oid", orderId);
+        decimal subTotal = Convert.ToDecimal(cmdTotal.ExecuteScalar());
+        litSubTotal.Text = subTotal.ToString("N2");
+        litGrandTotal.Text = (subTotal + Convert.ToDecimal(litDeliveryFee.Text)).ToString("N2");
     }
 
     protected void tmrRefresh_Tick(object sender, EventArgs e)
@@ -127,8 +162,8 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            // تحديث الاستعلام ليشمل بيانات المندوب في التحديث التلقائي
-            string sqlStatus = @"SELECT o.Accepted, o.Prepared, o.InWay, o.Delivered, 
+            string sqlStatus = @"SELECT o.Odate, o.Accepted, o.AcceptedTime, o.Prepared, o.PreparedTime, 
+                                 o.InWay, o.InWayTime, o.Delivered, o.DeliveredTime, 
                                  d.DriverName, d.Phone as DriverPhone 
                                  FROM dbo.Orders o
                                  LEFT JOIN dbo.DeliveryMen d ON o.DriverID = d.DriverID 
@@ -145,43 +180,23 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
 
                 litStatusHeader.Text = isDev ? GetGlobalResourceObject("texts", "StatusDelivered").ToString() : GetGlobalResourceObject("texts", "StatusProcessing").ToString();
 
-                // تحديث ظهور بيانات المندوب تلقائياً
                 if (isInWay && !isDev && dr["DriverName"] != DBNull.Value)
                 {
                     phDriverInfo.Visible = true;
                     litDriverName.Text = dr["DriverName"].ToString();
                     litDriverPhone.Text = dr["DriverPhone"].ToString();
                 }
-                else
-                {
-                    phDriverInfo.Visible = false;
-                }
+                else { phDriverInfo.Visible = false; }
 
                 BuildFullStepper(
-                    dr["Accepted"] != DBNull.Value && Convert.ToBoolean(dr["Accepted"]),
-                    dr["Prepared"] != DBNull.Value && Convert.ToBoolean(dr["Prepared"]),
-                    isInWay,
-                    isDev
+                    dr["Accepted"] != DBNull.Value && Convert.ToBoolean(dr["Accepted"]), dr["AcceptedTime"],
+                    dr["Prepared"] != DBNull.Value && Convert.ToBoolean(dr["Prepared"]), dr["PreparedTime"],
+                    isInWay, dr["InWayTime"],
+                    isDev, dr["DeliveredTime"],
+                    dr["Odate"]
                 );
             }
         }
-    }
-
-    private void BuildFullStepper(bool acc, bool prep, bool way, bool dev)
-    {
-        string s1 = "completed", s2 = acc ? "completed" : "active", s3 = prep ? "completed" : (acc ? "active" : "");
-        string s4 = way ? "completed" : (prep ? "active" : ""), s5 = dev ? "completed" : (way ? "active" : "");
-
-        litStepperHtml.Text = String.Format(@"
-            <div class='step-item {0}'><div class='step-icon'><i class='fas fa-hourglass-start'></i></div><div class='step-label'>{5}</div></div>
-            <div class='step-item {1}'><div class='step-icon'><i class='fas fa-thumbs-up'></i></div><div class='step-label'>{6}</div></div>
-            <div class='step-item {2}'><div class='step-icon'><i class='fas fa-utensils'></i></div><div class='step-label'>{7}</div></div>
-            <div class='step-item {3}'><div class='step-icon'><i class='fas fa-motorcycle'></i></div><div class='step-label'>{8}</div></div>
-            <div class='step-item {4}'><div class='step-icon'><i class='fas fa-check-double'></i></div><div class='step-label'>{9}</div></div>",
-            s1, s2, s3, s4, s5,
-            GetGlobalResourceObject("texts", "StepWait"), GetGlobalResourceObject("texts", "StepAcc"),
-            GetGlobalResourceObject("texts", "StepPrep"), GetGlobalResourceObject("texts", "StepWay"),
-            GetGlobalResourceObject("texts", "StepDev"));
     }
 
     protected void rptPlaces_ItemDataBound(object sender, RepeaterItemEventArgs e)

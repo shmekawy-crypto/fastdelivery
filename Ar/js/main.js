@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function setActiveNavItem() {
         const navItems = document.querySelectorAll('.mobile-nav-item');
         const currentPath = window.location.pathname.toLowerCase();
-        
+
         navItems.forEach(item => {
             const href = item.getAttribute('href');
             if (href) {
@@ -271,14 +271,46 @@ document.addEventListener("DOMContentLoaded", () => {
     setActiveNavItem();
 });
 
+// ✅ تحديث العناصر التي تحمل خاصية data-text بناءً على ملف الترجمة
+function updateUIWithTexts() {
+    if (typeof texts === 'undefined') return;
+
+    document.querySelectorAll('[data-text]').forEach(el => {
+        const key = el.getAttribute('data-text');
+        if (texts[key]) {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = texts[key];
+            } else if (el.classList.contains('whatsapp-float') || el.hasAttribute('title')) {
+                el.title = texts[key];
+            } else {
+                el.innerText = texts[key];
+            }
+        }
+    });
+
+    // تحديث العناوين في مودال تعديل البيانات
+    const emailEditorTitle = document.querySelector('.editorContainer[data-form="emailEditor"] h3');
+    if (emailEditorTitle && texts.EditEmail) emailEditorTitle.innerText = texts.EditEmail;
+
+    const passwordEditorTitle = document.querySelector('.editorContainer[data-form="passwordEditor"] h3');
+    if (passwordEditorTitle && texts.EditPassword) passwordEditorTitle.innerText = texts.EditPassword;
+
+    // Trigger scheduling init to ensure texts are updated (CheckOut page)
+    if (typeof initDeliveryTimeScheduling === 'function') {
+        initDeliveryTimeScheduling();
+    }
+}
+
 // user profile settings
 const profileHead = document.querySelector(".profile-head");
 const dropDownBtn = document.querySelector("#dropDownBtn");
 const dropDownMenu = document.querySelector(".profileSettings");
-dropDownBtn.addEventListener("click", () => {
-    profileHead.classList.toggle("active");
-    dropDownMenu.classList.toggle("active");
-});
+if (dropDownBtn && profileHead && dropDownMenu) {
+    dropDownBtn.addEventListener("click", () => {
+        profileHead.classList.toggle("active");
+        dropDownMenu.classList.toggle("active");
+    });
+}
 
 // Function to populate profile fields from localStorage
 function populateUserProfile() {
@@ -405,8 +437,8 @@ function closeEditPopup() {
 }
 
 // ✅ Close button
-closeEditorBtn.addEventListener("click", closeEditPopup);
-removeFormChange.addEventListener("click", closeEditPopup);
+if (closeEditorBtn) closeEditorBtn.addEventListener("click", closeEditPopup);
+if (removeFormChange) removeFormChange.addEventListener("click", closeEditPopup);
 
 // ✅ Close if click outside container
 const dataEditContainer = document.querySelector(".dataEditContainer");
@@ -505,4 +537,38 @@ if (editorForm) {
             return;
         }
     });
+}
+
+// --- Mobile Profile Menu Logic ---
+function toggleMobileProfileMenu(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('mobileProfileMenu');
+    if (menu) {
+        menu.classList.toggle('show');
+    }
+}
+
+// Close mobile menu on outside click
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('mobileProfileMenu');
+    if (menu && menu.classList.contains('show')) {
+        const trigger = document.getElementById('mobileProfileTrigger');
+        if (trigger && !trigger.contains(event.target)) {
+            menu.classList.remove('show');
+        }
+    }
+});
+
+function triggerLogout() {
+    // Find the ASP.NET LinkButton and click it
+    const logoutBtn = document.getElementById('lblogout') || 
+                      document.querySelector('a[id*="lblogout"]') ||
+                      document.getElementById('ContentPlaceHolder1_lblogout');
+    if (logoutBtn) {
+        logoutBtn.click();
+    } else {
+        // Fallback: Clear local storage and redirect if button not found (though it should be there)
+        localStorage.removeItem('cartItems');
+        window.location.href = 'Default.aspx';
+    }
 }

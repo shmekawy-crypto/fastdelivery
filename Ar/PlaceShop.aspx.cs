@@ -73,32 +73,40 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             imgplace.ImageUrl = place.PhotoPath;
 
             // Rating Stars logic
-            int rating = 0;
-            try { rating = place.Rate; } catch { }
+            double rating = 0;
+            try
+            {
+                object rateObj = place.GetColumn("Rate");
+                if (rateObj != null && rateObj != DBNull.Value)
+                    rating = Convert.ToDouble(rateObj);
+            }
+            catch { }
 
             string starsHtml = "";
             for (int i = 1; i <= 5; i++)
             {
                 if (i <= rating)
                     starsHtml += "<i class='fa-solid fa-star' style='color:#FFD700;'></i>";
+                else if (i - 0.5 <= rating)
+                    starsHtml += "<i class='fa-solid fa-star-half-stroke' style='color:#FFD700;'></i>";
                 else
                     starsHtml += "<i class='fa-regular fa-star' style='color:#FFD700;'></i>";
             }
-            shopRating.InnerHtml = starsHtml;
+            shopRating.InnerHtml = starsHtml + " <span class='rating-number'>(" + rating.ToString("0.0") + ")</span>";
 
             // Fetch IsOpened status via SQL since it's a calculated value
             int isOpened = 0;
             using (SqlConnection con = new SqlConnection(connStr))
             {
                 string sqlStatus = @"
-                    SELECT CASE 
-                        WHEN s.StartTime IS NOT NULL 
-                             AND CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN s.StartTime AND s.EndTime 
-                        THEN 1 ELSE 0 
+                    SELECT CASE
+                        WHEN s.StartTime IS NOT NULL
+                             AND CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN s.StartTime AND s.EndTime
+                        THEN 1 ELSE 0
                     END AS IsOpened
                     FROM dbo.Places p
-                    LEFT JOIN dbo.PlacesDeliverySchedule s ON p.id = s.PlacesId 
-                         AND s.IsActive = 1 
+                    LEFT JOIN dbo.PlacesDeliverySchedule s ON p.id = s.PlacesId
+                         AND s.IsActive = 1
                          AND s.DayId = (SELECT Id FROM dbo.DaysOfWeek WHERE DayOrder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE())))
                     WHERE p.id = @pid";
                 SqlCommand cmdStatus = new SqlCommand(sqlStatus, con);
@@ -172,13 +180,13 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
                 var sizesList = new List<object>();
 
                 // تعديل الاستعلام لجلب ID جدول الربط ومعرف المنتج
-                string sizeSql = @"SELECT 
-                        ms.id AS MenuSize_id, 
-                        ms.MenuItems_id, 
-                        s.Name, 
-                        ms.Price 
-                   FROM MenuItems_Sizes ms 
-                   INNER JOIN Sizes s ON ms.Size_id = s.id 
+                string sizeSql = @"SELECT
+                        ms.id AS MenuSize_id,
+                        ms.MenuItems_id,
+                        s.Name,
+                        ms.Price
+                   FROM MenuItems_Sizes ms
+                   INNER JOIN Sizes s ON ms.Size_id = s.id
                    WHERE ms.MenuItems_id = @id";
 
                 SqlCommand sizeCmd = new SqlCommand(sizeSql, conn);
@@ -202,8 +210,8 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
                 // 3. جلب الإضافات المرتبطة بهذا الصنف
                 var extrasList = new List<object>();
                 string extraSql = @"SELECT ex.id, ex.Name, me.Price,ex.PhotoUrl
-                                FROM MenuItems_Extras me 
-                                INNER JOIN Extras ex ON me.Extra_id = ex.id 
+                                FROM MenuItems_Extras me
+                                INNER JOIN Extras ex ON me.Extra_id = ex.id
                                 WHERE me.MenuItem_id = @id";
                 SqlCommand extraCmd = new SqlCommand(extraSql, conn);
                 extraCmd.Parameters.AddWithValue("@id", itemId);
@@ -219,7 +227,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
                     });
                 }
                 eRdr.Close();
-                
+
                 // الرد النهائي بصيغة JSON
                 return new
                 {
@@ -249,28 +257,28 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             using (SqlConnection con = new SqlConnection(connStr))
             {
                 string query = @"
-SELECT 
-    mi.id, mi.PlaceID, mi.PrepearMin, mi.MenuID, mi.Name, mi.NameEn, mi.NameRu, 
-    mi.Description, mi.DescriptionEn, mi.DescriptionRu, 
+SELECT
+    mi.id, mi.PlaceID, mi.PrepearMin, mi.MenuID, mi.Name, mi.NameEn, mi.NameRu,
+    mi.Description, mi.DescriptionEn, mi.DescriptionRu,
     mi.PhotoUrl,
     -- OldPrice: لو فيه أحجام، هات سعر أول حجم، لو مفيش هات سعر الصنف الأساسي
     ISNULL((SELECT TOP 1 Price FROM MenuItems_Sizes WHERE MenuItems_id = mi.id), mi.Price) AS OldPrice,
-    
+
     -- NewPrice: الحسبة بعد الخصم (سواء من جدول الأحجام أو الأساسي)
     ISNULL(
-        (SELECT TOP 1 Price - DiscountValue FROM MenuItems_Sizes WHERE MenuItems_id = mi.id), 
+        (SELECT TOP 1 Price - DiscountValue FROM MenuItems_Sizes WHERE MenuItems_id = mi.id),
         mi.Price - mi.DiscountValue
     ) AS NewPrice,
 
     -- isCustom: لو عدد سجلاته في جدول الأحجام أكبر من 1 يبقى 1 (يعني مخصص)، غير كده 0
-    CASE 
-        WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1 
-        ELSE 0 
+    CASE
+        WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1
+        ELSE 0
     END AS isCustom
 
 FROM dbo.Menus m
 INNER JOIN dbo.MenuItems mi ON m.id = mi.MenuID
-INNER JOIN dbo.Places p ON mi.PlaceID = p.id 
+INNER JOIN dbo.Places p ON mi.PlaceID = p.id
 WHERE mi.MenuID = @MenuID AND mi.PlaceID = @PlaceID";
 
                 SqlCommand cmd = new SqlCommand(query, con);

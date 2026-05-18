@@ -14,13 +14,31 @@
         .search-box { margin-bottom: 20px; }
         /* ستايل التحذيرات */
         .val-error { color: #e74c3c; font-size: 12px; font-weight: bold; margin-top: 5px; display: block; }
-    </style>
-
+    /* تحسين شكل منطقة الرفع والمعاينة */
+        .upload-area {
+            border: 2px dashed #e67e22;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background: #fdfdfd;
+            position: relative;
+            cursor: pointer;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .upload-area i { font-size: 30px; color: #ccc; margin-bottom: 5px; }
+        #imgPreview { max-width: 100%; max-height: 150px; border-radius: 5px; display: none; margin-top: 5px; border: 1px solid #eee; }
+        .file-input-hidden { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    </style>
     <asp:ScriptManager ID="sm1" runat="server"></asp:ScriptManager>
 
     <div class="container-fluid">
         <asp:UpdatePanel ID="upMenu" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
+                
                 <asp:HiddenField ID="hfActiveTab" runat="server" Value="#basic" />
                 <div class="menu-card">
                     <h3 class="section-header">إدارة أصناف المطعم</h3>
@@ -64,7 +82,13 @@
                                 <div class="col-md-4 form-group">
                                     <label>صورة الصنف</label>
                                     <asp:HiddenField ID="hfExistingPhoto" runat="server" />
-                                    <asp:FileUpload ID="fuItemPhoto" runat="server" CssClass="form-control" />
+                                    <div class="upload-area">
+                                        <i class="glyphicon glyphicon-cloud-upload"></i>
+                                        <img id="imgPreview" src="#" />
+                                        <asp:FileUpload ID="fuItemPhoto" runat="server" CssClass="file-input-hidden" onchange="previewImage(this);" />
+                                    </div>
+                                    <asp:HiddenField ID="HiddenField1" runat="server" />
+                                    <asp:HiddenField ID="hfImageBase64" runat="server" />
                                 </div>
                             </div>
                             <div class="well-custom">
@@ -241,16 +265,69 @@
     </div>
 
     <script type="text/javascript">
-        function rebindTabs() {
-            var activeTab = document.getElementById('<%= hfActiveTab.ClientID %>').value;
-            if (activeTab) { $('.nav-tabs a[href="' + activeTab + '"]').tab('show'); }
-            $('.nav-tabs a').on('shown.bs.tab', function (e) {
-                var id = $(e.target).attr('href');
-                document.getElementById('<%= hfActiveTab.ClientID %>').value = id;
+    // هذه الدالة تعمل تلقائياً عند تحميل الصفحة لأول مرة 
+    // وأيضاً بعد كل تحديث يحدث داخل الـ UpdatePanel (Ajax Postback)
+    Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(function (evt, args) {
+        
+        // 1. تفعيل مكتبة Select2 لجميع القوائم المنسدلة التي تحمل كلاس select2-control
+        // تم إضافة dir: 'rtl' لضمان دعم اتجاه اللغة العربية
+        if (jQuery().select2) {
+            $('.select2-control').select2({
+                width: '100%',
+                dir: 'rtl'
             });
         }
-        $(document).ready(function () { rebindTabs(); });
-        var prm = Sys.WebForms.PageRequestManager.getInstance();
-        prm.add_endRequest(function () { rebindTabs(); });
-    </script>
+
+        // 2. تفعيل التاب النشطة (Tabs Persistence)
+        // لضمان بقاء المستخدم على نفس التاب بعد الحفظ أو الإضافة
+        var activeTab = document.getElementById('<%= hfActiveTab.ClientID %>').value;
+        if (activeTab) {
+            $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+        }
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            var id = $(e.target).attr('href');
+            document.getElementById('<%= hfActiveTab.ClientID %>').value = id;
+        });
+
+        // 3. منطق معاينة الصورة (Image Preview Logic)
+        // جلب قيم الحقول المخفية ومكونات المعاينة
+        var hfBase64 = document.getElementById('<%= hfImageBase64.ClientID %>').value;
+        var hfPath = document.getElementById('<%= hfExistingPhoto.ClientID %>').value;
+        var preview = $('#imgPreview');
+        var icon = $('.upload-area i');
+
+        // الحالة أ: لو المستخدم اختار صورة جديدة (مخزنة كـ Base64)
+        if (hfBase64 != "") {
+            preview.attr('src', hfBase64).show();
+            icon.hide();
+        } 
+        // الحالة ب: لو ضغطنا تعديل والصورة موجودة في قاعدة البيانات (مسار)
+        else if (hfPath != "") {
+            // ملاحظة: تم إضافة ../../ للوصول للمسار الصحيح من مجلد الـ Admin
+            preview.attr('src', '../../ar/' + hfPath).show();
+            icon.hide();
+        } 
+        // الحالة ج: لا توجد صورة (إخفاء المعاينة وإظهار الأيقونة)
+        else {
+            preview.hide();
+            icon.show();
+        }
+    });
+
+    // دالة تعمل عند تغيير اختيار ملف الصورة (FileUpload Change)
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // عرض الصورة المختارة فوراً
+                $('#imgPreview').attr('src', e.target.result).fadeIn();
+                // إخفاء أيقونة الرفع
+                $('.upload-area i').hide();
+                // تخزين كود الصورة في الحقل المخفي لضمان عدم ضياعها بعد الـ Postback
+                document.getElementById('<%= hfImageBase64.ClientID %>').value = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 </asp:Content>

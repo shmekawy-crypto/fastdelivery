@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -39,9 +39,9 @@ public partial class Ar_AddAddress : System.Web.UI.Page
         }
         if (!IsPostBack)
         {
-           
-                
-            
+
+
+
             LoadGovernments();
             BindGrid();
 
@@ -182,7 +182,7 @@ public partial class Ar_AddAddress : System.Web.UI.Page
                 BindGrid();
                 ViewState["id"] = int.Parse(e.CommandArgument.ToString());
                 FillEditForm(id);
-                
+
                 // بعد ما نملأ البيانات، نشغل سكريبت يفتح المودال
 
             }
@@ -337,7 +337,7 @@ public partial class Ar_AddAddress : System.Web.UI.Page
                 rptAddresses.DataSource = addr.DefaultView;
                 rptAddresses.DataBind();
             }
-        }        
+        }
         else
         {
             ClientScript.RegisterStartupScript(this.GetType(), "hideDiv", "document.getElementById('emptyLocations').style.display='flex';", true);

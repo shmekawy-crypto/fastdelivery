@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -33,7 +33,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
 
             Places place = new Places();
             place.LoadByPrimaryKey(Convert.ToInt32(Request.QueryString["id"].ToString()));
-            ltBanner.Text = "<img src='" + place.Banner + "'>";
+            ltBanner.Text = "<img src='" + place.Banner + "' onerror=\"this.src='/ar/images/placeholderImage.webp'\">";
             var lang = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
 
             ltlocation.Text = lang == "en" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.NameEn + "-" + area.NameEn + "</a>" :
@@ -56,6 +56,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             if (usr.Ocounts == 0)
             {
                 ltdeliveryFee.Text = "0";
+                ltDeliveryCost.Text = "0";
             }
             else
             {
@@ -69,18 +70,17 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             ltDetails.Text = lang == "en" ? place.DescriptionEn : lang == "ru" ? place.DescriptionRu : place.Description;
 
             ltmincost.Text = place.MinOrder.ToString("F2") + " " + (string)GetGlobalResourceObject("texts", "currency");
-            ltdeliverytime.Text = (place.DeliveredTime + dzone.DeliveredTime).ToString();
+            ltdeliverytime.Text = (dzone.DeliveredTime).ToString();
             imgplace.ImageUrl = place.PhotoPath;
+            imgplace.Attributes.Add("onerror", "this.src='/ar/images/placeholderImage.webp'");
 
             // Rating Stars logic
             double rating = 0;
-            try
-            {
+            try { 
                 object rateObj = place.GetColumn("Rate");
                 if (rateObj != null && rateObj != DBNull.Value)
                     rating = Convert.ToDouble(rateObj);
-            }
-            catch { }
+            } catch { }
 
             string starsHtml = "";
             for (int i = 1; i <= 5; i++)
@@ -117,9 +117,22 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             }
 
             ltIsOpened.Text = isOpened.ToString();
-            ltRawRating.Text = rating.ToString();
+            ltRawRating.Text = rating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
             shopStatusBadge.Attributes["class"] = isOpened == 1 ? "status-badge open" : "status-badge closed";
             shopStatusBadge.InnerText = isOpened == 1 ? (string)GetGlobalResourceObject("texts", "Open") : (string)GetGlobalResourceObject("texts", "Closed");
+
+            // Set Favorite Heart Data Attributes
+            shopHeartIcon.Attributes["data-id"] = place.s_Id;
+            shopHeartIcon.Attributes["data-name"] = place.Name;
+            shopHeartIcon.Attributes["data-name-en"] = place.NameEn;
+            shopHeartIcon.Attributes["data-img"] = "/ar/" + place.PhotoPath;
+            shopHeartIcon.Attributes["data-desc"] = place.Description;
+            shopHeartIcon.Attributes["data-desc-en"] = place.DescriptionEn;
+            shopHeartIcon.Attributes["data-rate"] = rating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+            shopHeartIcon.Attributes["data-is-opened"] = isOpened.ToString();
+            shopHeartIcon.Attributes["data-url"] = Request.Url.PathAndQuery;
+            shopHeartIcon.Attributes["data-delivery-time"] = ltdeliverytime.Text;
+            shopHeartIcon.Attributes["data-delivery-cost"] = ltdeliveryFee.Text;
         }
     }
 
@@ -158,7 +171,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
                 conn.Open();
 
                 // 1. جلب بيانات الصنف الأساسية
-                string itemSql = "SELECT id, Name, Description, PhotoUrl, Price FROM MenuItems WHERE id = @id";
+                string itemSql = "SELECT dbo.MenuItems_Sizes.id AS id, dbo.MenuItems.Name, dbo.MenuItems.Description, dbo.MenuItems.PhotoUrl, dbo.MenuItems.Price FROM dbo.MenuItems INNER JOIN dbo.MenuItems_Sizes ON dbo.MenuItems.id = dbo.MenuItems_Sizes.MenuItems_id WHERE(dbo.MenuItems_Sizes.id = @id)";
                 SqlCommand itemCmd = new SqlCommand(itemSql, conn);
                 itemCmd.Parameters.AddWithValue("@id", itemId);
 
@@ -187,7 +200,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
                         ms.Price
                    FROM MenuItems_Sizes ms
                    INNER JOIN Sizes s ON ms.Size_id = s.id
-                   WHERE ms.MenuItems_id = @id";
+                   WHERE ms.MenuItems_id = (select MenuItems_id from MenuItems_Sizes where id=@id)";
 
                 SqlCommand sizeCmd = new SqlCommand(sizeSql, conn);
                 sizeCmd.Parameters.AddWithValue("@id", itemId);
@@ -209,10 +222,10 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
 
                 // 3. جلب الإضافات المرتبطة بهذا الصنف
                 var extrasList = new List<object>();
-                string extraSql = @"SELECT ex.id, ex.Name, me.Price,ex.PhotoUrl
+                string extraSql = @"SELECT me.id, ex.Name, me.Price,ex.PhotoUrl
                                 FROM MenuItems_Extras me
                                 INNER JOIN Extras ex ON me.Extra_id = ex.id
-                                WHERE me.MenuItem_id = @id";
+                                WHERE me.MenuItem_id = (select MenuItems_id from MenuItems_Sizes where id=@id)";
                 SqlCommand extraCmd = new SqlCommand(extraSql, conn);
                 extraCmd.Parameters.AddWithValue("@id", itemId);
                 SqlDataReader eRdr = extraCmd.ExecuteReader();
@@ -258,9 +271,21 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             {
                 string query = @"
 SELECT
-    mi.id, mi.PlaceID, mi.PrepearMin, mi.MenuID, mi.Name, mi.NameEn, mi.NameRu,
-    mi.Description, mi.DescriptionEn, mi.DescriptionRu,
+    -- الكود المعدل: يجيب معرف الحجم أولاً، وإذا لم يوجد يجيب معرف الصنف الأساسي
+    ISNULL((SELECT TOP 1 id FROM MenuItems_Sizes WHERE MenuItems_id = mi.id), mi.id) AS id,
+    
+    mi.id AS OriginalMenuItemID, -- سبتهولك هنا لو هتحتاجه في أي مكان تاني
+    mi.PlaceID, 
+    mi.PrepearMin, 
+    mi.MenuID, 
+    mi.Name, 
+    mi.NameEn, 
+    mi.NameRu,
+    mi.Description, 
+    mi.DescriptionEn, 
+    mi.DescriptionRu,
     mi.PhotoUrl,
+    
     -- OldPrice: لو فيه أحجام، هات سعر أول حجم، لو مفيش هات سعر الصنف الأساسي
     ISNULL((SELECT TOP 1 Price FROM MenuItems_Sizes WHERE MenuItems_id = mi.id), mi.Price) AS OldPrice,
 
@@ -274,7 +299,14 @@ SELECT
     CASE
         WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1
         ELSE 0
-    END AS isCustom
+    END AS isCustom,
+    
+    -- hasAddons: لو له إضافات أو أحجام متعددة
+    CASE
+        WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1
+        WHEN (SELECT COUNT(*) FROM MenuItems_Extras WHERE MenuItem_id = mi.id) > 0 THEN 1
+        ELSE 0
+    END AS hasAddons
 
 FROM dbo.Menus m
 INNER JOIN dbo.MenuItems mi ON m.id = mi.MenuID

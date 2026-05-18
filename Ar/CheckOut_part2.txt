@@ -1,0 +1,105 @@
+﻿     <link href="css/css_web.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+
+        document.getElementById('btnSaveStorage').addEventListener('click', function () {
+
+            let data = localStorage.getItem("cartItems");
+            let raw = document.getElementById("Deliverycost").textContent;
+
+            // تنظيف الرقم
+            raw = raw.replace(/[^\d.]/g, "");
+            raw = raw.replace(/\.$/, "");
+            let deliveryCost = raw.trim();
+
+            if (!data) {
+                Swal.fire({
+                    title: "السلة فارغة",
+                    icon: "warning"
+                });
+                return;
+            }
+            $("#loader").css("display", "flex");
+            let saveUrl = '<%= ResolveUrl("~/Ar/SaveLocalStorage.aspx/SaveLocalStorage") %>';
+            fetch(saveUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json; charset=utf-8" },
+                body: JSON.stringify({
+                    cart: data,
+                    action: "update",
+                    id: 1,
+                    deliveryCost: deliveryCost
+                })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.d.success) {
+                    localStorage.removeItem("cartItems");
+                    $("#loader").hide();
+                    Swal.fire({
+                        title: "تم ارسال طلبكم بنجاح فى انتظار التنفيذ",
+                        text: result.d.Message || "",
+                        icon: "success",
+                        confirmButtonText: "متابعة"
+                    }).then(sw => {
+                        if (sw.isConfirmed) {
+                            window.location.href = "POrders.aspx";
+                        }
+                    });
+
+                } else {
+                    $("#loader").hide();
+                    Swal.fire({
+                        title: "خطأ",
+                        text: result.d.error,
+                        icon: "error"
+                    });
+                    console.error("Error:", result.d.error);
+                }
+            })
+            .catch(err => {
+                $("#loader").hide();
+                console.error(err);
+                Swal.fire({
+                    title: "خطأ في الاتصال",
+                    text: "حدثت مشكلة أثناء تنفيذ العملية",
+                    icon: "error"
+                });
+            });
+        });
+
+</script>
+    <script>
+        document.getElementById('locbtn').addEventListener('click', function () {
+    // هنا حط رابط الصفحة اللي عايز تظهرها
+    document.getElementById('locationIframe').src = 'AddAddress.aspx';
+    var myModal = new bootstrap.Modal(document.getElementById('locationModal'));
+    myModal.show();
+});
+</script>
+    <div class="modal fade" id="locationModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">اختر موقعك</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-2">
+        <iframe id="locationIframe" src="AddAddress.aspx" 
+                style="width:100%; height:85dvh; min-height: 500px; border:none; -webkit-overflow-scrolling: touch;"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script>
+var locationModal = document.getElementById('locationModal');
+
+locationModal.addEventListener('hidden.bs.modal', function () {
+    // يعيد تحميل الصفحة
+    location.reload();
+});
+</script>
+    
+</asp:Content>
+

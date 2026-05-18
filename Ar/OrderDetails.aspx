@@ -1,23 +1,10 @@
 ﻿<%@ Page Title="تفاصيل الطلب" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="OrderDetails.aspx.cs" Inherits="Ar_OrderDetails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+    تفاصيل الطلب
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-<style>
-    /* تنسيق وقت الحالة في الـ Stepper */
-.step-time {
-    font-size: 9px;
-    color: #999;
-    display: block;
-    margin-top: 2px;
-    font-weight: normal;
-}
-.step-item.completed .step-time {
-    color: #ff9800;
-    font-weight: bold;
-}
-</style>
     <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
     <div class="order-details-wrapper">
         <div class="container" style="max-width: 800px;">
@@ -48,7 +35,67 @@
             </div>
 
             <div class="order-card">
+                <h6 class="fw-bold mb-3" style="border-right: 4px solid #ff9800; padding-right: 10px;">خيارات وتفاصيل الطلب</h6>
+                <div class="row g-3 small">
+                    <asp:PlaceHolder ID="phDeliveryMethodInfo" runat="server" Visible="false">
+                        <div class="col-6 col-md-4">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <span class="text-muted d-block mb-1"><i class="fa fa-truck me-1 text-orange"></i> طريقة التوصيل</span>
+                                <strong class="text-dark"><asp:Literal ID="litDeliveryMethod" runat="server" /></strong>
+                            </div>
+                        </div>
+                    </asp:PlaceHolder>
+                    
+                    <asp:PlaceHolder ID="phPaymentMethodInfo" runat="server" Visible="false">
+                        <div class="col-6 col-md-4">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <span class="text-muted d-block mb-1"><i class="fa fa-credit-card me-1 text-orange"></i> طريقة الدفع</span>
+                                <strong class="text-dark"><asp:Literal ID="litPaymentMethod" runat="server" /></strong>
+                            </div>
+                        </div>
+                    </asp:PlaceHolder>
+
+                    <asp:PlaceHolder ID="phWalletInfo" runat="server" Visible="false">
+                        <div class="col-6 col-md-4">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <span class="text-muted d-block mb-1"><i class="fa fa-wallet me-1 text-orange"></i> رقم المحفظة</span>
+                                <strong class="text-dark"><asp:Literal ID="litWalletNumber" runat="server" /></strong>
+                            </div>
+                        </div>
+                    </asp:PlaceHolder>
+
+                    <asp:PlaceHolder ID="phContactMethodInfo" runat="server" Visible="false">
+                        <div class="col-6 col-md-4">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <span class="text-muted d-block mb-1"><i class="fa fa-comments me-1 text-orange"></i> طريقة التواصل</span>
+                                <strong class="text-dark"><asp:Literal ID="litContactMethod" runat="server" /></strong>
+                            </div>
+                        </div>
+                    </asp:PlaceHolder>
+
+                    <asp:PlaceHolder ID="phODTimeInfo" runat="server" Visible="false">
+                        <div class="col-12 col-md-8">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <span class="text-muted d-block mb-1"><i class="fa fa-clock me-1 text-orange"></i> وقت التوصيل المطلوب</span>
+                                <strong class="text-dark"><asp:Literal ID="litODTime" runat="server" /></strong>
+                            </div>
+                        </div>
+                    </asp:PlaceHolder>
+                </div>
+            </div>
+
+            <div class="order-card">
                 <h6 class="fw-bold mb-4" style="border-right: 4px solid #ff9800; padding-right: 10px;"><asp:Literal runat="server" Text="<%$ Resources:texts, OrderStatusNow %>" /></h6>
+                
+                <asp:PlaceHolder ID="phPrepCountdown" runat="server" Visible="false">
+                    <div class="alert alert-warning text-center mb-4 py-2" style="border-radius: 10px; border: 1px dashed #ff9800; background-color: #fffde6;">
+                        <i class="fa fa-stopwatch fa-spin me-2 text-danger"></i>
+                        <asp:Literal ID="litCountdownLabel" runat="server" />
+                        <span id="countdownTimer" class="fw-bold text-danger" style="font-size: 16px;">--:--</span>
+                        <asp:HiddenField ID="hfSecondsLeft" runat="server" ClientIDMode="Static" />
+                    </div>
+                </asp:PlaceHolder>
+
                 <div class="order-stepper">
                     <asp:Literal ID="litStepperHtml" runat="server" />
                 </div>
@@ -86,11 +133,21 @@
                             <div class="place-name"><i class="fa fa-store fa-store-orange"></i> <%# Eval("PlaceName") %></div>
                             <asp:Repeater ID="rptItems" runat="server">
                                 <ItemTemplate>
-                                    <div class="item-box">
-                                        <img src='<%# Eval("PhotoUrl") %>' class="item-img"/>
-                                        <div class="item-details">
-                                            <p class="item-title"><%# Eval("ItemName") %></p>
+                                    <div class="item-box <%# Convert.ToInt32(Eval("IsExtra")) == 1 ? "extra-row" : "" %>">
+                                        <img src='<%# Eval("PhotoUrl") %>' class="item-img" style='<%# Convert.ToInt32(Eval("IsExtra")) == 1 ? "display:none;" : "" %>' />
+                                        
+                                        <div class="item-details" style='<%# Convert.ToInt32(Eval("IsExtra")) == 1 ? "margin-right: 20px;" : "" %>'>
+                                            <p class="item-title">
+                                                <%# Convert.ToInt32(Eval("IsExtra")) == 1 ? "<span style='color: #28a745; font-weight: bold;'>[إضافة] + </span>" : "" %>
+                                                <%# Eval("ItemName") %>
+                                                
+                                                <%# Convert.ToInt32(Eval("IsExtra")) == 0 && Eval("PrepearMin") != DBNull.Value && Convert.ToInt32(Eval("PrepearMin")) > 0 ? 
+                                                    "<span class='badge bg-light text-dark ms-2 small fw-normal border'><i class='fa fa-clock text-warning me-1'></i>" + Eval("PrepearMin") + " دقيقة</span>" : "" %>
+                                            </p>
                                             <span class="item-meta"><asp:Literal runat="server" Text="<%$ Resources:texts, UnitPrice %>" />: <%# Eval("Price") %> <asp:Literal runat="server" Text="<%$ Resources:texts, Currency %>" /></span>
+                                            
+                                            <%# Eval("Notes") != DBNull.Value && !string.IsNullOrEmpty(Eval("Notes").ToString()) ? 
+                                                "<div class='item-notes mt-1 small text-muted'><i class='fa fa-edit text-warning me-1'></i><span class='fw-bold'>ملاحظات:</span> " + Eval("Notes") + "</div>" : "" %>
                                         </div>
                                         <div class="item-pricing text-start">
                                             <span class="item-qty"><asp:Literal runat="server" Text="<%$ Resources:texts, Quantity %>" />: <%# Eval("Amount") %></span>
@@ -108,10 +165,22 @@
                         <span><asp:Literal runat="server" Text="<%$ Resources:texts, Subtotal %>" /></span>
                         <span class="fw-bold"><asp:Literal ID="litSubTotal" runat="server" /> <asp:Literal runat="server" Text="<%$ Resources:texts, Currency %>" /></span>
                     </div>
+                    <asp:PlaceHolder ID="phRestaurantDiscount" runat="server" Visible="false">
+                        <div class="summary-row text-success">
+                            <span><i class="fa fa-ticket-alt me-1"></i> كوبون خصم المطعم (<asp:Literal ID="litRestPercent" runat="server" />%)</span>
+                            <span class="fw-bold">-<asp:Literal ID="litRestDiscountValue" runat="server" /> <asp:Literal runat="server" Text="<%$ Resources:texts, Currency %>" /></span>
+                        </div>
+                    </asp:PlaceHolder>
                     <div class="summary-row">
                         <span><asp:Literal runat="server" Text="<%$ Resources:texts, DeliveryFees %>" /></span>
                         <span class="fw-bold"><asp:Literal ID="litDeliveryFee" runat="server" /> <asp:Literal runat="server" Text="<%$ Resources:texts, Currency %>" /></span>
                     </div>
+                    <asp:PlaceHolder ID="phDeliveryDiscount" runat="server" Visible="false">
+                        <div class="summary-row text-success">
+                            <span><i class="fa fa-motorcycle me-1"></i> كوبون خصم التوصيل (<asp:Literal ID="litDelivPercent" runat="server" />%)</span>
+                            <span class="fw-bold">-<asp:Literal ID="litDelivDiscountValue" runat="server" /> <asp:Literal runat="server" Text="<%$ Resources:texts, Currency %>" /></span>
+                        </div>
+                    </asp:PlaceHolder>
                     <div class="summary-row total-row">
                         <span><asp:Literal runat="server" Text="<%$ Resources:texts, Total %>" /></span>
                         <span><asp:Literal ID="litGrandTotal" runat="server" /> <asp:Literal runat="server" Text="<%$ Resources:texts, Currency %>" /></span>
@@ -190,6 +259,12 @@
             padding: 15px 0; 
             border-bottom: 1px solid #f8f8f8; 
         }
+        /* ستايل إضافي لتمييز أسطر الإضافات بالخلفية وإزاحة بسيطة للداخل */
+        .item-box.extra-row {
+            background-color: #fafafa;
+            padding-right: 15px;
+            border-right: 3px solid #28a745;
+        }
         .item-img { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; margin-left: 15px; border: 1px solid #eee; }
         .item-details { flex-grow: 1;}
         .item-title { font-weight: bold; color: #333; margin-bottom: 4px; font-size: 14px; }
@@ -213,5 +288,57 @@
 
         /* أيقونة المتجر */
         .fa-store-orange { color: #ffc107; }
+
+        /* لون مخصص للأيقونات الفرعية الجديدة */
+        .text-orange { color: #ff9800 !important; }
+        
+        /* كلاس لإظهار الوقت تحت عنوان الخطوة في الستيبير */
+        .step-time-label { display: block; font-size: 9px; color: #aaa; margin-top: 2px; font-weight: normal; }
+        .step-item.completed .step-time-label { color: #f57c00; }
+        
+        /* تنسيق مخصص لسطر الملاحظات لتظهر بشكل مميز داخل كرت الصنف */
+        .item-notes {
+            background-color: #fff9e6;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            border: 1px solid #ffe699;
+        }
     </style>
-     </asp:Content>
+
+    <script type="text/javascript">
+        var countdownInterval;
+        function initCountdown() {
+            clearInterval(countdownInterval);
+            var hfSeconds = document.getElementById('hfSecondsLeft');
+            if (hfSeconds) {
+                var secondsLeft = parseInt(hfSeconds.value);
+                if (!isNaN(secondsLeft) && secondsLeft > 0) {
+                    countdownInterval = setInterval(function () {
+                        secondsLeft--;
+                        hfSeconds.value = secondsLeft;
+                        
+                        if (secondsLeft <= 0) {
+                            clearInterval(countdownInterval);
+                            document.getElementById('countdownTimer').innerHTML = "00:00";
+                            __doPostBack('<%= tmrRefresh.UniqueID %>', '');
+                        } else {
+                            var mins = Math.floor(secondsLeft / 60);
+                            var secs = secondsLeft % 60;
+                            document.getElementById('countdownTimer').innerHTML = 
+                                (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+                        }
+                    }, 1000);
+                }
+            }
+        }
+
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+            initCountdown();
+        });
+        
+        window.onload = function () {
+            initCountdown();
+        };
+    </script>
+</asp:Content>

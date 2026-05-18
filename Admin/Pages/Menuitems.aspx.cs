@@ -15,13 +15,12 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-           
             BindPlaces();
             BindMenuItems();
             FillSizesDDL();
             FillExtrasDropDownList();
             BindSizesGrid(0); // تحميل جدول الأحجام فارغاً عند أول مرة
-        }
+        }
     }
 
     void FillSizesDDL()
@@ -44,10 +43,10 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            string sql = @"SELECT MS.Size_id AS SizeID, S.Name AS SizeName, MS.Price, MS.DiscountValue 
-                           FROM MenuItems_Sizes MS 
-                           INNER JOIN Sizes S ON MS.Size_id = S.id 
-                           WHERE MS.MenuItems_id = @itemID";
+            string sql = @"SELECT MS.Size_id AS SizeID, S.Name AS SizeName, MS.Price, MS.DiscountValue 
+                           FROM MenuItems_Sizes MS 
+                           INNER JOIN Sizes S ON MS.Size_id = S.id 
+                           WHERE MS.MenuItems_id = @itemID";
 
             SqlCommand cmd = new SqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@itemID", menuItemId);
@@ -74,8 +73,8 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
 
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            string query = @"INSERT INTO Extras (Name, NameEn, NameRu, Price, PhotoUrl) 
-                             VALUES (@Name, @NameEn, @NameRu, @Price, @PhotoUrl)";
+            string query = @"INSERT INTO Extras (Name, NameEn, NameRu, Price, PhotoUrl) 
+                             VALUES (@Name, @NameEn, @NameRu, @Price, @PhotoUrl)";
             using (SqlCommand cmd = new SqlCommand(query, conn))
             {
                 cmd.Parameters.AddWithValue("@Name", txtExtraAr.Text.Trim());
@@ -89,9 +88,9 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 {
                     FillExtrasDropDownList();
                     ScriptManager.RegisterStartupScript(this, GetType(), "CloseModal", @"
-                    $('#modalAddNewExtra').modal('hide');
-                    $('.modal-backdrop').remove();
-                    $('body').removeClass('modal-open');", true);
+                    $('#modalAddNewExtra').modal('hide');
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open');", true);
                 }
             }
         }
@@ -120,19 +119,19 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
         dt.Columns.Add("Name", typeof(string));
         dt.Columns.Add("Price", typeof(decimal));
         dt.Columns.Add("PhotoUrl", typeof(string)); // إضافة هذا السطر
-        ViewState["ExtrasTable"] = dt;
+        ViewState["ExtrasTable"] = dt;
     }
     private string GetPhotoPathFromDB(string extraID)
     {
         string photoPath = "Images/default.png"; // مسار افتراضي في حال لم توجد صورة
 
-        // تأكد من وضع Connection String الخاص بمشروعك هنا
-        string connString = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
+        // تأكد من وضع Connection String الخاص بمشروعك هنا
+        string connString = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
 
         using (SqlConnection conn = new SqlConnection(connString))
         {
-            // افترضنا أن جدول الإضافات اسمه Extras وعمود الصورة اسمه Photo
-            string query = "SELECT PhotoUrl FROM Extras WHERE id = @id";
+            // افترضنا أن جدول الإضافات اسمه Extras وعمود الصورة اسمه Photo
+            string query = "SELECT PhotoUrl FROM Extras WHERE id = @id";
 
             SqlCommand cmd = new SqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@id", extraID);
@@ -143,82 +142,82 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 object result = cmd.ExecuteScalar();
                 if (result != null && result != DBNull.Value)
                 {
-                    photoPath ="ar/"+ result.ToString();
+                    photoPath = "ar/" + result.ToString();
                 }
             }
             catch (Exception ex)
             {
-                // يمكنك تسجيل الخطأ هنا إذا أردت
-            }
+                // يمكنك تسجيل الخطأ هنا إذا أردت
+            }
         }
 
         return photoPath;
     }
     protected void btnAddExtraToList_Click(object sender, EventArgs e)
     {
-        // 1. التحقق من الاختيار وكتابة السعر
-        if (ddlExtras.SelectedValue == "0" || string.IsNullOrEmpty(txtExtraPrice.Text))
+        // 1. التحقق من الاختيار وكتابة السعر
+        if (ddlExtras.SelectedValue == "0" || string.IsNullOrEmpty(txtExtraPrice.Text))
         {
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alert", "alert('من فضلك اختر الإضافة واكتب السعر')", true);
             return;
         }
 
-        // 2. جلب الجدول الحالي من الـ ViewState
-        DataTable dt = (ViewState["ExtrasTable"] != null) ? (DataTable)ViewState["ExtrasTable"] : new DataTable();
+        // 2. جلب الجدول الحالي من الـ ViewState
+        DataTable dt = (ViewState["ExtrasTable"] != null) ? (DataTable)ViewState["ExtrasTable"] : new DataTable();
 
-        // إذا كان الجدول جديداً، نقوم بإنشائه
-        if (dt.Columns.Count == 0)
+        // إذا كان الجدول جديداً، نقوم بإنشائه
+        if (dt.Columns.Count == 0)
         {
             CreateExtrasTable();
             dt = (DataTable)ViewState["ExtrasTable"];
         }
 
-        // 3. الخطوة الأهم: التحقق من عدم التكرار
-        string selectedExtraID = ddlExtras.SelectedValue;
+        // 3. الخطوة الأهم: التحقق من عدم التكرار
+        string selectedExtraID = ddlExtras.SelectedValue;
         foreach (DataRow row in dt.Rows)
         {
-            // نقارن الـ ID المختار بـ Extra_id الموجود في الجدول
-            if (row["Extra_id"].ToString() == selectedExtraID)
+            // نقارن الـ ID المختار بـ Extra_id الموجود في الجدول
+            if (row["Extra_id"].ToString() == selectedExtraID)
             {
                 ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alert", "alert('هذه الإضافة موجودة بالفعل في القائمة')", true);
                 return; // نخرج من الدالة ولا نضيف شيئاً
-            }
+            }
         }
 
-        // 4. إضافة السطر الجديد إذا لم يكن مكرراً
-        DataRow dr = dt.NewRow();
+        // 4. إضافة السطر الجديد إذا لم يكن مكرراً
+        DataRow dr = dt.NewRow();
         dr["Extra_id"] = int.Parse(selectedExtraID);
         dr["Name"] = ddlExtras.SelectedItem.Text;
         dr["Price"] = decimal.Parse(txtExtraPrice.Text);
-        // تأكد من جلب PhotoUrl إذا كنت تحتاجه للعرض، أو اتركه فارغاً مؤقتاً
-        dr["PhotoUrl"] = GetPhotoPathFromDB(selectedExtraID);
+        // تأكد من جلب PhotoUrl إذا كنت تحتاجه للعرض، أو اتركه فارغاً مؤقتاً
+        dr["PhotoUrl"] = GetPhotoPathFromDB(selectedExtraID);
         dt.Rows.Add(dr);
 
-        // 5. حفظ وتحديث العرض
-        ViewState["ExtrasTable"] = dt;
+        // 5. حفظ وتحديث العرض
+        ViewState["ExtrasTable"] = dt;
         gvSelectedExtras.DataSource = dt;
         gvSelectedExtras.DataBind();
 
-        // 6. تفريغ الحقول للاستخدام التالي
-        txtExtraPrice.Text = "";
+        // 6. تفريغ الحقول للاستخدام التالي
+        txtExtraPrice.Text = "";
         ddlExtras.SelectedIndex = 0;
     }
     private void LoadExtrasGrid(int menuItemId)
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            string query = @"SELECT E.Name, ME.Price, ME.Extra_id, ME.id, E.PhotoUrl 
-                 FROM MenuItems_Extras ME
-                 INNER JOIN Extras E ON ME.Extra_id = E.id
-                 WHERE ME.MenuItem_id = @MenuItemId";
+            string query = @"SELECT E.Name, ME.Price, ME.Extra_id, E.PhotoUrl 
+                 FROM MenuItems_Extras ME
+                 INNER JOIN Extras E ON ME.Extra_id = E.id
+                 WHERE ME.MenuItem_id = @MenuItemId";
             SqlCommand cmd = new SqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@MenuItemId", menuItemId);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
 
-            // تحويل البيانات لجدول الإضافات في ViewState لتمكين التعديل/الحذف
-            ViewState["ExtrasTable"] = dt;
+            // تحويل البيانات لجدول الإضافات في ViewState لتمكين التعديل/الحذف
+            ViewState["ExtrasTable"] = dt;
             gvSelectedExtras.DataSource = dt;
             gvSelectedExtras.DataBind();
         }
@@ -228,10 +227,9 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            SqlCommand cmd = new SqlCommand(@"SELECT dbo.Menus.id, dbo.Menus.Name, dbo.Menus.NameEn 
-                                              FROM dbo.Menus 
-                                              INNER JOIN dbo.Places ON dbo.Menus.Categories_id = dbo.Places.Categories_id 
-                                              WHERE dbo.Places.id = @PlaceID ORDER BY name", conn);
+            SqlCommand cmd = new SqlCommand(@"SELECT dbo.Menus.id, dbo.Menus.Name FROM dbo.Menus 
+                                              INNER JOIN dbo.Places ON dbo.Menus.Categories_id = dbo.Places.Categories_id 
+                                              WHERE dbo.Places.id = @PlaceID ORDER BY name", conn);
             cmd.Parameters.AddWithValue("@PlaceID", ddlPlace.SelectedValue);
             conn.Open();
             SqlDataReader dr = cmd.ExecuteReader();
@@ -319,12 +317,12 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
         using (SqlConnection conn = new SqlConnection(connStr))
         {
             string sql = @"
-                SELECT mi.ID, mi.Name, mi.NameEn, mi.NameRu, mi.Description, mi.DescriptionEn, mi.DescriptionRu, 
-                       mi.DiscountValue, mi.IsAvailable, mi.PhotoUrl, mi.PrepearMin, 
-                       m.Name AS MenuName, p.Name AS PlaceName
-                FROM MenuItems mi
-                INNER JOIN Menus m ON mi.MenuID = m.ID
-                INNER JOIN Places p ON mi.PlaceID = p.ID";
+                SELECT mi.ID, mi.Name, mi.NameEn, mi.NameRu, mi.Description, mi.DescriptionEn, mi.DescriptionRu, 
+                       mi.DiscountValue, mi.IsAvailable, mi.PhotoUrl, mi.PrepearMin, 
+                       m.Name AS MenuName, p.Name AS PlaceName
+                FROM MenuItems mi
+                INNER JOIN Menus m ON mi.MenuID = m.ID
+                INNER JOIN Places p ON mi.PlaceID = p.ID";
 
             if (!string.IsNullOrEmpty(search))
                 sql += " WHERE mi.Name LIKE @Search OR mi.Description LIKE @Search";
@@ -345,10 +343,30 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
         if (!Page.IsValid) return;
         string photoPath = hfPhotoPath.Value;
 
-        if (fuPhoto.HasFile)
+        // معالجة الصورة من الـ HiddenField (Base64) بدقة لاستخراج الامتداد الصحيح
+        if (!string.IsNullOrEmpty(hfImageBase64.Value))
+        {
+            try
+            {
+                string b64 = hfImageBase64.Value;
+                // جلب نوع الملف من الـ Header (image/png, image/jpeg, etc.)
+                string header = b64.Substring(0, b64.IndexOf(";"));
+                string extension = "." + header.Substring(header.IndexOf("/") + 1);
+
+                string data = b64.Substring(b64.IndexOf(",") + 1);
+                byte[] bytes = Convert.FromBase64String(data);
+                string fileName = Guid.NewGuid().ToString() + extension;
+                string folderPath = Server.MapPath("~/ar/images/items/");
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+                File.WriteAllBytes(folderPath + fileName, bytes);
+                photoPath = "images/items/" + fileName;
+            }
+            catch { }
+        }
+        else if (fuPhoto.HasFile)
         {
             string ext = Path.GetExtension(fuPhoto.FileName).ToLower();
-            if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif")
+            if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext== ".webp")
             {
                 string fileName = Guid.NewGuid().ToString() + ext;
                 string savePath = Server.MapPath("~/ar/images/items/") + fileName;
@@ -368,19 +386,19 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 if (ViewState["EditID"] != null)
                 {
                     currentID = (int)ViewState["EditID"];
-                    sql = @"UPDATE MenuItems SET MenuID=@MenuID, PlaceID=@PlaceID, Name=@Name, NameEn=@NameEn, NameRu=@NameRu,Price=@Price 
-                        Description=@Desc, DescriptionEn=@DescEn, DescriptionRu=@DescRu,
-                        DiscountValue=@Discount, PhotoUrl=@Photo, 
-                        IsAvailable=@IsAvailable, PrepearMin=@PrepearMin
-                        WHERE ID=@ID";
+                    sql = @"UPDATE MenuItems SET MenuID=@MenuID, PlaceID=@PlaceID, Name=@Name, NameEn=@NameEn, NameRu=@NameRu,Price=@Price, 
+                        Description=@Desc, DescriptionEn=@DescEn, DescriptionRu=@DescRu,
+                        DiscountValue=@Discount, PhotoUrl=@Photo, 
+                        IsAvailable=@IsAvailable, PrepearMin=@PrepearMin
+                        WHERE ID=@ID";
                 }
                 else
                 {
-                    sql = @"INSERT INTO MenuItems (MenuID, PlaceID, Name, NameEn, NameRu, Description, DescriptionEn, DescriptionRu,Price, 
-                        DiscountValue, PhotoUrl, IsAvailable, CreatedAt, PrepearMin)
-                        VALUES (@MenuID, @PlaceID, @Name, @NameEn, @NameRu, @Desc, @DescEn, @DescRu,@Price, 
-                        @Discount, @Photo, @IsAvailable, @CreatedAt, @PrepearMin);
-                        SELECT SCOPE_IDENTITY();";
+                    sql = @"INSERT INTO MenuItems (MenuID, PlaceID, Name, NameEn, NameRu, Description, DescriptionEn, DescriptionRu,Price, 
+                        DiscountValue, PhotoUrl, IsAvailable, CreatedAt, PrepearMin)
+                        VALUES (@MenuID, @PlaceID, @Name, @NameEn, @NameRu, @Desc, @DescEn, @DescRu,@Price, 
+                        @Discount, @Photo, @IsAvailable, @CreatedAt, @PrepearMin);
+                        SELECT SCOPE_IDENTITY();";
                 }
 
                 SqlCommand cmd = new SqlCommand(sql, conn, trans);
@@ -401,8 +419,8 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 if (ViewState["EditID"] != null) { cmd.Parameters.AddWithValue("@ID", currentID); cmd.ExecuteNonQuery(); }
                 else { cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now); currentID = Convert.ToInt32(cmd.ExecuteScalar()); }
 
-                // معالجة الأحجام
-                SqlCommand cmdDelSizes = new SqlCommand("DELETE FROM MenuItems_Sizes WHERE MenuItems_id = @itemID", conn, trans);
+                // معالجة الأحجام
+                SqlCommand cmdDelSizes = new SqlCommand("DELETE FROM MenuItems_Sizes WHERE MenuItems_id = @itemID", conn, trans);
                 cmdDelSizes.Parameters.AddWithValue("@itemID", currentID);
                 cmdDelSizes.ExecuteNonQuery();
                 bool hasSizesAdded = false;
@@ -411,8 +429,8 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 {
                     foreach (DataRow row in dtSizes.Rows)
                     {
-                        SqlCommand cmdSize = new SqlCommand(@"INSERT INTO MenuItems_Sizes (MenuItems_id, Size_id, Price, DiscountValue) 
-                                                              VALUES (@itemID, @sizeID, @price, @disc)", conn, trans);
+                        SqlCommand cmdSize = new SqlCommand(@"INSERT INTO MenuItems_Sizes (MenuItems_id, Size_id, Price, DiscountValue) 
+                                                              VALUES (@itemID, @sizeID, @price, @disc)", conn, trans);
                         cmdSize.Parameters.AddWithValue("@itemID", currentID);
                         cmdSize.Parameters.AddWithValue("@sizeID", row["SizeID"]);
                         cmdSize.Parameters.AddWithValue("@price", row["Price"]);
@@ -426,27 +444,27 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 {
                     int defaultSizeID = 1;
                     decimal defaultPrice = string.IsNullOrEmpty(txtPrice.Text.Trim()) ? 0 : decimal.Parse(txtPrice.Text.Trim());
-                    SqlCommand cmdDefault = new SqlCommand(@"INSERT INTO MenuItems_Sizes (MenuItems_id, Size_id, Price) 
-                                                         VALUES (@itemID, @sizeID, @price)", conn, trans);
+                    SqlCommand cmdDefault = new SqlCommand(@"INSERT INTO MenuItems_Sizes (MenuItems_id, Size_id, Price) 
+                                                         VALUES (@itemID, @sizeID, @price)", conn, trans);
                     cmdDefault.Parameters.AddWithValue("@itemID", currentID);
                     cmdDefault.Parameters.AddWithValue("@sizeID", defaultSizeID);
                     cmdDefault.Parameters.AddWithValue("@price", defaultPrice);
                     cmdDefault.ExecuteNonQuery();
                 }
 
-                // معالجة الإضافات
-                SqlCommand cmdDelExtras = new SqlCommand("DELETE FROM MenuItems_Extras WHERE MenuItem_id = @itemID", conn, trans);
+                // معالجة الإضافات
+                SqlCommand cmdDelExtras = new SqlCommand("DELETE FROM MenuItems_Extras WHERE MenuItem_id = @itemID", conn, trans);
                 cmdDelExtras.Parameters.AddWithValue("@itemID", currentID);
                 cmdDelExtras.ExecuteNonQuery();
 
                 if (ViewState["ExtrasTable"] != null)
                 {
-                    // تحديث الجدول بالقيم المكتوبة في الجريد أولاً
-                    DataTable dtExtras = GetExtrasDataTableFromGrid();
+                    // تحديث الجدول بالقيم المكتوبة في الجريد أولاً
+                    DataTable dtExtras = GetExtrasDataTableFromGrid();
                     foreach (DataRow row in dtExtras.Rows)
                     {
-                        SqlCommand cmdExtra = new SqlCommand(@"INSERT INTO MenuItems_Extras (MenuItem_id, Extra_id, Price) 
-                                                               VALUES (@itemID, @extraID, @price)", conn, trans);
+                        SqlCommand cmdExtra = new SqlCommand(@"INSERT INTO MenuItems_Extras (MenuItem_id, Extra_id, Price) 
+                                                               VALUES (@itemID, @extraID, @price)", conn, trans);
                         cmdExtra.Parameters.AddWithValue("@itemID", currentID);
                         cmdExtra.Parameters.AddWithValue("@extraID", row["Extra_id"]);
                         cmdExtra.Parameters.AddWithValue("@price", row["Price"]);
@@ -455,17 +473,18 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 }
 
                 trans.Commit();
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alert", "alert('تم حفظ البيانات الصنف بنجاح ')", true);
+                ScriptManager.RegisterStartupScript(this, GetType(), "alert", "alert('تم حفظ البيانات الصنف بنجاح ')", true);
                 ClearForm();
                 BindMenuItems(txtSearch.Text.Trim());
             }
             catch (Exception ex)
             {
                 trans.Rollback();
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "error", "alert('خطأ: " + ex.Message.Replace("'", "") + "')", true);
+                ScriptManager.RegisterStartupScript(this, GetType(), "error", "alert('خطأ: " + ex.Message.Replace("'", "") + "')", true);
             }
         }
     }
+
     private DataTable GetExtrasDataTableFromGrid()
     {
         DataTable dt = (DataTable)ViewState["ExtrasTable"];
@@ -473,14 +492,14 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
         {
             foreach (GridViewRow row in gvSelectedExtras.Rows)
             {
-                // بنجيب الـ ID المخفي أو من الـ DataKeys
-                int extraId = Convert.ToInt32(gvSelectedExtras.DataKeys[row.RowIndex].Value);
+                // بنجيب الـ ID المخفي أو من الـ DataKeys
+                int extraId = Convert.ToInt32(gvSelectedExtras.DataKeys[row.RowIndex].Value);
 
-                // بنجيب الـ TextBox اللي فيه السعر
-                TextBox txtPrice = (TextBox)row.FindControl("txtGridPrice");
+                // بنجيب الـ TextBox اللي فيه السعر
+                TextBox txtPrice = (TextBox)row.FindControl("txtGridPriceExtra");
 
-                // بنحدث السطر المقابل في الـ DataTable
-                DataRow[] dr = dt.Select("Extra_id = " + extraId);
+                // بنحدث السطر المقابل في الـ DataTable
+                DataRow[] dr = dt.Select("Extra_id = " + extraId);
                 if (dr.Length > 0)
                 {
                     dr[0]["Price"] = decimal.Parse(txtPrice.Text);
@@ -489,6 +508,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
         }
         return dt;
     }
+
     protected void gvMenuItems_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e.CommandArgument == null || e.CommandArgument.ToString() == "") return;
@@ -526,8 +546,10 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                     txtDescriptionEn.Text = dr["DescriptionEn"].ToString();
                     txtDescriptionRu.Text = dr["DescriptionRu"].ToString();
                     txtDiscount.Text = dr["DiscountValue"].ToString();
+                    txtPrice.Text = dr["Price"].ToString();
                     hfPhotoPath.Value = dr["PhotoUrl"].ToString();
-                    chkAvailable.Checked = (bool)dr["IsAvailable"];
+                    hfImageBase64.Value = ""; // تصفير الـ Base64 الجديد عند البدء بتعديل جديد
+                    chkAvailable.Checked = (bool)dr["IsAvailable"];
                     ViewState["EditID"] = id;
                     btnSave.Text = "تعديل";
                 }
@@ -535,7 +557,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
             }
             BindSizesGrid(id);
             LoadExtrasGrid(id); // تحميل الإضافات عند التعديل
-        }
+        }
     }
 
     void ClearForm()
@@ -552,6 +574,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
         txtDiscount.Text = "0";
         txtPrice.Text = "0";
         hfPhotoPath.Value = "";
+        hfImageBase64.Value = "";
         chkAvailable.Checked = true;
         btnSave.Text = "حفظ";
         ViewState["EditID"] = null;

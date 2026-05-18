@@ -29,15 +29,32 @@ public partial class Ar_POrders : System.Web.UI.Page
 
     private void BindOrders(int userId)
     {
-        // تعديل الاستعلام ليشمل رسوم التوصيل
+        // الاستعلام المعدل لحساب الخصومات كنسب مئوية
         string query = @"
-    SELECT o.id AS OrderID, o.Odate, a.AddressName,
--- هنا جمعنا إجمالي الأصناف من جدول التفاصيل + مصاريف التوصيل من جدول الأوردر
-( (SELECT SUM(od2.Amount * od2.Price) FROM dbo.Order_Details od2 WHERE od2.Order_id = o.id) 
-  + o.DeliveryCost ) AS TotalPrice,
+SELECT o.id AS OrderID, o.Odate, a.AddressName,
+
+-- الحسبة الجديدة الشاملة بناءً على النسب المئوية للخصم
+(
+    -- 1. حساب إجمالي الأصناف مع الإضافات
+    (
+        ISNULL((SELECT SUM(od2.Amount * od2.Price) FROM dbo.Order_Details od2 WHERE od2.Order_id = o.id), 0) + 
+        ISNULL((SELECT SUM(ode.Amount * ode.Price) FROM dbo.Order_Details_Extras ode INNER JOIN dbo.Order_Details od3 ON ode.Order_Detail_id = od3.id WHERE od3.Order_id = o.id), 0)
+    ) 
+    -- تطبيق نسبة خصم المطعم (إذا كان الخصم مخزن كـ 10 يعني 10%)
+    * (1.0 - (ISNULL(o.CoponDiscountR, 0) / 100.0))
+    
+    + 
+    
+    -- 2. حساب مصاريف التوصيل بعد تطبيق نسبة خصم الدليفري
+    (
+        ISNULL(o.DeliveryCost, 0) * (1.0 - (ISNULL(o.CoponDiscountD, 0) / 100.0))
+    )
+) AS TotalPrice,
+
 (SELECT COUNT(DISTINCT mi.PlaceID) FROM dbo.Order_Details od 
- INNER JOIN dbo.MenuItems mi ON od.MenuItems_id = mi.id 
+ INNER JOIN dbo.MenuItems mi ON od.MenuItems_id = mi.id
  WHERE od.Order_id = o.id) AS PlacesCount
+
 FROM dbo.Orders o
 INNER JOIN dbo.Addresses a ON o.Address_id = a.ID
 WHERE a.UserID = @UserID

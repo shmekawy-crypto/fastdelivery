@@ -7,34 +7,8 @@ function handleScroll() {
 
 // ✅ تحديث روابط الأزرار بالعربية
 function updateLoginBtnBehavior() {
-    const storedUser = localStorage.getItem("fastDeliveryUser");
-    const loginBtn = document.getElementById("login-modal-btn");
-
-    // ✅ stop if button not found
-    if (!loginBtn) return;
-
-    // ✅ safely clone and replace button
-    // ✅ safely clone and replace button
-    const clone = loginBtn.cloneNode(true);
-    loginBtn.parentNode.replaceChild(clone, loginBtn);
-
-    const newLoginBtn = document.getElementById("login-modal-btn"); // ✅ get the new element
-    const userDropDown = document.getElementById("userDropDown");
-
-    if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        console.log(`👋 مرحبًا بعودتك يا ${userData.firstName}`);
-
-        // ✅ apply on new element, not old (deleted one!)
-        newLoginBtn.addEventListener("click", () => {
-            if (userDropDown) userDropDown.classList.toggle("showDropDown");
-        });
-
-        if (userDropDown) userDropDown.style.display = "flex";
-    } else {
-        newLoginBtn.addEventListener("click", openModal);
-        if (userDropDown) userDropDown.style.display = "none";
-    }
+    // This logic is now handled by showModal() in MasterPage.master
+    return;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -404,6 +378,7 @@ const removeFormChange = document.getElementById("removeFormChange");
 
 // ✅ Function to show the popup and the correct container
 function openEditor(formName) {
+    if (!dataEditorPopup) return;
     dataEditorPopup.classList.add("is-visible");
     document.body.style.overflow = "hidden";
 
@@ -431,7 +406,7 @@ showEditPopupBtns.forEach((btn) => {
 
 // ✅ Close popup function (with reset)
 function closeEditPopup() {
-    dataEditorPopup.classList.remove("is-visible");
+    if (dataEditorPopup) dataEditorPopup.classList.remove("is-visible");
     document.body.style.overflow = "";
     if (editorForm) editorForm.reset(); // Reset form on close
 }
@@ -442,9 +417,11 @@ if (removeFormChange) removeFormChange.addEventListener("click", closeEditPopup)
 
 // ✅ Close if click outside container
 const dataEditContainer = document.querySelector(".dataEditContainer");
-dataEditorPopup.addEventListener("click", (e) => {
-    if (!dataEditContainer.contains(e.target)) closeEditPopup();
-});
+if (dataEditorPopup) {
+    dataEditorPopup.addEventListener("click", (e) => {
+        if (dataEditContainer && !dataEditContainer.contains(e.target)) closeEditPopup();
+    });
+}
 
 // ✅ Handle form submission
 if (editorForm) {
@@ -545,6 +522,15 @@ function toggleMobileProfileMenu(event) {
     const menu = document.getElementById('mobileProfileMenu');
     if (menu) {
         menu.classList.toggle('show');
+    }
+}
+
+// ✅ Desktop Profile Menu Logic
+function toggleProfileMenu(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('userDropDown');
+    if (menu) {
+        menu.classList.toggle('showDropDown');
     }
 }
 

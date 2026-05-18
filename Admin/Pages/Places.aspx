@@ -556,18 +556,21 @@ $('body').on('shown.bs.modal', '#MyPopup2', function () {
         ValidationExpression="^\d+$" ValidationGroup="Courses" 
         Display="Dynamic" ForeColor="Red"></asp:RegularExpressionValidator>
 </div>
-          		<div class="col-md-3">
-<label class="pull-right">  التقييم   </label>	
-				                    <asp:DropDownList ID="ddlrate" class="form-control input-height"  AppendDataBoundItems="true" runat="server">
-                                                        <asp:ListItem Value="0">0</asp:ListItem>
-                                        <asp:ListItem Value="1">1</asp:ListItem>
-                                        <asp:ListItem Value="2">2</asp:ListItem>
-                                        <asp:ListItem Value="3">3</asp:ListItem>
-                                        <asp:ListItem Value="4">4</asp:ListItem>
-                                        <asp:ListItem Value="5">5</asp:ListItem>
-                                                        </asp:DropDownList>
-										
- </div>	
+
+        <div class="col-md-3">
+    <label class="pull-right"> التقييم (مثلاً: 4.5)</label>    
+    <asp:TextBox ID="txtRate" runat="server" class="form-control" placeholder="0.0"></asp:TextBox>
+    
+    <%-- التأكد من إدخال رقم عشري بين 0 و 5 --%>
+    <asp:RegularExpressionValidator ID="revRate" runat="server" 
+        ControlToValidate="txtRate" 
+        ValidationGroup="Courses" 
+        Display="Dynamic" 
+        ForeColor="Red"
+        ErrorMessage="أرقام فقط (0-5)" 
+        ValidationExpression="^(?:[0-4](?:\.\d+)?|5(?:\.0+)?)$">
+    </asp:RegularExpressionValidator>
+</div>
          <div class="col-md-2">
 	<label>مكان نشط</label>
           

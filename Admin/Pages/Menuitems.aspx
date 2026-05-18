@@ -10,13 +10,54 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
- <script type="text/javascript">
-    
-         Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(function(evt, args) {
-             $('#<%=ddlPlace.ClientID %>').select2();
-             $('#<%=ddlMenu.ClientID %>').select2();
-            });
-   </script>
+<script type="text/javascript">
+    // هذه الدالة تعمل عند تحميل الصفحة لأول مرة، وأيضاً بعد كل عملية Postback (مثل اختيار حجم أو الضغط على تعديل)
+    Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(function(evt, args) {
+        // إعادة تفعيل Select2
+        $('#<%=ddlPlace.ClientID %>').select2();
+        $('#<%=ddlMenu.ClientID %>').select2();
+
+        // --- المنطق الخاص بمعاينة الصورة ---
+        // جلب قيم الحقول المخفية ومكونات المعاينة
+        var hfBase64 = document.getElementById('<%= hfImageBase64.ClientID %>').value;
+        var hfPath = document.getElementById('<%= hfPhotoPath.ClientID %>').value;
+        var preview = $('#imgPreview');
+        var icon = $('.upload-area i');
+
+        // الحالة الأولى: لو المستخدم لسه مختار صورة من جهازه (صورة Base64)
+        if (hfBase64 && hfBase64.trim() !== "") {
+            preview.attr('src', hfBase64).show();
+            icon.hide();
+        } 
+        // الحالة الثانية: لو المستخدم ضغط على زر "تعديل" في الجريد والصورة جاية من قاعدة البيانات
+        else if (hfPath && hfPath.trim() !== "") {
+            // نضع "../" للرجوع من مجلد Pages ثم الدخول لمسار الصورة (ar/images/items/...)
+            preview.attr('src', '../../ar/' + hfPath).show();
+            icon.hide();
+        } 
+        // الحالة الثالثة: إخفاء المعاينة (تسجيل صنف جديد بدون صورة)
+        else {
+            preview.hide();
+            preview.attr('src', '');
+            icon.show();
+        }
+    });
+
+    // دالة تعمل عند اختيار المستخدم لملف (صورة) من جهازه
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // إظهار الصورة وإخفاء الأيقونة
+                $('#imgPreview').attr('src', e.target.result).fadeIn();
+                $('.upload-area i').hide();
+                // حفظ كود الصورة في الـ HiddenField لكي لا تضيع بعد الـ Postback
+                document.getElementById('<%= hfImageBase64.ClientID %>').value = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 <style>
         /* تنسيق بسيط للتابز لضمان مظهر متناسق */
         .nav-tabs { border-bottom: 2px solid #ddd; margin-bottom: 20px; }
@@ -168,6 +209,23 @@
     border: 1px solid #ced4da;
     padding: 4px;
 }
+.upload-area {
+    border: 2px dashed #57c7d4;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background: #fdfdfd;
+    position: relative;
+    cursor: pointer;
+}
+.upload-area i { font-size: 40px; color: #ccc; }
+#imgPreview { max-width: 100%; max-height: 200px; border-radius: 5px; display: none; margin: 0 auto; border: 1px solid #eee; }
+.file-input-hidden {
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    opacity: 0; cursor: pointer;
+}
     </style>
 <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="UpdatePanel1" DisplayAfter="100" DynamicLayout="true">
     <ProgressTemplate>
@@ -304,8 +362,13 @@
                                         <div class="form-group row">
                                             <label class="control-label col-sm-2">الصورة</label>
                                             <div class="col-md-8">
-                                                <asp:FileUpload ID="fuPhoto" runat="server" CssClass="form-control" />
+                                                <div class="upload-area">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                    <img id="imgPreview" src="#" />
+                                                    <asp:FileUpload ID="fuPhoto" runat="server" CssClass="file-input-hidden" onchange="previewImage(this);" />
+                                                </div>
                                                 <asp:HiddenField ID="hfPhotoPath" runat="server" />
+                                                <asp:HiddenField ID="hfImageBase64" runat="server" />
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -465,7 +528,7 @@
             <asp:TemplateField HeaderText="السعر">
                 <ItemTemplate>
                     <div class="input-group input-group-sm" style="width: 100px; margin: 0 auto;">
-                        <asp:TextBox ID="txtGridPrice" runat="server" Text='<%# Eval("Price") %>' 
+                        <asp:TextBox ID="txtGridPriceExtra" runat="server" Text='<%# Eval("Price") %>' 
                             CssClass="form-control grid-input"></asp:TextBox>
                         <span class="input-group-text">ج.م</span>
                     </div>

@@ -13,12 +13,13 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
 {
     [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public static object SaveLocalStorage(string cart, string action, int id = 0, string deliveryCost = null)
+    public static object SaveLocalStorage(string cart, string action, int id = 0, string deliveryCost = null, string paymentMethod = null, string scheduledTime = null, string contactMethod = null, string orderType = null, string payerPhone = null)
     {
         try
         {
             JArray items = string.IsNullOrEmpty(cart) ? new JArray() : JArray.Parse(cart);
             DataTable dt = ConvertJArrayToDataTable(items);
+
 
             if (dt.Rows.Count == 0)
             {
@@ -108,7 +109,7 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
             }
 
             // إذا مرت كل الفحوصات بسلام، نبدأ عملية الحفظ
-            SaveOrderAndDetails(dt, Convert.ToDecimal(deliveryCost));
+            SaveOrderAndDetails(dt, Convert.ToDecimal(deliveryCost), paymentMethod, scheduledTime, contactMethod, orderType, payerPhone);
 
             return new
             {
@@ -145,8 +146,53 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
         return dt;
     }
 
-    public static void SaveOrderAndDetails(DataTable dt, decimal deliveryCost)
+    public static void SaveOrderAndDetails(DataTable dt, decimal deliveryCost, string paymentMethod, string scheduledTime, string contactMethod, string orderType, string payerPhone)
     {
+
+        int paymentMethodInt = 0; // القيمة الافتراضية Cash
+        switch (paymentMethod.ToLower().Trim())
+        {
+            case "cash": paymentMethodInt = 1; break;
+            case "visa": paymentMethodInt = 2; break;
+            case "instapay": paymentMethodInt = 3; break;
+            case "wallet": paymentMethodInt = 4; break;
+            case "vodafone_cash": paymentMethodInt = 5; break;
+            default: paymentMethodInt = 0; break; // لو جه نص غير معروف
+        }
+
+        int contactMethodInt = 0; // القيمة الافتراضية Cash
+        switch (contactMethod.ToLower().Trim())
+        {
+            case "phone": contactMethodInt = 1; break;
+            case "whatsapp": contactMethodInt = 2; break;
+            case "ring_bell": contactMethodInt = 3; break;
+            default: contactMethodInt = 0; break; // لو جه نص غير معروف
+        }
+        int DeliveryMethodInt = 0; // القيمة الافتراضية Cash
+        switch (orderType.ToLower().Trim())
+        {
+            case "delivery": DeliveryMethodInt = 1; break;
+            case "pickup": DeliveryMethodInt = 2; break;
+            case "in-shop": DeliveryMethodInt = 3; break;
+            default: DeliveryMethodInt = 0; break; // لو جه نص غير معروف
+        }
+        object scheduledDateTime = DBNull.Value; // الافتراضي لو فاضي ينزل NULL
+        if (!string.IsNullOrEmpty(scheduledTime) && !string.IsNullOrWhiteSpace(scheduledTime))
+        {
+            TimeSpan timeValue;
+            DateTime parsedDateTime = DateTime.MinValue;
+            // محاولة تحليل الوقت سواء كان مبعوت بصيغة 12 ساعة (PM/AM) أو صيغة 24 ساعة
+            if (TimeSpan.TryParse(scheduledTime, out timeValue) ||
+                DateTime.TryParse(scheduledTime, out parsedDateTime))
+            {
+                // لو تم تحليله كـ DateTime كامل أو كـ وقت فقط، ندمجه مع تاريخ اليوم
+                DateTime finalTime = parsedDateTime != DateTime.MinValue ? parsedDateTime : DateTime.Today.Add(timeValue);
+
+                // التأكد من دمج تاريخ اليوم الحالي مع الوقت المستخرج
+                scheduledDateTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, finalTime.Hour, finalTime.Minute, 0);
+            }
+        }
+
         using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
         {
             con.Open();
@@ -154,34 +200,102 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
             try
             {
                 int newOrderId = 0;
-                // إدخال الطلب الرئيسي
+                // 1. إدخال الطلب الرئيسي في جدول Orders
                 using (SqlCommand cmd = new SqlCommand(@"
-                    INSERT INTO Orders (Address_id, Odate, DeliveryCost, delivered)
-                    VALUES (@Address_id, GETDATE(), @DeliveryCost, 0);
-                    SELECT SCOPE_IDENTITY();", con, trans))
+                INSERT INTO Orders (Address_id, Odate, DeliveryCost, delivered,paymentMethod,contactMethod,DeliveryMethod,WalletNumber,ODTime)
+                VALUES (@Address_id, GETDATE(), @DeliveryCost, 0,@paymentMethod,@contactMethod,@DeliveryMethod,@WalletNumber,@ODTime);
+                SELECT SCOPE_IDENTITY();", con, trans))
                 {
                     cmd.Parameters.AddWithValue("@Address_id", dt.Rows[0]["addid"]);
                     cmd.Parameters.AddWithValue("@DeliveryCost", deliveryCost);
+                    cmd.Parameters.AddWithValue("@paymentMethod", paymentMethodInt);
+                    cmd.Parameters.AddWithValue("@contactMethod", contactMethodInt);
+                    cmd.Parameters.AddWithValue("@DeliveryMethod", DeliveryMethodInt);
+                    cmd.Parameters.AddWithValue("@WalletNumber", payerPhone);
+                    cmd.Parameters.AddWithValue("@ODTime", scheduledDateTime);
+
                     newOrderId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                // إدخال تفاصيل الطلب
+                // 2. إدخال تفاصيل الأصناف والإضافات الخاصة بها
                 foreach (DataRow row in dt.Rows)
                 {
+                    int newDetailId = 0;
+
+                    string sizeId = "";
+                    string sizeName = "";
+
+                    // قراءة عمود الـ customization كـ JSON
+                    string jsonCust = row["customization"] != null ? row["customization"].ToString() : "";
+                    JObject custObj = null;
+
+                    if (!string.IsNullOrEmpty(jsonCust) && jsonCust.Trim().StartsWith("{"))
+                    {
+                        custObj = JObject.Parse(jsonCust);
+
+                        // استخراج بيانات الحجم (Size) بالطريقة المتوافقة مع C# 5
+                        if (custObj["size"] != null && custObj["size"].HasValues)
+                        {
+                            sizeId = custObj["size"]["id"] != null ? custObj["size"]["id"].ToString() : "";
+                            sizeName = custObj["size"]["name"] != null ? custObj["size"]["name"].ToString() : "";
+                        }
+                    }
+
+                    int currentSizeTableId = Convert.ToInt32(row["id"].ToString());
+                    int addressId = Convert.ToInt32(dt.Rows[0]["addid"].ToString());
+                    int currentShopId = Convert.ToInt32(row["shopId"].ToString()); // قراءة الـ shopId مباشرة من السلة
+                    // إدخال الصنف مع ضبط استعلام الـ DeliveryZones ليعمل بربط مباشر وصحيح عن طريق الـ PlaceID للمطعم
                     using (SqlCommand cmd = new SqlCommand(@"
-                        INSERT INTO Order_Details (Order_id, MenuItems_id, amount, price)
-                        VALUES (@Order_id, @MenuItems_id, @amount, @price)", con, trans))
+                    INSERT INTO Order_Details (Order_id, MenuItems_id, amount, price, notes, PrepearMin, DeliveredTime)
+                    VALUES (
+                        @Order_id, 
+                        @MenuItems_id, 
+                        @amount, 
+                        @price, 
+                        @notes,
+                        (SELECT TOP 1 mi.PrepearMin FROM dbo.MenuItems mi INNER JOIN dbo.MenuItems_Sizes mzs ON mi.id = mzs.MenuItems_id WHERE mzs.id = @SizeTableID),
+                     (SELECT TOP 1 dz.DeliveredTime FROM dbo.DeliveryZones dz INNER JOIN dbo.Addresses ad ON dz.Areas_id = ad.Area_id WHERE dz.PlacesID = @PlaceID AND ad.ID = @AddressID)
+                    );
+                    SELECT SCOPE_IDENTITY();", con, trans))
                     {
                         cmd.Parameters.AddWithValue("@Order_id", newOrderId);
-                        cmd.Parameters.AddWithValue("@MenuItems_id", row["id"]);
+                        cmd.Parameters.AddWithValue("@MenuItems_id", currentSizeTableId);
                         cmd.Parameters.AddWithValue("@amount", row["amount"]);
                         cmd.Parameters.AddWithValue("@price", row["price"]);
-                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@notes", row["notes"]);
+                        cmd.Parameters.AddWithValue("@SizeTableID", currentSizeTableId);
+                        cmd.Parameters.AddWithValue("@AddressID", addressId);
+                        cmd.Parameters.AddWithValue("@PlaceID", currentShopId);
+                        newDetailId = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+
+                    // إذا كان هناك تخصيصات (إضافات)، نقوم بقراءتها وحفظها
+                    if (custObj != null)
+                    {
+                        // أولاً: معالجة قائمة الـ upsells
+                        JArray upsells = custObj["upsells"] as JArray;
+                        if (upsells != null)
+                        {
+                            foreach (JObject extraItem in upsells)
+                            {
+                                using (SqlCommand cmdExtra = new SqlCommand(@"
+                                INSERT INTO Order_Details_Extras (Order_Detail_id, MenuItems_Extra_id, price, Amount)
+                                VALUES (@Order_Detail_id, @MenuItems_Extra_id, @price, @Amount)", con, trans))
+                                {
+                                    cmdExtra.Parameters.AddWithValue("@Order_Detail_id", newDetailId);
+                                    cmdExtra.Parameters.AddWithValue("@MenuItems_Extra_id", extraItem["id"] != null ? extraItem["id"].ToString() : "");
+                                    cmdExtra.Parameters.AddWithValue("@price", extraItem["price"] != null ? Convert.ToDecimal(extraItem["price"]) : 0);
+                                    cmdExtra.Parameters.AddWithValue("@Amount", extraItem["qty"] != null ? Convert.ToInt32(extraItem["qty"]) : 1);
+                                    cmdExtra.ExecuteNonQuery();
+                                }
+                            }
+                        }
+
                     }
                 }
                 trans.Commit();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 trans.Rollback();
                 throw;

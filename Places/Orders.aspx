@@ -73,18 +73,6 @@
                     <asp:GridView ID="gvOrders" runat="server" CssClass="table table-hover" AutoGenerateColumns="false" DataKeyNames="id" OnRowCommand="gvOrders_RowCommand" GridLines="None">
                         <Columns>
                             <asp:BoundField DataField="id" HeaderText="#" />
-                            
-                            <asp:TemplateField HeaderText="العميل والعنوان">
-                                <ItemTemplate>
-                                    <div style="font-weight:bold; color:#2c3e50;"><%# Eval("CustomerName") %></div>
-                                    <small><i class="glyphicon glyphicon-phone"></i> <%# Eval("Mobile") %></small><br />
-                                    <small class="text-muted">
-                                        <%# Eval("FullAddress") %> | 
-                                        <b>عمارة <%# Eval("Build") %> - دور <%# Eval("FloorNo") %> - شقة <%# Eval("adepartmentNo") %></b>
-                                    </small>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-
                             <asp:TemplateField HeaderText="توقيت الطلب والقيمة">
                                 <ItemTemplate>
                                     <span class="time-badge"><%# Eval("Odate", "{0:yyyy-MM-dd HH:mm}") %></span><br />

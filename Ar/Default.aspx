@@ -1,132 +1,130 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
- <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, Default_PageTitle %>" />
+    <title><asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, Default_PageTitle %>" /></title>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-   <div id="loader-wrapper">
-    <div class="loader-container">
-        <div class="logo-circle">
-            <img src="images/logo.png" alt="Fast Delivery" class="preloader-logo">
-        </div>
-        <div class="loading-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-</div>
-    
-      <asp:ScriptManager runat="server" ID="ScriptManager1" EnablePageMethods="true" />
+       <asp:ScriptManager runat="server" ID="ScriptManager1" EnablePageMethods="true" />
     <style>
         #map { height: 500px; }
-        .header {
-            background:none !important;
+
+        /* --- New Premium Loader --- */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1a1c2c 0%, #0d0e17 100%);
+            z-index: 999999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+        }
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        .logo-circle {
+            width: 140px;
+            height: 140px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            animation: pulse-logo 2s infinite ease-in-out;
+        }
+        .preloader-logo {
+            width: 85px;
+            height: auto;
+            object-fit: contain;
+        }
+        .loading-dots {
+            display: flex;
+            gap: 10px;
+        }
+        .loading-dots span {
+            width: 12px;
+            height: 12px;
+            background: #ffc107; /* Standard branding color */
+            border-radius: 50%;
+            animation: bounce-dots 1.4s infinite ease-in-out both;
+        }
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes pulse-logo {
+            0%, 100% { transform: scale(1); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+            50% { transform: scale(1.08); box-shadow: 0 20px 45px rgba(0,0,0,0.15); }
+        }
+        @keyframes bounce-dots {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .news-swipr {
+            background: #f5f5f5 !important;
+        }
+
+        @media (max-width:480px){
+                .whatsapp-float {
+                    bottom: 150px !important;
+                }
+
         }
     </style>
-    <style>
-/* الحاوية الرئيسية - تدرج لوني فخم وعميق */
-#loader-wrapper {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    /* تدرج احترافي من الكحلي الغامق جداً للسواد */
-    background: radial-gradient(circle at center, #1a1c2c 0%, #0d0e17 100%);
-    z-index: 999999999;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.8s ease;
-}
 
-.loader-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-}
+    <div id="loader-wrapper">
+        <div class="loader-container">
+            <div class="logo-circle">
+                <img src="images/logo.png" alt="Fast Delivery" class="preloader-logo">
+            </div>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
 
-/* الدائرة المحيطة باللوجو - خلتها بيضاء بس مع "هالة" إضاءة حولها */
-.logo-circle {
-    width: 160px;
-    height: 160px;
-    background: #ffffff;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    /* ظل أصفر خفيف خلف الدائرة يعطي إيحاء بأن اللوجو مضيء */
-    box-shadow: 0 0 50px rgba(255, 193, 7, 0.2);
-    animation: calm-pulse 2s ease-in-out infinite;
-    position: relative;
-}
-
-.logo-circle img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-}
-
-/* ستايل النقط - خليتها بلون اللوجو الأصفر */
-.loading-dots {
-    display: flex;
-    gap: 10px;
-}
-
-.loading-dots span {
-    width: 12px;
-    height: 12px;
-    background-color: #ffc107; /* اللون الأصفر بتاع اللوجو */
-    border-radius: 50%;
-    display: inline-block;
-    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
-    animation: dot-blink 1.4s infinite both;
-}
-
-.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-/* أنيميشن النبض للدائرة */
-@keyframes calm-pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 50px rgba(255, 193, 7, 0.2); }
-    50% { transform: scale(1.05); box-shadow: 0 0 70px rgba(255, 193, 7, 0.3); }
-}
-
-/* أنيميشن النقط */
-@keyframes dot-blink {
-    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
-    40% { opacity: 1; transform: scale(1.2); }
-}
-</style>
     <section class="hero-section" role="region">
         <div class="container">
              <h1>
                 <asp:Literal ID="litHeroTitle" runat="server" Text="<%$ Resources:Texts, Hero_Title %>" />
             </h1>
             <p data-key="hero_desc">
-               
+
                 <asp:Literal ID="litHeroDesc" runat="server" Text="<%$ Resources:Texts, Hero_Desc %>" />
-            
+
             </p>
 
             <div class="search-wrapper">
                 <div class="search-box">
                     <asp:DropDownList ID="ddlAddress"  name="ddlAddress" runat="server" style="width: 100%;"></asp:DropDownList>
- 
+
                     <asp:HiddenField ID="hiddenCoords" runat="server" />
-    
-  <button id="location-btn" type="button" class="btn btn-primary" 
+
+  <button id="location-btn" type="button" class="btn btn-primary"
         >
     <i class="fa fa-map-marker-alt"></i>
 </button>
-                    
+
     <button id="final-search-btn" type="button" aria-label="البحث  في الموقع المحدد">
         <i class="fa fa-search"></i>
     </button>
 </div>
                 <script>
                     document.getElementById("final-search-btn").addEventListener("click", function () {
-                        
+
                         // 1. هات أول ID من الريبيتر
                             const firstLink = document.querySelector(".card-content");
                         if (!firstLink) return; // علشان بس ما نسمعش صريخ
@@ -163,7 +161,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
     }
     .search-box select {
         flex: 1;
-        font-size: 19px;
+        font-size: 20px;
         background: transparent;
         border: none;
         outline: none;
@@ -172,6 +170,15 @@ document.getElementById('location-btn').addEventListener('click', function() {
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
+    }
+    @media(max-width:480px){
+      .search-box select {
+        font-size: 16px !important;
+      }
+       .back-to-top {
+        bottom: 150px !important;
+       }
+
     }
 
     .search-box select option:first-child {
@@ -187,7 +194,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
     }
 
     .search-box i {
-        color: #555;
+        color: white;
     }
 
     .search-box button:hover i {
@@ -199,42 +206,60 @@ document.getElementById('location-btn').addEventListener('click', function() {
         </div>
         <div class="hero-section-fade-out"></div>
     </section>
-    
+
+    <section class="news-swipr">
+        <div class="swiper newsSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="https://np.naukimg.com/cphoto/l45XrkFOujKTaHBdN6PUrTtURaQ/6AFPI5l/k2gAkQqVwFKHFwvhK7u32Kmseoy1Xu1tTnRJRtug8Q2lzX6Wp02NFCPzn2tkSW8b4Mm3yavA7NNZXdbZaFECMd/ZnVDpzp" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb_FiZTdONoWw2NWQ_hk1FBfFb3NIhiWImUA&s" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCL35UgrPqNPxqfmpoEq1ZFvdM7I7bz61B3w&s" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx319C2Cuuz7TXEhCMHcSrpvwcLgqnO2ahzg&s" alt="News Image" />
+                </div>
+            </div>
+        </div>
+    </section>
     <section class="categories-section gray-bg" role="region" aria-labelledby="section_1_title">
         <div class="content-container">
             <h2 id="section_1_title" data-key="section_1_title"> <asp:Literal ID="litSection1Title" runat="server" Text="<%$ Resources:Texts, Section1_Title %>" />
 </h2>
             <div class="categories-grid">
-       
+
 
                 <asp:Repeater ID="rptCategory" runat="server">
                     <ItemTemplate>
                         <div class="category-card" role="link" tabindex="0">
                     <div class="category-card-bg" style="background-image: url('<%# Eval("PhotoPath") %>');"></div>
-                      
+
                            <a id="placeLink" href='<%# "Places.aspx?id=" + Eval("id") + "&addid=" + ddlAddress.SelectedValue %>' runat="server" class="card-content" data-id='<%# Eval("id") %>'>
 
-                        <h3 style="font-size: 30px;"><%# 
-        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" 
-        ? DataBinder.Eval(Container.DataItem, "NameEn") 
+                        <h3 style="font-size: 30px;"><%#
+        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en"
+        ? DataBinder.Eval(Container.DataItem, "NameEn")
         : System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "ru"
           ? DataBinder.Eval(Container.DataItem, "NameRu")
           : DataBinder.Eval(Container.DataItem, "Name")
     %></h3>
-                        <p data-key="grocery_summary"><%# 
-        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" 
-        ? DataBinder.Eval(Container.DataItem, "DescrEn") 
+                        <p data-key="grocery_summary"><%#
+        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en"
+        ? DataBinder.Eval(Container.DataItem, "DescrEn")
         : System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "ru"
           ? DataBinder.Eval(Container.DataItem, "DescrRu")
           : DataBinder.Eval(Container.DataItem, "DescrAr")
     %></p>
-                    
+
                                </a>
                 </div>
 
                     </ItemTemplate>
                 </asp:Repeater>
-                
+
             </div>
         </div>
     </section>
@@ -311,7 +336,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
     </div>
   </div>
 </div>
-            
+
     <script >
         document.getElementById('<%= ddlAddress.ClientID %>').addEventListener("change", function () {
             const addid = this.value;
@@ -445,7 +470,7 @@ function reverseGeocode(latlng) {
         <button type="button" class="close-btn" data-bs-dismiss="modal"><i class="fa fa-times"></i></button>
       </div>
       <div class="modal-body p-2">
-        <iframe id="locationIframe" src="AddAddress.aspx" 
+        <iframe id="locationIframe" src="AddAddress.aspx"
                 style="width:100%; height:85dvh; min-height: 500px; border:none; -webkit-overflow-scrolling: touch;"></iframe>
       </div>
     </div>
@@ -477,28 +502,17 @@ locationModal.addEventListener('hidden.bs.modal', function () {
 }*/
     </style>
 
-    <script>
-    (function () {
-        const loader = document.getElementById('loader-wrapper');
-        if (!loader) return;
-        if (!sessionStorage.getItem('isLoaderShown')) {
-            loader.style.display = 'flex';
-            window.addEventListener('load', function () {
-                // زودنا المدة هنا لـ 3000 ملي ثانية (3 ثوانٍ)
-                setTimeout(function () {
-                    loader.style.opacity = '0';
-                    setTimeout(function () {
-                        loader.style.display = 'none';
-                    }, 1000); // وقت الاختفاء التدريجي
-                }, 5000); 
-            });
 
-            sessionStorage.setItem('isLoaderShown', 'true');
-        } else {
-            loader.style.display = 'none';
-        }
-    })();
-</script>
+    <script>
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader-wrapper');
+            if (loader) {
+                setTimeout(() => {
+                    loader.classList.add('loader-hidden');
+                }, 1200);
+            }
+        });
+    </script>
 </asp:Content>
 
 

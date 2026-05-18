@@ -80,8 +80,8 @@ public partial class Delivery_Register : System.Web.UI.Page
         if (fu.HasFile)
         {
             string ext = Path.GetExtension(fu.FileName);
-            string path = string.Format("~/Delivery/Uploads/Drivers/{0}_{1}{2}", prefix, id, ext);
-            fu.SaveAs(Server.MapPath(path));
+            string path = string.Format("Delivery/Uploads/Drivers/{0}_{1}{2}", prefix, id, ext);
+            fu.SaveAs(Server.MapPath("~/" + path));
             return path;
         }
         return "";

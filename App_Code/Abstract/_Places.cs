@@ -182,7 +182,7 @@ namespace DMS
             {
                 get
                 {
-                    return new SqlParameter("@Rate", SqlDbType.Int, 0);
+                    return new SqlParameter("@Rate", SqlDbType.Decimal, 0);
                 }
             }
 
@@ -515,15 +515,15 @@ namespace DMS
             }
         }
 
-        public virtual int Rate
+        public virtual decimal Rate
         {
             get
             {
-                return base.Getint(ColumnNames.Rate);
+                return base.Getdecimal(ColumnNames.Rate);
             }
             set
             {
-                base.Setint(ColumnNames.Rate, value);
+                base.Setdecimal(ColumnNames.Rate, value);
             }
         }
 
@@ -782,14 +782,14 @@ namespace DMS
         {
             get
             {
-                return this.IsColumnNull(ColumnNames.Rate) ? string.Empty : base.GetintAsString(ColumnNames.Rate);
+                return this.IsColumnNull(ColumnNames.Rate) ? string.Empty : base.GetdecimalAsString(ColumnNames.Rate);
             }
             set
             {
                 if (string.Empty == value)
                     this.SetColumnNull(ColumnNames.Rate);
                 else
-                    this.Rate = base.SetintAsString(ColumnNames.Rate, value);
+                    this.Rate = base.SetdecimalAsString(ColumnNames.Rate, value);
             }
         }
 
@@ -2085,5 +2085,3 @@ namespace DMS
         }
     }
 }
-
-

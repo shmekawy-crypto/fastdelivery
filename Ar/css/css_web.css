@@ -1,5 +1,5 @@
 :root {
-  --fd-blue: #ffc119;
+  --fd-blue: #e8ae0e;
   --fd-dark: #333;
   --fd-light-gray: #f5f5f5;
   --fd-white: #fff;
@@ -16,7 +16,9 @@
   height: 6px;
 
 }
-
+p {
+    margin: 0;
+}
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
@@ -75,20 +77,53 @@ a {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 6px 50px;
-  background: linear-gradient(135deg, #fffbe6 0%, #ffffff 0%, #fffbe6 10%);
+  background: var(--fd-blue) !important;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
   transition: background-color 0.3s, box-shadow 0.3s;
+  overflow: visible !important;
 }
 
-
 .header.scrolled {
-  background: var(--fd-white);
-  border-bottom: 1px solid #eee;
+  background: var(--fd-blue) !important;
+  border-bottom: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.header .nav-links a {
+  color: white !important;
+  font-weight: 700;
+}
+
+.header .nav-links a:hover {
+  color: #ffe0b2 !important;
+}
+
+.header .lang-btn {
+  background: white !important;
+  border: none !important;
+  color: var(--fd-dark) !important;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header .lang-btn:hover {
+  background: #f5f5f5 !important;
+  transform: scale(1.05);
+}
+
+.header .icon-btn {
+  background-color: white !important;
+  border: none !important;
+  color: var(--fd-dark) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header .icon-btn:hover {
+  background-color: #f5f5f5 !important;
+  transform: scale(1.05);
 }
 
 
@@ -1624,7 +1659,65 @@ overflow: initial;
   /* max-height: 280px; */
   padding-bottom: 1rem;
 }
+.addons-badge.suggestion-badge {
+    background: #fffdf0;
+    color: #d4a017;
+    border: 1px dashed #ffc119;
+    opacity: 0.9;
+}
 
+.addons-badge, .notes-badge {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 26px;
+    transition: transform 0.2s, background 0.2s;
+}
+.addons-badge {
+    font-size: 0.7rem;
+    color: #ffc119;
+    background: #fff9e6;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-top: 3px;
+    display: inline-flex;
+    width: fit-content;}
+
+
+    .cartItemAmountHandlers {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 2px !important;
+}
+.cartItemAmountHandlers {
+    background-color: white;
+    padding: 0.125rem;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    overflow: hidden;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+.cartItemAmountHandlers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 4px;
+    margin: 0;
+    min-width: 85px;
+    gap: 6px;}
 
 #cartHolder {
   display: flex;
@@ -1635,7 +1728,7 @@ overflow: initial;
   width: 100%;
   position: sticky;
   isolation: isolate;
-  top: 100px;
+  top: 125px;
   height: fit-content;
 }
 
@@ -1970,7 +2063,7 @@ body:has(#openedShopFoods) #cartShower {
   gap: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
   text-align: center;
-  padding: 0.5rem;
+  padding:1rem 0.5rem;
   font-size: 0.75rem;
   align-items: center;
   justify-content: space-between;
@@ -1991,7 +2084,6 @@ body:has(#openedShopFoods) #cartShower {
 
 .cartItemAmountHandlers {
   background-color: white;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0.125rem;
   font-size: 0.8rem;
   border-radius: 0.25rem;
@@ -2152,7 +2244,7 @@ body:has(#openedShopFoods) #cartShower {
 
   /* ** نهاية التعديل ** */
   .hero-section h1 {
-    font-size: 38px;
+    font-size: 28px;
   }
 
   .hero-section p {
@@ -2285,7 +2377,7 @@ body:has(#openedShopFoods) #cartShower {
   }
 
   .userProfileField form {
-    padding-right: 0px !important;
+    padding-inline: 0px !important;
   }
 
   .profileContainer {
@@ -2525,11 +2617,6 @@ body:has(#openedShopFoods) #cartShower {
     display: none !important;
   }
 
-  .orderLabels,
-  .orderStats {
-    grid-template-columns: repeat(6, 1fr) !important;
-  }
-
 }
 
 
@@ -2653,17 +2740,6 @@ body:has(#openedShopFoods) #cartShower {
 
   #cartHolder {
     border-radius: 0 !important;
-  }
-
-  .orderName {
-    grid-column: span 2 !important;
-    justify-content: center;
-    text-align: center !important;
-  }
-
-  .orderLabels,
-  .orderStats {
-    grid-template-columns: repeat(6, 1fr) !important;
   }
 }
 
@@ -3128,3 +3204,62 @@ html[dir="ltr"] {
 .header i {
   pointer-events: none;
 }
+
+/* Tailwind compatibility styles for user wave SVG */
+.relative {
+  position: relative;
+}
+.block {
+  display: block;
+}
+.w-\[calc\(100\%\+1\.3px\)\] {
+  width: calc(100% + 1.3px);
+}
+.h-\[50px\] {
+  height: 50px;
+}
+
+@media (min-width: 768px) {
+  .md\:h-\[80px\] {
+    height: 80px;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 575px) {
+  .xs\:hidden {
+    display: none !important;
+  }
+  .xs\:block {
+    display: block !important;
+  }
+}
+
+@media (min-width: 576px) {
+  .hidden.xs\:block {
+    display: none !important;
+  }
+}
+
+.svg-wave {
+  position: absolute;
+  bottom: -40px; /* slightly overlap to avoid any tiny 1px line gaps */
+  left: 0;
+  width: 100%;
+  height: 40px;
+  transform: rotate(180deg);
+  pointer-events: none;
+  z-index: 99;
+}
+
+@media(max-width:480px){
+  .svg-wave {
+    top: 80px;
+  }
+
+}
+
+

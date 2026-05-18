@@ -34,14 +34,14 @@ using System.Configuration;
                 // 2. الحصول على حالة الحساب
                 int status = Convert.ToInt32(dr["Status"]);
 
-                if (status == 1)
+                if (status == 2)
                 {
                     // الحالة 1 تعني أن الحساب نشط وتم تأكيده
                     Session["DriverID"] = dr["DriverID"].ToString();
                     Session["DriverName"] = dr["DriverName"].ToString();
                     Response.Redirect("CurrentTask.aspx");
                 }
-                else if (status == 2)
+                else if (status == 1)
                 {
                     // الحالة 2 تعني أن الحساب قيد المراجعة (Pending)
                     lblError.Text = "حسابك لا يزال قيد المراجعة من قبل الإدارة، يرجى المحاولة لاحقاً.";

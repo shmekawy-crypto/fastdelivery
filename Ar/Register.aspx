@@ -1,7 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Register.aspx.cs" Inherits="Ar_Register" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Register.aspx.cs" Inherits="Ar_Register" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-    <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, PageTitle %>"></asp:Literal>
+    <title><asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, PageTitle %>"></asp:Literal></title>
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
@@ -222,6 +222,24 @@
     var modal = new bootstrap.Modal(document.getElementById('pageModal'));
     modal.show();
   }
+  document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.showPassword').forEach(function(toggle) {
+          toggle.style.cursor = 'pointer';
+          toggle.addEventListener('click', function() {
+              var wrapper = toggle.closest('.password-input-wrapper');
+              if (!wrapper) return;
+              var input = wrapper.querySelector('input[type="password"], input[type="text"]');
+              if (!input) return;
+              if (input.type === 'password') {
+                  input.type = 'text';
+                  toggle.textContent = 'إخفاء';
+              } else {
+                  input.type = 'password';
+                  toggle.textContent = 'إظهار';
+              }
+          });
+      });
+  });
 </script>
         </div>
       </div>

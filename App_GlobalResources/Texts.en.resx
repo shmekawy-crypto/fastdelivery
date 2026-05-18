@@ -828,6 +828,18 @@
   <data name="Pickup" xml:space="preserve">
     <value>Pickup</value>
   </data>
+  <data name="InShop" xml:space="preserve">
+    <value>In-Shop</value>
+  </data>
+  <data name="InShopMethodTitle" xml:space="preserve">
+    <value>In-Shop Order</value>
+  </data>
+  <data name="EatInShop" xml:space="preserve">
+    <value>Eat In-Shop</value>
+  </data>
+  <data name="InShopSummaryMsg" xml:space="preserve">
+    <value>We are not responsible if you miss or do not show up at the restaurant</value>
+  </data>
   <data name="DeliveryFeeLabel" xml:space="preserve">
     <value>Delivery Fee:</value>
   </data>

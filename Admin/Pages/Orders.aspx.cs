@@ -32,7 +32,7 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
         using (SqlConnection conn = new SqlConnection(connStr))
         {
             // تأكد أن جدول DeliveryMen موجود عندك وبهذه الأعمدة
-            string sql = "SELECT DriverID, DriverName FROM DeliveryMen WHERE Status = 1";
+            string sql = "SELECT DriverID, DriverName FROM DeliveryMen WHERE Status = 2";
             SqlDataAdapter da = new SqlDataAdapter(sql, conn);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -93,9 +93,39 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
 
     #endregion
 
+    #region "أكواد تحويل الثوابت الرقمية إلى نصوص"
+
+    public string GetPaymentMethodName(object methodId)
+    {
+        if (methodId == DBNull.Value || methodId == null) return "غير محدد";
+
+        switch (methodId.ToString())
+        {
+            case "1": return "كاش (عند الاستلام)";
+            case "2": return "محفظة إلكترونية";
+            case "3": return "فيزا / ماستر كارد";
+            default: return "أخرى";
+        }
+    }
+
+    public string GetContactMethodName(object methodId)
+    {
+        if (methodId == DBNull.Value || methodId == null) return "غير محدد";
+
+        switch (methodId.ToString())
+        {
+            case "1": return "اتصال هاتفي";
+            case "2": return "واتساب";
+            case "3": return "عبر التطبيق";
+            default: return "أخرى";
+        }
+    }
+
+    #endregion
+
     #region "أكوادك الأصلية كما هي"
 
-    
+
     protected void Accepted_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox chkbox = (CheckBox)sender;
@@ -204,14 +234,24 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
     {
         BindOrders();
     }
+    public string GetDeliveryMethodName(object methodId)
+    {
+        if (methodId == DBNull.Value || methodId == null) return "غير محدد";
 
+        switch (methodId.ToString())
+        {
+            case "1": return "توصيل للمنزل (Delivery)";
+            case "2": return "استلام من المطعم (Takeaway)";
+            default: return "أخرى";
+        }
+    }
     private void BindOrders()
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
             conn.Open();
 
-            // الكويري يجمع بيانات الطلب، العميل، العنوان، ويحسب الإجماليات وأوقات التنفيذ
+            // الكويري يجمع بيانات الطلب، العميل، العنوان، ويحسب الإجماليات وأوقات التنفيذ مع الحقول المضافة حديثاً
             string query = @"
             SELECT 
                 o.id, 
@@ -230,9 +270,18 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
                 o.PreparedTime, 
                 o.InWayTime, 
                 o.DeliveredTime,
-                -- حساب الوقت المستغرق بالدقائق من لحظة القبول حتى التسليم
                 DATEDIFF(MINUTE, o.AcceptedTime, o.DeliveredTime) AS TotalTime,
-                CAST(o.Odate AS DATE) AS Odate
+                CAST(o.Odate AS DATE) AS Odate,
+                o.DeliveryMethod,
+                o.PaymentMethod,
+                o.TransferPhoto,
+                o.WalletNumber,
+                ISNULL(o.CoponDiscountR, 0) AS CoponDiscountR,
+                ISNULL(o.CoponDiscountD, 0) AS CoponDiscountD,
+                o.CoponDiscountRU,
+                o.CoponDiscountDU,
+                o.ODTime,
+                o.ContactMethod
             FROM Orders o
             INNER JOIN Order_Details od ON o.id = od.Order_id
             INNER JOIN Addresses addr ON o.Address_id = addr.ID
@@ -272,7 +321,9 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             GROUP BY 
                 o.id, u.Name, u.Lname, g.Name, a.Name, o.DeliveryCost, 
                 o.Delivered, o.Accepted, o.Prepared, o.InWay, o.DriverID, 
-                o.AcceptedTime, o.PreparedTime, o.InWayTime, o.DeliveredTime, o.Odate
+                o.AcceptedTime, o.PreparedTime, o.InWayTime, o.DeliveredTime, o.Odate,
+                o.PaymentMethod, o.TransferPhoto, o.WalletNumber, o.CoponDiscountR,
+                o.CoponDiscountD, o.CoponDiscountRU, o.CoponDiscountDU, o.ODTime, o.ContactMethod,o.DeliveryMethod
             ORDER BY o.id DESC";
 
             cmd.CommandText = query;

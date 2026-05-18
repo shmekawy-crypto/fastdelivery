@@ -159,7 +159,7 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
         ddlGov.SelectedValue = area.s_Gov_id;
         BindAreas();
         ddlArea.SelectedValue = Place.s_Areas_id;
-        ddlrate.SelectedValue = Place.s_Rate;
+        txtRate.Text = Place.s_Rate;
         txtAddress.Text = Place.Address;
         txtDescription.Text = Place.Description;
         txtDescriptionEn.Text = Place.DescriptionEn;
@@ -252,7 +252,9 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
         Place.DescriptionEn = txtDescriptionEn.Text.Trim();
         Place.DescriptionRu = txtDescriptionRu.Text.Trim();
         Place.DeliveredTime = Convert.ToInt32(txtDeliveredTime.Text);
-        Place.Rate = Convert.ToInt32(ddlrate.SelectedValue);
+        decimal rate = 0;
+        decimal.TryParse(txtRate.Text, out rate);
+        Place.Rate = rate;
         Place.Areas_id = Convert.ToInt32(ddlArea.SelectedValue);
         if (Session["fs"] != null)
         {

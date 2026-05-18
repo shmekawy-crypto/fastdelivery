@@ -29,16 +29,24 @@ public partial class Admin_Pages_OrdersDetails : System.Web.UI.Page
         {
             conn.Open();
 
-            // أضفنا mi.PrepearMin في الاستعلام
-            string query = @"
+            // تعديل الاستعلام للربط بجدول الأحجام وجلب الإضافات مجمعة لكل صنف
+            string query = @"
                 SELECT od.id, od.Order_id, p.Name AS Place, p.Address AS PlaceAddress, a.Name AS Area, g.Name AS Gov,
-                       m.Name AS Menu, mi.Name AS Item, mi.PrepearMin, od.Amount, od.Price, od.Amount * od.Price AS total,
+                       m.Name AS Menu, mi.Name + ' (' + sz.Name + ')' AS Item, mi.PrepearMin, od.Amount, od.Price, od.Amount * od.Price AS total,
                        u.Name AS Fname, u.Lname, addr.AddressName, addr.Mobile, addr.phone, addr.AType, 
                        addr.StreetName, addr.Build, addr.FloorNo, addr.adepartmentNo, addr.Instructions,
                        Gov_1.Name AS UGov, Areas_1.Name AS UArea, o.DeliveryCost,
-                       addr.Latitude, addr.Longitude
+                       addr.Latitude, addr.Longitude,
+                       (SELECT STUFF((SELECT ', ' + ex.Name + ' (' + CAST(ode.Price AS VARCHAR) + ')'
+                               FROM Order_Details_Extras ode
+                               JOIN MenuItems_Extras mie ON ode.MenuItems_Extra_id = mie.id
+                               JOIN Extras ex ON mie.Extra_id = ex.id
+                               WHERE ode.Order_Detail_id = od.id
+                               FOR XML PATH('')), 1, 2, '')) AS Extras
                 FROM Order_Details od
-                INNER JOIN MenuItems mi ON od.MenuItems_id = mi.id
+                INNER JOIN MenuItems_Sizes mis ON od.MenuItems_id = mis.id
+                INNER JOIN MenuItems mi ON mis.MenuItems_id = mi.id
+                INNER JOIN Sizes sz ON mis.Size_id = sz.id
                 INNER JOIN Menus m ON mi.MenuID = m.id
                 INNER JOIN Places p ON mi.PlaceID = p.id
                 INNER JOIN Areas a ON p.Areas_id = a.id
@@ -63,38 +71,38 @@ public partial class Admin_Pages_OrdersDetails : System.Web.UI.Page
             return;
         }
 
-        // --- بيانات العميل ---
-        var rowCustomer = dt.Rows[0];
+        // --- بيانات العميل ---
+        var rowCustomer = dt.Rows[0];
         string custName = string.Format("{0} {1}", rowCustomer["Fname"], rowCustomer["Lname"]);
         string fullAddress = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",
-            rowCustomer["AddressName"], rowCustomer["StreetName"], rowCustomer["Build"],
-            rowCustomer["FloorNo"], rowCustomer["adepartmentNo"], rowCustomer["Instructions"],
-            rowCustomer["UArea"], rowCustomer["UGov"]);
+          rowCustomer["AddressName"], rowCustomer["StreetName"], rowCustomer["Build"],
+          rowCustomer["FloorNo"], rowCustomer["adepartmentNo"], rowCustomer["Instructions"],
+          rowCustomer["UArea"], rowCustomer["UGov"]);
 
         Label lblCustomer = new Label();
         lblCustomer.Text = string.Format(
-            "<div class='alert alert-secondary'>" +
-            "<div><strong>العميل:</strong> {0}</div>" +
-            "<div><strong>الموبايل:</strong> {1}</div>" +
-            "<div><strong>العنوان:</strong> {2}</div>" +
-            "</div><div id='map' style='height: 300px; margin-top:10px;'></div>",
-            custName, rowCustomer["Mobile"], fullAddress
+          "<div class='alert alert-secondary'>" +
+          "<div><strong>العميل:</strong> {0}</div>" +
+          "<div><strong>الموبايل:</strong> {1}</div>" +
+          "<div><strong>العنوان:</strong> {2}</div>" +
+          "</div><div id='map' style='height: 300px; margin-top:10px;'></div>",
+          custName, rowCustomer["Mobile"], fullAddress
         );
         phPlaces.Controls.Add(lblCustomer);
 
-        // سكربت الخريطة
-        string mapScript = string.Format(@"
-            <script>
-            window.onload = function() {{
-                var map = L.map('map').setView([{0}, {1}], 16);
-                L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png').addTo(map);
-                L.marker([{0}, {1}]).addTo(map).bindPopup('<b>{2}</b>').openPopup();
-            }};
-            </script>", rowCustomer["Latitude"], rowCustomer["Longitude"], custName.Replace("'", "\\'"));
+        // سكربت الخريطة
+        string mapScript = string.Format(@"
+            <script>
+            window.onload = function() {{
+                var map = L.map('map').setView([{0}, {1}], 16);
+                L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png').addTo(map);
+                L.marker([{0}, {1}]).addTo(map).bindPopup('<b>{2}</b>').openPopup();
+            }};
+            </script>", rowCustomer["Latitude"], rowCustomer["Longitude"], custName.Replace("'", "\\'"));
         ltMapScript.Text = mapScript;
 
-        // --- التقسيم حسب المكان والعرض في GridView ---
-        var grouped = dt.AsEnumerable().GroupBy(r => new {
+        // --- التقسيم حسب المكان والعرض في GridView ---
+        var grouped = dt.AsEnumerable().GroupBy(r => new {
             Place = r.Field<string>("Place"),
             Address = r.Field<string>("PlaceAddress"),
             Area = r.Field<string>("Area"),
@@ -107,19 +115,22 @@ public partial class Admin_Pages_OrdersDetails : System.Web.UI.Page
         {
             phPlaces.Controls.Add(new Literal
             {
-                Text = string.Format("<div class='mt-4'><h5><i class='fa-solid fa-shop'></i> {0} ({1})</h5></div>", grp.Key.Place, grp.Key.Area)
+                Text = string.Format("<div class='place-header'><h5><i class='fa-solid fa-shop'></i> {0} ({1})</h5></div>", grp.Key.Place, grp.Key.Area)
             });
 
-            GridView gv = new GridValueConfigurator();
+            GridValueConfigurator gv = new GridValueConfigurator();
             gv.CssClass = "table table-bordered table-hover";
             gv.AutoGenerateColumns = false;
             gv.ShowFooter = true;
 
-            // الأعمدة
-            gv.Columns.Add(new BoundField { HeaderText = "الصنف", DataField = "Item" });
+            // الأعمدة
+            gv.Columns.Add(new BoundField { HeaderText = "الصنف", DataField = "Item" });
 
-            // عمود وقت التحضير المخصص
-            TemplateField prepField = new TemplateField();
+            // عمود الإضافات الجديد
+            gv.Columns.Add(new BoundField { HeaderText = "الإضافات", DataField = "Extras", NullDisplayText = "بدون" });
+
+            // عمود وقت التحضير المخصص
+            TemplateField prepField = new TemplateField();
             prepField.HeaderText = "وقت التحضير";
             prepField.ItemTemplate = new PrepTimeTemplate();
             gv.Columns.Add(prepField);
@@ -138,17 +149,17 @@ public partial class Admin_Pages_OrdersDetails : System.Web.UI.Page
             if (gv.FooterRow != null)
             {
                 gv.FooterRow.Cells[0].Text = "إجمالي المكان:";
-                gv.FooterRow.Cells[4].Text = totalPerPlace.ToString("N2");
+                gv.FooterRow.Cells[5].Text = totalPerPlace.ToString("N2");
             }
 
             phPlaces.Controls.Add(gv);
         }
 
-        // المجموع النهائي
-        decimal deliveryCost = Convert.ToDecimal(rowCustomer["DeliveryCost"]);
+        // المجموع النهائي
+        decimal deliveryCost = Convert.ToDecimal(rowCustomer["DeliveryCost"]);
         phPlaces.Controls.Add(new Literal
         {
-            Text = string.Format("<div class='alert alert-success mt-3'><strong>الصافي المطلوب: {0:N2} ج.م</strong></div>", grandTotal + deliveryCost)
+            Text = string.Format("<div class='alert alert-success mt-3'><strong>الصافي المطلوب (شامل التوصيل): {0:N2} ج.م</strong></div>", grandTotal + deliveryCost)
         });
     }
 }
@@ -166,8 +177,8 @@ public class PrepTimeTemplate : ITemplate
             if (mins > 0)
             {
                 lit.Text = string.Format(
-                    "<span style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-clock-rotate-left'></i> {0} دقيقة</span>",
-                    mins);
+                  "<span style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-clock-rotate-left'></i> {0} دقيقة</span>",
+                  mins);
             }
             else
             {
@@ -180,3 +191,4 @@ public class PrepTimeTemplate : ITemplate
 
 // كلاس مساعد لتسهيل إعداد الـ GridView برمجياً
 public class GridValueConfigurator : GridView { }
+

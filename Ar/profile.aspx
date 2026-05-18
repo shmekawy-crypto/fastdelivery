@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="Ar_profile" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="Ar_profile" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-    <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources: texts, AccountInfoPageTitle %>"></asp:Literal>
+    <title><asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources: texts, AccountInfoPageTitle %>"></asp:Literal></title>
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
@@ -20,8 +20,15 @@
         <article class="profileContainer">
             <ul class="profileSettings">
                 <li class="active"><a href="profile.aspx"><asp:Literal ID="litAccountInfo" runat="server" Text="<%$ Resources: texts, AccountInfo %>"></asp:Literal></a></li>
+                <li><a href="Favorites.aspx"><asp:Literal ID="litFav" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal></a></li>
                 <li><a href="Addresses.aspx"><asp:Literal ID="litAddresses" runat="server" Text="<%$ Resources: texts, Addresses %>"></asp:Literal></a></li>
                 <li><a href="POrders.aspx"><asp:Literal ID="litOrders" runat="server" Text="<%$ Resources: texts, Orders %>"></asp:Literal></a></li>
+                <li class="logout-item">
+                    <asp:LinkButton ID="lblogout_profile" runat="server" OnClick="lblogout_Click" OnClientClick="localStorage.removeItem('cartItems');">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <asp:Literal ID="litLogoutProfile" runat="server" Text="<%$ Resources:Texts, Logout %>" />
+                    </asp:LinkButton>
+                </li>
             </ul>
 
             <div class="Uform">
@@ -109,6 +116,12 @@
 </script>
                 <center>
                     <asp:Button ID="btnSave" runat="server" Text='<%$ Resources: texts, Update %>' class="login-button" OnClick="btnSave_Click" />
+                    <div class="logout-btn-wrapper" style="margin-top: 20px;">
+                         <asp:LinkButton ID="btnLogoutMain" runat="server" OnClick="lblogout_Click" class="logout-link" OnClientClick="localStorage.removeItem('cartItems');">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <asp:Literal ID="litLogoutMain" runat="server" Text="<%$ Resources:Texts, Logout %>" />
+                        </asp:LinkButton>
+                    </div>
                 </center>
             </div>
         </article>
@@ -286,7 +299,7 @@ const removeFormChange = document.getElementById("removeFormChange");
 
 // ✅ Function to show the popup and the correct container
 function openEditor(formName) {
-  
+
   dataEditorPopup.classList.add("is-visible");
   document.body.style.overflow = "hidden";
 
@@ -310,7 +323,7 @@ showEditPopupBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     const formName =
       btn.id === "changeEmail" ? "emailEditor" : "passwordEditor";
-    
+
     openEditor(formName);
   });
 });
@@ -501,7 +514,8 @@ if (editorForm) {
   list-style-type: none;
   border-left: 1px solid rgba(0, 0, 0, 0.2);
   height: fit-content;
-
+position: sticky;
+    top: 100px;
   li {
     padding: 10px;
     transition: 0.3s color ease;
@@ -545,7 +559,7 @@ if (editorForm) {
   gap: 1.25rem;
   input {
     border-radius: 0.25rem;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.2rem 1rem;
     width: 100%;
     max-width: 300px;
@@ -563,7 +577,7 @@ if (editorForm) {
     border-radius: 2rem;
     padding: 0.5rem 1rem;
     font-size: 0.75rem;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: transparent;
     transition: var(--transition);
     font-weight: bold;
@@ -640,11 +654,11 @@ input[type="radio"]:checked + label {
 input[type="radio"] {
   width: 150px;
 }
-         
+
         .gender-selection input[type="radio"] {
             display: none;
         }
-      
+
 .birthday {
   position: relative;
   isolation: isolate;
@@ -654,7 +668,7 @@ input[type="radio"] {
     position: absolute;
     left: 0.5rem;
     top: 0.5rem;
-    width: 16px;
+    width: 14px;
   }
 }
 
@@ -794,13 +808,46 @@ input[type="radio"] {
 }
 
 
+.logout-item {
+    margin-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 10px !important;
+}
+.logout-item a {
+    color: #ff4d4d !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+.logout-item a:hover {
+    color: #d32f2f !important;
+    background: #fff5f5;
+}
+.logout-link {
+    color: #ff4d4d;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 30px;
+    border: 2px solid #ff4d4d;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+.logout-link:hover {
+    background-color: #ff4d4d;
+    color: white !important;
+}
     </style>
-    
+
     <style>
         .radio-buttons {
             display: flex;
             gap: 10px;
         }
+
         .radio-buttons input[type="radio"] {
             display: none;
         }
@@ -834,8 +881,24 @@ input[type="radio"] {
   transition: background-color 0.2s !important;
   margin: 10px 0 5px !important;
 }
-    </style>
+
+@media (max-width: 480px) {
+
+  .radio-buttons{
+  flex-wrap: wrap;
+
+}
+  .radio-buttons label{
+    border-radius: 0.5rem !important;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+  </style>
+
         <style>
+
 
     .validator-error {
         display: flex;
@@ -856,12 +919,6 @@ input[type="radio"] {
         from { opacity: 0; transform: translateY(-3px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    .header {
-   
-    background: linear-gradient(135deg, #fffbe6 0%, #ffffff 0%, #fffbe6 10%) !important;
-  
-}
-  
 </style>
 </asp:Content>
 

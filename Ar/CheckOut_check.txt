@@ -1,0 +1,41 @@
+﻿                body: JSON.stringify({
+                    cart: data,
+                    action: "update",
+                    id: 1,
+                    deliveryCost: deliveryCost
+                })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.d.success) {
+                    localStorage.removeItem("cartItems");
+                    $("#loader").hide();
+                    Swal.fire({
+                        title: "تم ارسال طلبكم بنجاح فى انتظار التنفيذ",
+                        text: result.d.Message || "",
+                        icon: "success",
+                        confirmButtonText: "متابعة"
+                    }).then(sw => {
+                        if (sw.isConfirmed) {
+                            window.location.href = "POrders.aspx";
+                        }
+                    });
+
+                } else {
+                    $("#loader").hide();
+                    Swal.fire({
+                        title: "خطأ",
+                        text: result.d.error,
+                        icon: "error"
+                    });
+                    console.error("Error:", result.d.error);
+                }
+            })
+            .catch(err => {
+                $("#loader").hide();
+                console.error(err);
+                Swal.fire({
+                    title: "خطأ في الاتصال",
+                    text: "حدثت مشكلة أثناء تنفيذ العملية",
+                    icon: "error"
+                });

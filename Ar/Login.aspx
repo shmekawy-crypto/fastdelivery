@@ -128,11 +128,25 @@
         </div>
     </div>
         <script>
-           
-</script>
-        
-
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.showPassword').forEach(function(toggle) {
+                    toggle.style.cursor = 'pointer';
+                    toggle.addEventListener('click', function() {
+                        var wrapper = toggle.closest('.password-input-wrapper');
+                        if (!wrapper) return;
+                        var input = wrapper.querySelector('input[type="password"], input[type="text"]');
+                        if (!input) return;
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            toggle.textContent = 'إخفاء';
+                        } else {
+                            input.type = 'password';
+                            toggle.textContent = 'إظهار';
+                        }
+                    });
+                });
+            });
+        </script>
     </form>
-     <script src="js/main.js" defer></script>
 </body>
 </html>

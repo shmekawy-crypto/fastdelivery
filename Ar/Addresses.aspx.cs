@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,7 +19,7 @@ public partial class Ar_Addresses : System.Web.UI.Page
         {
             LoadGovernments();
             BindGrid();
-            
+
         }
     }
     void LoadGovernments()
@@ -44,7 +44,7 @@ public partial class Ar_Addresses : System.Web.UI.Page
             ddlArea.Items.Insert(0, new ListItem(GetLiteralText("SelectArea"), "0"));
         }
     }
-    
+
     [System.Web.Services.WebMethod]
     public static List<ListItem> GetAreasByGov(int govID, string lang)
     {
@@ -76,7 +76,7 @@ public partial class Ar_Addresses : System.Web.UI.Page
     }
     protected string GetLiteralText(string key)
     {
-        
+
         return (string)GetGlobalResourceObject("texts", key);
     }
     //protected void ddlGov_SelectedIndexChanged(object sender, EventArgs e)
@@ -103,7 +103,7 @@ public partial class Ar_Addresses : System.Web.UI.Page
     void LoadAreas(int govID, DropDownList ddl = null)
     {
 
-       
+
         HttpCookie langCookie = Request.Cookies["lang"];
         string lang = (langCookie != null && !string.IsNullOrEmpty(langCookie.Value)) ? langCookie.Value : "ar";
 
@@ -133,10 +133,10 @@ public partial class Ar_Addresses : System.Web.UI.Page
             BindGrid();
         }catch(Exception ex)
         {
-       
+
 
         }
-      
+
     }
     private void ShowSweetAlert(string message, string icon)
     {
@@ -164,7 +164,7 @@ public partial class Ar_Addresses : System.Web.UI.Page
                 ViewState["id"] = int.Parse(e.CommandArgument.ToString());
                 FillEditForm(id);
                 // بعد ما نملأ البيانات، نشغل سكريبت يفتح المودال
-               
+
             }
 
         }
@@ -208,7 +208,7 @@ public partial class Ar_Addresses : System.Web.UI.Page
         ddlArea.SelectedValue = addr.s_Area_id;
         hfSelectedArea.Value= addr.s_Area_id;
         building.Text = addr.Build;
-        hiddenCoords.Value = addr.Latitude + "," + addr.Longitude;      
+        hiddenCoords.Value = addr.Latitude + "," + addr.Longitude;
         instructions.Text = addr.Instructions;
         ClientScript.RegisterStartupScript(this.GetType(), "openModalz", "document.getElementById('fgrdata').style.display='block';document.getElementById('emptyLocations').style.display='none';document.getElementById('locationSetBtns').style.display = 'flex';document.getElementById('map2').style.display = 'none';document.getElementById('map').style.display='none';document.getElementById('locationFormShower').style.display='block'; ", true);
         ClientScript.RegisterStartupScript(this.GetType(), "openModal", @"
@@ -223,7 +223,7 @@ public partial class Ar_Addresses : System.Web.UI.Page
         ClientScript.RegisterStartupScript(this.GetType(), "FixLeafletMap",
     "setTimeout(function(){ if(window.map) map.invalidateSize(); }, 200);", true);
         ClientScript.RegisterStartupScript(this.GetType(), "openModaljj",
-"openMap("+ addr.Latitude+ ","+ addr.Longitude + ");", true);        
+"openMap("+ addr.Latitude+ ","+ addr.Longitude + ");", true);
     }
 
     protected void EditAddress_Click(object sender, EventArgs e)

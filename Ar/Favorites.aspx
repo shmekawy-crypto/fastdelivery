@@ -1,6 +1,6 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Favorites.aspx.cs" Inherits="Ar_Favorites" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-    <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal>
+    <title><asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal></title>
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
@@ -36,10 +36,12 @@
 <script>
 function generateStars(rating) {
     let starsHtml = '';
-    const r = parseInt(rating) || 0;
+    const r = parseFloat(rating) || 0;
     for (let i = 1; i <= 5; i++) {
         if (i <= r) {
             starsHtml += `<i class="fa-solid fa-star" style="color:#FFD700; font-size: 0.8rem;"></i>`;
+        } else if (i - 0.5 <= r) {
+            starsHtml += `<i class="fa-solid fa-star-half-stroke" style="color:#FFD700; font-size: 0.8rem;"></i>`;
         } else {
             starsHtml += `<i class="fa-regular fa-star" style="color:#FFD700; font-size: 0.8rem;"></i>`;
         }
@@ -52,7 +54,9 @@ function loadFavorites() {
     const container = document.getElementById('favoritesContainer');
     const isEn = document.documentElement.lang === 'en';
 
-    if (favorites.length === 0) {
+    const filtered = favorites.filter(shop => shop.name || shop.nameEn);
+
+    if (filtered.length === 0) {
         const emptyMsg = isEn ? 'No favorite shops found.' : '\u0644\u0645 \u064A\u062A\u0645 \u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 \u0645\u062D\u0644\u0627\u062A \u0645\u0641\u0636\u0644\u0629.';
         container.innerHTML = `<h3 style="text-align:center; padding: 20px;">${emptyMsg}</h3>`;
         return;
@@ -61,7 +65,7 @@ function loadFavorites() {
     container.innerHTML = '<div class="allAvailableShops" style="width:100%;"></div>';
     const list = container.querySelector('.allAvailableShops');
 
-    favorites.forEach(shop => {
+    filtered.forEach(shop => {
         // Sanitize data: remove any characters outside common ASCII and Arabic ranges
         const sanitize = (str) => {
             if (typeof str !== 'string') return str || '';
@@ -73,7 +77,7 @@ function loadFavorites() {
             return isNaN(p) ? (price || '0.00') : p.toFixed(2);
         };
 
-        const name = sanitize((isEn && shop.nameEn) ? shop.nameEn : shop.name) || (isEn ? 'Unnamed Shop' : '\u0645\u062D\u0644 \u0628\u062F\u0648\u0646 \u0627\u0633\u0645');
+        const name = sanitize((isEn && shop.nameEn) ? shop.nameEn : shop.name);
         const desc = sanitize((isEn && shop.descEn) ? shop.descEn : shop.desc) || '';
         const statusClass = shop.isOpened == "1" ? "status-badge open" : "status-badge closed";
 
@@ -102,8 +106,9 @@ function loadFavorites() {
                         <h3 class="availableShopName">${name}</h3>
                         <span class="${statusClass}">${statusText}</span>
                     </div>
-                    <div class="shopRating" style="margin-block: 10px;">
+                    <div class="shopRating" style="margin-block: 10px; display: flex; align-items: center; gap: 5px;">
                         ${generateStars(shop.rate)}
+                        <span class="rating-number">(${parseFloat(shop.rate || 0).toFixed(1)})</span>
                     </div>
                     <p class="shopFoods">${desc}</p>
                     <div class="shopDelivery">
@@ -117,22 +122,7 @@ function loadFavorites() {
     });
 }
 
-function toggleFavorite(event, element) {
-    event.preventDefault();
-    event.stopPropagation();
 
-    const shopId = element.getAttribute('data-id');
-    let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-    const index = favorites.findIndex(f => f.id === shopId);
-
-    if (index !== -1) {
-        // Remove from favorites
-        favorites.splice(index, 1);
-        localStorage.setItem('favoriteShops', JSON.stringify(favorites));
-        // Refresh the list
-        loadFavorites();
-    }
-}
 
 document.addEventListener('DOMContentLoaded', loadFavorites);
 </script>
@@ -142,36 +132,45 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
 .allAvailableShops {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 20px;
+    gap: 1.5rem;
+    padding: 10px;
 }
 .availableShop {
-    display: flex;
-    /* flex-wrap: wrap; */
+    display: flex !important;
     gap: 1rem !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-bottom: 1rem;
-    transition: background 0.3s;
+    padding: 1.5rem !important;
+    background: white !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.05) !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    color: inherit !important;
 }
 .availableShop:hover {
-    background: #f9f9f9;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    border-color: var(--fd-blue) !important;
 }
 .availableShopName {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--fd-blue);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #222;
     margin: 0;
 }
 .shopFoods {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: #666;
     margin: 5px 0;
+    line-height: 1.5;
 }
 .shopDelivery {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     font-size: 0.85rem;
     color: #444;
+    font-weight: 600;
+    margin-top: 10px;
 }
 .status-badge {
     padding: 4px 12px;
@@ -190,13 +189,34 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
     color: #c62828;
     border: 1px solid #ffcdd2;
 }
+
+.favorite-heart {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    color: #ff4d4f;
+    cursor: pointer;
+}
+
 @media (max-width:480px){
     .availableShop{
-        flex-direction: column;
-        gap: 0.3rem !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
     }
     .shop-img-wrapper{
-        margin: auto;
+        width: 100% !important;
+        height: 180px !important;
+    }
+    .availableShopName {
+        font-size: 1.1rem;
     }
 }
 </style>

@@ -62,7 +62,9 @@
                 <asp:Label ID="lblMessage" runat="server" CssClass="text-danger mb-3 d-block"></asp:Label>
 
                 <div class="table-responsive">
-                    <asp:GridView ID="gvSchedules" runat="server" AutoGenerateColumns="False" CssClass="table table-striped table-bordered"
+                    <asp:GridView ID="gvSchedules" runat="server" AutoGene
+                        
+                        Columns="False" CssClass="table table-striped table-bordered"
                         DataKeyNames="Id,DayId" OnRowEditing="gvSchedules_RowEditing" OnRowCancelingEdit="gvSchedules_RowCancelingEdit"
                         OnRowUpdating="gvSchedules_RowUpdating" OnRowDeleting="gvSchedules_RowDeleting">
                         <Columns>

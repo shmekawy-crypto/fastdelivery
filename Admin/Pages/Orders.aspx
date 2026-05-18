@@ -49,7 +49,7 @@ overflow: hidden;
 .bs4-aspnet-pager table td, .bs4-aspnet-pager table th, .card .bs4-aspnet-pager table td, .card .bs4-aspnet-pager table th, .card .dataTable td, .card .dataTable th {
     padding: 0px 5px;
     vertical-align: middle;
-}       
+}        
    .bs4-aspnet-pager a,
 .bs4-aspnet-pager span {
 position: relative;
@@ -134,16 +134,6 @@ padding: 0;
     $('body').on('shown.bs.modal', '#MyPopup', function () {
         $('input:visible:enabled:first', this).focus();
     })
-        <%--function ShowImagePreview(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#<%=ImgPrv.ClientID%>').prop('src', e.target.result)
-                       
-                };
-                reader.readAsDataURL(input.files[0]);
-                }
-        }--%>
 	 
  </script>
        
@@ -223,100 +213,122 @@ padding: 0;
                                 <asp:BoundField DataField="total" HeaderText="المجموع" DataFormatString="{0:N2}" />
                                 <asp:BoundField DataField="DeliveryCost" HeaderText="تكلفة التوصيل" DataFormatString="{0:N2}" />
                                 <asp:BoundField DataField="net" HeaderText="الصافي" DataFormatString="{0:N2}" />
-                                <asp:TemplateField HeaderText="المندوب">
+                                
+                                <asp:TemplateField HeaderText="تفاصيل الدفع والطلب">
     <ItemTemplate>
-        <asp:HiddenField ID="hfOrderID" Value='<%# Eval("id") %>' runat="server" />
-        <asp:DropDownList ID="ddlDrivers" runat="server" CssClass="form-control" 
-            AutoPostBack="true" OnSelectedIndexChanged="ddlDrivers_SelectedIndexChanged" 
-            AppendDataBoundItems="true" style="min-width:120px;">
-            <asp:ListItem Text="اختر المندوب" Value="0"></asp:ListItem>
-        </asp:DropDownList>
-    </ItemTemplate>
-</asp:TemplateField>
-                                <asp:TemplateField HeaderText="تم التسليم">
-    <ItemTemplate>
-        <%# Convert.ToBoolean(Eval("Delivered")) 
-                ? "<i class='fa fa-check text-success'></i>" 
-                : "<i class='fa fa-times text-danger'></i>" %>
-    </ItemTemplate>
-</asp:TemplateField>
-                                <asp:TemplateField HeaderText="مقبول">
-            <EditItemTemplate>
-                <asp:CheckBox ID="CheckBox1Accepted" runat="server" Checked='<%# Bind("Accepted") %>'  />
-            </EditItemTemplate>
-            <ItemTemplate>
-                           <asp:HiddenField ID="hfAccepted" Value='<%# Bind("id") %>'  runat="server"/>
-		        <label class="switchToggle">
-                                                     <asp:CheckBox ID="CheckBoxAccepted"  runat="server" Checked='<%# Bind("Accepted") %>'   AutoPostBack="true"  OnCheckedChanged="Accepted_CheckedChanged" />
-                                                                      <span class="slider green round"></span>
-                                            </label>
-
-            </ItemTemplate>
-        </asp:TemplateField>
-                                <asp:TemplateField HeaderText="جارى التحضير">
-            <EditItemTemplate>
-                <asp:CheckBox ID="CheckBoxPrepared" runat="server" Checked='<%# Bind("Prepared") %>'  />
-            </EditItemTemplate>
-            <ItemTemplate>
-                           <asp:HiddenField ID="hfPrepared" Value='<%# Bind("id") %>'  runat="server"/>
-		        <label class="switchToggle">
-                                                     <asp:CheckBox ID="ChPrepared"  runat="server" Checked='<%# Bind("Prepared") %>'   AutoPostBack="true"  OnCheckedChanged="Prepared_CheckedChanged" />
-                                                                      <span class="slider green round"></span>
-                                            </label>
-
-            </ItemTemplate>
-        </asp:TemplateField>
-                                <asp:TemplateField HeaderText="فى الطريق">
-            <EditItemTemplate>
-                <asp:CheckBox ID="CheckBox1InWay" runat="server" Checked='<%# Bind("InWay") %>'  />
-            </EditItemTemplate>
-            <ItemTemplate>
-                           <asp:HiddenField ID="hfInWay" Value='<%# Bind("id") %>'  runat="server"/>
-		        <label class="switchToggle">
-                                                     <asp:CheckBox ID="ChInWay"  runat="server" Checked='<%# Bind("InWay") %>'   AutoPostBack="true"  OnCheckedChanged="InWay_CheckedChanged" />
-                                                                      <span class="slider green round"></span>
-                                            </label>
-
-            </ItemTemplate>
-        </asp:TemplateField>
-                                <asp:TemplateField HeaderText="تم التسليم">
-            <EditItemTemplate>
-                <asp:CheckBox ID="CheckBox1" runat="server" Checked='<%# Bind("Delivered") %>'  />
-            </EditItemTemplate>
-            <ItemTemplate>
-                           <asp:HiddenField ID="hf" Value='<%# Bind("id") %>'  runat="server"/>
-		        <label class="switchToggle">
-                                                     <asp:CheckBox ID="CheckBox2"  runat="server" Checked='<%# Bind("Delivered") %>'   AutoPostBack="true"  OnCheckedChanged="CheckBox1_CheckedChanged" />
-                                                                      <span class="slider green round"></span>
-                                            </label>
-
-            </ItemTemplate>
-        </asp:TemplateField>
-                                <asp:TemplateField HeaderText="تتبع وقت التنفيذ">
-    <ItemTemplate>
-        <div style="font-size: 11px; line-height: 1.6; min-width: 150px; text-align: right;">
-            <span class="text-muted">القبول:</span> <%# Eval("AcceptedTime", "{0:HH:mm}") %><br />
-            <span class="text-muted">التحضير:</span> <%# Eval("PreparedTime", "{0:HH:mm}") %><br />
-            <span class="text-muted">خروج:</span> <%# Eval("InWayTime", "{0:HH:mm}") %><br />
-            <span class="text-muted">التسليم:</span> <%# Eval("DeliveredTime", "{0:HH:mm}") %>
-          <hr style="margin: 2px 0;" />
-            <span class="badge badge-primary">
-                <%# Eval("TotalTime") != DBNull.Value ? "استغرق: " + Eval("TotalTime") + " دقيقة" : "قيد التنفيذ..." %>
-            </span>
+        <div style="font-size: 11px; line-height: 1.5; text-align: right; min-width: 140px;">
+            <span class="text-muted">طريقة الاستلام:</span> <%# GetDeliveryMethodName(Eval("DeliveryMethod")) %><br />
+            <span class="text-muted">طريقة الدفع:</span> <%# GetPaymentMethodName(Eval("PaymentMethod")) %><br />
+            <span class="text-muted">رقم المحفظة:</span> <%# Eval("WalletNumber") != DBNull.Value ? Eval("WalletNumber") : "-" %><br />
+            <span class="text-muted">طريقة التواصل:</span> <%# GetContactMethodName(Eval("ContactMehod")) %><br />
+            <span class="text-muted">ميعاد الاستلام:</span> <%# Eval("ODTime", "{0:yyyy-MM-dd HH:mm}") %><br />
+            <asp:HyperLink ID="lnkPhoto" runat="server" NavigateUrl='<%# Eval("TransferPhoto") %>' Target="_blank" Visible='<%# Eval("TransferPhoto") != DBNull.Value && !string.IsNullOrEmpty(Eval("TransferPhoto").ToString()) %>' CssClass="badge badge-warning mt-1">عرض الإيصال</asp:HyperLink>
         </div>
     </ItemTemplate>
 </asp:TemplateField>
+                                <asp:TemplateField HeaderText="كوبونات الخصم">
+                                    <ItemTemplate>
+                                        <div style="font-size: 11px; line-height: 1.5; text-align: right; min-width: 150px;">
+                                            <span class="text-muted">كوبون المطعم:</span> <%# Eval("CoponDiscountRU") != DBNull.Value ? Eval("CoponDiscountRU") : "-" %> (<%# Eval("CoponDiscountR") %>% )<br />
+                                            <span class="text-muted">كوبون الدليفرى:</span> <%# Eval("CoponDiscountDU") != DBNull.Value ? Eval("CoponDiscountDU") : "-" %> (<%# Eval("CoponDiscountD") %>% )
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="المندوب">
+                                    <ItemTemplate>
+                                        <asp:HiddenField ID="hfOrderID" Value='<%# Eval("id") %>' runat="server" />
+                                        <asp:DropDownList ID="ddlDrivers" runat="server" CssClass="form-control" 
+                                            AutoPostBack="true" OnSelectedIndexChanged="ddlDrivers_SelectedIndexChanged" 
+                                            AppendDataBoundItems="true" style="min-width:120px;">
+                                            <asp:ListItem Text="اختر المندوب" Value="0"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="تم التسليم">
+                                    <ItemTemplate>
+                                        <%# Convert.ToBoolean(Eval("Delivered")) 
+                                                ? "<i class='fa fa-check text-success'></i>" 
+                                                : "<i class='fa fa-times text-danger'></i>" %>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="مقبول">
+                                    <EditItemTemplate>
+                                        <asp:CheckBox ID="CheckBox1Accepted" runat="server" Checked='<%# Bind("Accepted") %>'  />
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                                   <asp:HiddenField ID="hfAccepted" Value='<%# Bind("id") %>'  runat="server"/>
+		                                <label class="switchToggle">
+                                                             <asp:CheckBox ID="CheckBoxAccepted"  runat="server" Checked='<%# Bind("Accepted") %>'   AutoPostBack="true"  OnCheckedChanged="Accepted_CheckedChanged" />
+                                                                      <span class="slider green round"></span>
+                                                    </label>
+
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="جارى التحضير">
+                                    <EditItemTemplate>
+                                        <asp:CheckBox ID="CheckBoxPrepared" runat="server" Checked='<%# Bind("Prepared") %>'  />
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                                   <asp:HiddenField ID="hfPrepared" Value='<%# Bind("id") %>'  runat="server"/>
+		                                <label class="switchToggle">
+                                                             <asp:CheckBox ID="ChPrepared"  runat="server" Checked='<%# Bind("Prepared") %>'   AutoPostBack="true"  OnCheckedChanged="Prepared_CheckedChanged" />
+                                                                      <span class="slider green round"></span>
+                                                    </label>
+
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="فى الطريق">
+                                    <EditItemTemplate>
+                                        <asp:CheckBox ID="CheckBox1InWay" runat="server" Checked='<%# Bind("InWay") %>'  />
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                                   <asp:HiddenField ID="hfInWay" Value='<%# Bind("id") %>'  runat="server"/>
+		                                <label class="switchToggle">
+                                                             <asp:CheckBox ID="ChInWay"  runat="server" Checked='<%# Bind("InWay") %>'   AutoPostBack="true"  OnCheckedChanged="InWay_CheckedChanged" />
+                                                                      <span class="slider green round"></span>
+                                                    </label>
+
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="تم التسليم">
+                                    <EditItemTemplate>
+                                        <asp:CheckBox ID="CheckBox1" runat="server" Checked='<%# Bind("Delivered") %>'  />
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                                   <asp:HiddenField ID="hf" Value='<%# Bind("id") %>'  runat="server"/>
+		                                <label class="switchToggle">
+                                                             <asp:CheckBox ID="CheckBox2"  runat="server" Checked='<%# Bind("Delivered") %>'   AutoPostBack="true"  OnCheckedChanged="CheckBox1_CheckedChanged" />
+                                                                      <span class="slider green round"></span>
+                                                    </label>
+
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="تتبع وقت التنفيذ">
+                                    <ItemTemplate>
+                                        <div style="font-size: 11px; line-height: 1.6; min-width: 150px; text-align: right;">
+                                            <span class="text-muted">القبول:</span> <%# Eval("AcceptedTime", "{0:HH:mm}") %><br />
+                                            <span class="text-muted">التحضير:</span> <%# Eval("PreparedTime", "{0:HH:mm}") %><br />
+                                            <span class="text-muted">خروج:</span> <%# Eval("InWayTime", "{0:HH:mm}") %><br />
+                                            <span class="text-muted">التسليم:</span> <%# Eval("DeliveredTime", "{0:HH:mm}") %>
+                                          <hr style="margin: 2px 0;" />
+                                            <span class="badge badge-primary">
+                                                <%# Eval("TotalTime") != DBNull.Value ? "استغرق: " + Eval("TotalTime") + " دقيقة" : "قيد التنفيذ..." %>
+                                            </span>
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                                 <asp:BoundField DataField="Odate" HeaderText="تاريخ الطلب" DataFormatString="{0:yyyy-MM-dd}" />
-                            <asp:TemplateField HeaderText="إجراءات">
-    <ItemTemplate>
-        <asp:LinkButton ID="btnDetails" runat="server" 
-            CommandName="ShowDetails" 
-            CommandArgument='<%# Eval("id") %>' 
-            CssClass="btn btn-sm btn-info">
-            عرض التفاصيل
-        </asp:LinkButton>
-    </ItemTemplate>
-</asp:TemplateField>
+                                <asp:TemplateField HeaderText="إجراءات">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnDetails" runat="server" 
+                                            CommandName="ShowDetails" 
+                                            CommandArgument='<%# Eval("id") %>' 
+                                            CssClass="btn btn-sm btn-info">
+                                            عرض التفاصيل
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
                         <div class="mt-2">
@@ -328,8 +340,6 @@ padding: 0;
                                </div>
                 </div>
         
-
-        <!-- JS Libraries -->
 
         <script>
 
@@ -351,7 +361,6 @@ padding: 0;
         </script>
         <div id="MyPopup" class="modal fade" role="dialog" style="height:100%">
     <div class="modal-dialog" style="height:100%">
-        <!-- Modal content-->
         <div class="modal-content" style="min-height: 100%;">
             <div class="modal-header" style="background:skyblue">
                 <asp:Button Text="X"  runat="server" id="Button3" OnClick="btnClose_Click" class="btn btn-danger" />
@@ -375,5 +384,3 @@ padding: 0;
 </asp:UpdatePanel>
 
 </asp:Content>
-
-

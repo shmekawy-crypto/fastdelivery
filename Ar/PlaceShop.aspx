@@ -1,32 +1,46 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
     CodeFile="PlaceShop.aspx.cs" Inherits="Ar_PlaceShop" ResponseEncoding="utf-8" ContentType="text/html" %>
     <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-
-        <asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, PagePlaceShopTitle %>"></asp:Literal>
     </asp:Content>
 
     <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
         <asp:ScriptManager runat="server" ID="ScriptManager1" EnablePageMethods="true" />
-           <style>
-            .swal2-html-container{
-                padding: 0;
-                overflow-x: hidden;
+        <style>
+            .news-swipr {
+                width: 100%;
+                background: transparent;
+                padding: 40px;
+                height: auto;
+                overflow: hidden !important;
+                max-height: 350px;
             }
-            #navShareBtn{
+
+            #searchIconNav,
+            #favIconNav {
                 display: flex !important;
             }
-            .header {
-                display: grid;
-                grid-template-columns: 1fr auto 1fr;
-                align-items: center;
-                padding: 6px 50px;
-                background: linear-gradient(135deg, #fffbe6 0%, #ffffff 0%, #fffbe6 10%);
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 100;
-                transition: background-color 0.3s, box-shadow 0.3s;
+
+            .news-swipr .newsSwiper {
+                width: 100%;
+                max-width: 1200px;
+                margin: auto;
+                overflow: visible !important;
+                max-height: 300px;
+            }
+
+            .news-swipr .newsSwiper {
+                .swiper-wrapper {
+                    max-height: 280px;
+                }
+            }
+
+            .swal2-html-container {
+                padding: 0 !important;
+                overflow-x: hidden;
+            }
+
+            #navShareBtn {
+                display: flex !important;
             }
 
             #openedShopFoods {
@@ -62,12 +76,13 @@
             .availableShop {
                 display: flex;
                 gap: 1rem;
-                margin-block: 1.5rem;
                 padding: 1.5rem;
-                background:white ;
+                margin-bottom: 0.5rem;
+                margin-top: 0;
+                background: white;
                 border-radius: 1.25rem;
                 border: 1px solid rgba(0, 0, 0, 0.1);
-                box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease;
                 text-decoration: none;
                 color: inherit;
@@ -80,12 +95,12 @@
                     object-fit: cover;
                     border: 1px solid rgba(0, 0, 0, 0.08);
                     border-radius: 1rem;
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
                 }
 
                 &:hover {
                     transform: translateY(-2px);
-                    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
                     background: #fff;
 
                     .availableShopName {
@@ -124,12 +139,13 @@
                 flex-direction: column;
             }
 
-            .availableShopName{
+            .availableShopName {
                 display: flex;
                 justify-content: space-between;
                 align-items: baseline;
                 gap: 0.5rem;
             }
+
             .availableShopName,
             .shopFoods {
                 line-height: 1.25;
@@ -159,7 +175,8 @@
                 }
             }
 
-            .favorite-heart, .share-shop {
+            .favorite-heart,
+            .share-shop {
                 position: absolute;
                 top: 10px;
                 width: 35px;
@@ -170,7 +187,7 @@
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease;
                 z-index: 10;
             }
@@ -180,11 +197,13 @@
             }
 
             .share-shop {
-                inset-inline-end: 55px; /* Next to heart */
+                inset-inline-end: 55px;
+                /* Next to heart */
                 color: var(--fd-blue);
             }
 
-            .favorite-heart:hover, .share-shop:hover {
+            .favorite-heart:hover,
+            .share-shop:hover {
                 transform: scale(1.1);
                 background: #fff;
             }
@@ -328,7 +347,8 @@
                         transition: var(--transition);
                         border-right: 3px solid transparent;
 
-                        &:hover, &.active {
+                        &:hover,
+                        &.active {
                             background-color: #f8f9fa;
                             color: var(--fd-blue);
                             border-right-color: var(--fd-blue);
@@ -414,7 +434,7 @@
             }
 
             .foodItem:hover {
-                box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
                 border-color: var(--fd-blue);
                 transform: translateY(-3px);
             }
@@ -433,7 +453,8 @@
                 display: flex;
                 flex-direction: column;
                 gap: 0.5rem;
-                .foodName{
+
+                .foodName {
                     font-size: 1rem !important;
                 }
             }
@@ -508,31 +529,33 @@
                 height: 100%;
                 object-fit: cover;
                 border-radius: inherit;
-                box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
                 aspect-ratio: 1;
                 position: relative;
                 z-index: 1;
                 background-color: #fff;
             }
 
-            .foodItem{
+            .foodItem {
                 flex-direction: row-reverse !important;
                 column-gap: 1.5rem !important;
-                img{
+
+                img {
                     border-radius: 1.5rem !important;
                     background-color: var(--fd-blue);
                 }
             }
 
             .addToCart {
-                   position: absolute;
-    bottom: 10px;
-    inset-inline-start: 10px;
+                position: absolute;
+                bottom: 10px;
+                inset-inline-start: 10px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 height: fit-content !important;
-                pointer-events: auto; /* Changed from none to auto */
+                pointer-events: auto;
+                /* Changed from none to auto */
                 z-index: 2;
             }
 
@@ -545,15 +568,17 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
                 font-size: 1.4rem;
                 transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 cursor: pointer;
-                pointer-events: auto; /* Enable clicks */
+                pointer-events: auto;
+                /* Enable clicks */
             }
 
             .qty-control {
-                pointer-events: auto; /* Enable clicks */
+                pointer-events: auto;
+                /* Enable clicks */
             }
 
             .foodItem:hover .addToCartBtn {
@@ -563,21 +588,23 @@
             }
 
             @media (max-width: 480px) {
-                .foodText{
+                .foodText {
                     pointer-events: none;
                 }
-                .shopRating {
-    .rating-number {
-        font-size:0.8rem;
-    }}
 
-                .icon-btn{
+                .shopRating {
+                    .rating-number {
+                        font-size: 0.8rem;
+                    }
+                }
+
+                /* .icon-btn{
                     width: 36px !important;
                     height: 36px !important;
                     font-size: 16px !important;
-                }
-                .lang-btn{
-                    font-size: 14px !important;
+                } */
+                .lang-btn {
+                    /* font-size: 14px !important; */
                     padding: 10px !important;
                 }
 
@@ -594,12 +621,13 @@
                     /* overflow: visible !important; */
                 }
 
-                .foodDrowdown{
+                .foodDrowdown {
                     padding-inline: 0px !important;
                 }
 
-                #openedShopFoods{
+                #openedShopFoods {
                     padding-inline: 1rem !important;
+                    padding-top: 100px !important;
                 }
 
                 .foodItem {
@@ -613,7 +641,7 @@
                     display: flex !important;
                 }
 
-                .foodImage{
+                .foodImage {
                     width: 100% !important;
                     height: auto !important;
                     max-width: 100% !important;
@@ -634,12 +662,15 @@
                     flex: 1 !important;
                     pointer-events: none;
                 }
-                .foodText,.foodName{
-                    flex:1;
+
+                .foodText,
+                .foodName {
+                    flex: 1;
                 }
 
-                .foodText{
+                .foodText {
                     pointer-events: none;
+
                     .foodName {
                         font-size: 0.8rem !important;
                         display: -webkit-box !important;
@@ -698,7 +729,6 @@
                 width: 100%;
                 position: sticky;
                 isolation: isolate;
-                top: 100px;
                 height: fit-content;
             }
 
@@ -814,16 +844,17 @@
 
             /* --- MODERN CLEAN CART DESIGN --- */
             #shoppingCart {
-                .orderedItemsWrapper{
+                .orderedItemsWrapper {
                     max-height: 350px;
                 }
+
                 /* Container overlay is handled in css_web.css, but we can override if needed */
             }
 
             #cartHolder {
                 background: #fff;
                 border-radius: 1.5rem;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
                 max-width: 480px;
                 width: 95%;
                 position: relative;
@@ -874,9 +905,11 @@
             .orderedItemsWrapper::-webkit-scrollbar {
                 width: 5px;
             }
+
             .orderedItemsWrapper::-webkit-scrollbar-track {
                 background: #f9f9f9;
             }
+
             .orderedItemsWrapper::-webkit-scrollbar-thumb {
                 background: #ddd;
                 border-radius: 10px;
@@ -885,7 +918,7 @@
             .cartShopLabel {
                 background-color: #f8f9fa;
                 padding: 10px 14px;
-                margin: 15px 0 8px 0;
+                margin: 1rem 0;
                 border-radius: 12px;
                 font-weight: 700;
                 font-size: 0.9rem;
@@ -901,9 +934,11 @@
             .orderedItem:hover {
                 background: #fcfcfc;
             }
-.swiper {
-    overflow: initial !important;
-}
+
+            .swiper {
+                overflow: initial !important;
+            }
+
             .orderedItemName {
                 font-weight: 700;
                 color: #2c3e50;
@@ -946,14 +981,13 @@
                 padding: 1px 6px;
                 border-radius: 4px;
                 margin-top: 3px;
-                display: inline-block;
+                display: flex;
                 width: fit-content;
             }
 
             .orderedItemMain {
                 display: flex;
                 flex-wrap: wrap;
-                flex-grow: 1;
                 gap: 0.5rem;
                 flex-direction: column;
                 margin: 0 12px;
@@ -963,33 +997,33 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: #f5f6f7;
                 border-radius: 10px;
                 padding: 4px;
                 margin: 0;
                 min-width: 85px;
                 gap: 6px;
-                border: 1px solid #eee;
             }
 
-            .increase, .decrease {
+            .increase,
+            .decrease {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                width: 28px;
-                height: 28px;
+                width: 26px;
+                height: 26px;
                 border: none;
-                background: #fff;
-                color: #444;
+                background: var(--fd-blue);
+                color: #fff;
                 cursor: pointer;
                 border-radius: 7px;
                 transition: all 0.2s;
                 font-size: 0.8rem;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
                 padding: 0;
             }
 
-            .increase:hover, .decrease:hover {
+            .increase:hover,
+            .decrease:hover {
                 background: var(--fd-blue);
                 color: #fff;
             }
@@ -1006,7 +1040,7 @@
             #inCartItems {
                 background: #fafbfc;
                 border-radius: 1.25rem;
-  margin-bottom: 0px !important;
+                margin-bottom: 0px !important;
                 padding: 1rem !important;
                 padding-top: 0px !important;
                 display: flex;
@@ -1014,20 +1048,24 @@
                 gap: 0 !important;
             }
 
-            .preDeliveryFeeAmount, .deliveryAmount, .afterDeliveryFeeAmount {
+            .preDeliveryFeeAmount,
+            .deliveryAmount,
+            .afterDeliveryFeeAmount {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 font-size: 0.95rem;
             }
 
-            .preDeliveryFeeAmount p, .deliveryAmount p {
+            .preDeliveryFeeAmount p,
+            .deliveryAmount p {
                 color: #777;
                 font-weight: 500;
                 margin: 0;
             }
 
-            .subtotalAmount, .deliveryFee {
+            .subtotalAmount,
+            .deliveryFee {
                 font-weight: 700;
                 color: #444;
             }
@@ -1114,7 +1152,7 @@
                 font-size: 4.5rem;
                 color: #eee;
                 margin-bottom: 20px;
-                filter: drop-shadow(0 4px 8px rgba(0,0,0,0.02));
+                filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.02));
             }
 
             #emptyCart p {
@@ -1192,6 +1230,7 @@
                 /* أ¢إ“â€¦ &#1575;&#1604;&#1571;&#1607;&#1605;: &#1573;&#1606;&#1588;&#1575;&#1569; &#1575;&#1604;&#1582;&#1591; &#1575;&#1604;&#1587;&#1601;&#1604;&#1610; */
                 border-bottom: 3px solid #ffc119;
             }
+
             .status-badge {
                 padding: 4px 12px;
                 border-radius: 20px;
@@ -1203,11 +1242,12 @@
                 vertical-align: middle;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
+
             .deliveryTime i,
             .deliveryPayment i,
-            .minPay i{
+            .minPay i {
                 font-size: 10px;
             }
 
@@ -1217,37 +1257,42 @@
                 color: #059669;
                 border: 1px solid #10b981;
             }
+
             .status-badge.closed {
                 background-color: #fef2f2;
                 color: #dc2626;
                 border: 1px solid #ef4444;
             }
-            .route{
+
+            .route {
                 color: white;
             }
-            #shopBanner{
+
+            #shopBanner {
                 width: 100%;
                 position: absolute;
                 height: 333px;
                 top: 0;
-                right:0;
+                right: 0;
                 overflow: hidden;
-                left:0;
+                left: 0;
                 border-bottom-right-radius: 1rem;
                 border-bottom-left-radius: 1rem;
                 z-index: -1;
                 margin: auto;
             }
-            #shopBanner img{
+
+            #shopBanner img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
             }
-            @media (max-width: 480px){
-                .logo-container{
-display: none !important;
 
-    }
+            @media (max-width: 480px) {
+                .logo-container {
+                    display: none !important;
+
+                }
 
             }
         </style>
@@ -1256,11 +1301,11 @@ display: none !important;
         </script>
         <section id="openedShopFoods">
 
-<figure id="shopBanner">
+            <figure id="shopBanner">
 
-<asp:Literal ID="ltBanner" runat="server"></asp:Literal>
+                <asp:Literal ID="ltBanner" runat="server"></asp:Literal>
 
-</figure>
+            </figure>
 
             <article id="foodImageModal">
                 <img src="" alt="zoomed image">
@@ -1303,25 +1348,31 @@ display: none !important;
 
                 <div style="position: relative;">
                     <div class="shop-img-wrapper" style="position: relative; width: 130px; height: 130px;">
-                        <asp:Image ID="imgplace" runat="server" style="width:100%; height:100%; border-radius:1rem; object-fit:cover;" />
-                        <div class="favorite-heart"
-                             onclick="toggleFavorite(event, this)"
-                             id="shopHeartIcon">
+                        <asp:Image ID="imgplace" runat="server" CssClass="shop-profile-img"
+                            style="width:100%; height:100%; border-radius:1rem; object-fit:cover;" />
+                        <div class="favorite-heart" onclick="toggleFavorite(event, this)" id="shopHeartIcon"
+                            runat="server">
                             <i class="fa-regular fa-heart"></i>
                         </div>
                     </div>
 
                     <span class="shopRating" style="text-align:center;padding-top:5px" id="shopRating"
                         runat="server"></span>
-                    <div id="isOpened" hidden><asp:Literal ID="ltIsOpened" runat="server"></asp:Literal></div>
-                    <div id="rawRating" hidden><asp:Literal ID="ltRawRating" runat="server"></asp:Literal></div>
+                    <div id="isOpened" hidden>
+                        <asp:Literal ID="ltIsOpened" runat="server"></asp:Literal>
+                    </div>
+                    <div id="rawRating" hidden>
+                        <asp:Literal ID="ltRawRating" runat="server"></asp:Literal>
+                    </div>
                 </div>
                 <div class="availableShopDesc">
                     <h3 class="availableShopName" style="display: flex; align-items: center;">
-                        <asp:Literal ID="ltname" runat="server"></asp:Literal>
+                        <span id="shopNameContent">
+                            <asp:Literal ID="ltname" runat="server"></asp:Literal>
+                        </span>
                         <span id="shopStatusBadge" runat="server"></span>
                     </h3>
-                    <p class="shopFoods">
+                    <p class="shopFoods" id="shopFoodsContent">
                         <asp:Literal ID="ltDetails" runat="server"></asp:Literal>
                     </p>
 
@@ -1341,10 +1392,12 @@ display: none !important;
 
                         </span>
                         <span class="delieveryPayment">
-<i class="fa-solid fa-truck-fast"></i>
+                            <i class="fa-solid fa-truck-fast"></i>
                             <asp:Literal ID="ltDeliveryService" runat="server"
-                                Text="<%$ Resources:texts, DeliveryService %>"></asp:Literal>:&nbsp; <span id="deliveryCostValue"><asp:Literal
-                                ID="ltDeliveryCost" runat="server"></asp:Literal></span>
+                                Text="<%$ Resources:texts, DeliveryService %>"></asp:Literal>:&nbsp; <span
+                                id="deliveryCostValue">
+                                <asp:Literal ID="ltDeliveryCost" runat="server"></asp:Literal>
+                            </span>
                             <asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:texts, currency %>">
                             </asp:Literal>
                         </span>
@@ -1358,23 +1411,48 @@ display: none !important;
                     <div class="shopPayMethods">
                         <p class="pay-badge tracking">
                             <i class="fa-solid fa-map-location-dot"></i>
-                            <asp:Literal ID="ltLiveTracking" runat="server" Text="<%$ Resources:texts, LiveTracking %>"></asp:Literal>
+                            <asp:Literal ID="ltLiveTracking" runat="server" Text="<%$ Resources:texts, LiveTracking %>">
+                            </asp:Literal>
                         </p>
 
                         <p class="pay-badge safe">
                             <i class="fa-solid fa-shield"></i>
-                            <asp:Literal ID="ltSafeDelivery" runat="server" Text="<%$ Resources:texts, SafeDelivery %>"></asp:Literal>
+                            <asp:Literal ID="ltSafeDelivery" runat="server" Text="<%$ Resources:texts, SafeDelivery %>">
+                            </asp:Literal>
                         </p>
 
                         <p class="pay-badge free">
                             <i class="fa-solid fa-gift"></i>
-                            <asp:Literal ID="ltFirstOrderFree" runat="server" Text="<%$ Resources:texts, FirstOrderFree %>"></asp:Literal>
+                            <asp:Literal ID="ltFirstOrderFree" runat="server"
+                                Text="<%$ Resources:texts, FirstOrderFree %>"></asp:Literal>
                         </p>
                     </div>
 
                 </div>
             </article>
 
+            <section class="news-swipr">
+                <div class="swiper newsSwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="https://np.naukimg.com/cphoto/l45XrkFOujKTaHBdN6PUrTtURaQ/6AFPI5l/k2gAkQqVwFKHFwvhK7u32Kmseoy1Xu1tTnRJRtug8Q2lzX6Wp02NFCPzn2tkSW8b4Mm3yavA7NNZXdbZaFECMd/ZnVDpzp"
+                                alt="News Image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb_FiZTdONoWw2NWQ_hk1FBfFb3NIhiWImUA&s"
+                                alt="News Image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCL35UgrPqNPxqfmpoEq1ZFvdM7I7bz61B3w&s"
+                                alt="News Image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx319C2Cuuz7TXEhCMHcSrpvwcLgqnO2ahzg&s"
+                                alt="News Image" />
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <div id="shopLists">
                 <ul id="shopListsOptions">
@@ -1398,12 +1476,21 @@ display: none !important;
                     <div class="categories-list-scroll">
                         <asp:Repeater ID="FoodCategoryRepeater" runat="server">
                             <ItemTemplate>
-                                <%-- &#1610;&#1605;&#1603;&#1606;&#1603; &#1575;&#1587;&#1578;&#1582;&#1583;&#1575;&#1605; &#1575;&#1604;&#1605;&#1606;&#1591;&#1602; &#1575;&#1604;&#1588;&#1585;&#1591;&#1610; &#1604;&#1578;&#1591;&#1576;&#1610;&#1602; active class &#1607;&#1606;&#1575; --%>
+                                <%-- &#1610;&#1605;&#1603;&#1606;&#1603;
+                                    &#1575;&#1587;&#1578;&#1582;&#1583;&#1575;&#1605;
+                                    &#1575;&#1604;&#1605;&#1606;&#1591;&#1602;
+                                    &#1575;&#1604;&#1588;&#1585;&#1591;&#1610;
+                                    &#1604;&#1578;&#1591;&#1576;&#1610;&#1602; active class &#1607;&#1606;&#1575; --%>
 
-                                    <a href='#section-<%# Eval("id")%>' class="category-pill" data-category-id="<%# Eval("ID") %>">
+                                    <a href='#section-<%# Eval("id")%>' class="category-pill"
+                                        data-category-id="<%# Eval(" ID") %>">
 
-                                        <%-- &#1607;&#1584;&#1607; &#1607;&#1610; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1575;&#1604;&#1605;&#1589;&#1594;&#1585;&#1577; &#1604;&#1604;&#1578;&#1589;&#1606;&#1610;&#1601; --%>
-                                            <img src='<%# Eval("PhotoUrl") %>' alt='<%# Eval("Name") %>' />
+                                        <%-- &#1607;&#1584;&#1607; &#1607;&#1610;
+                                            &#1575;&#1604;&#1589;&#1608;&#1585;&#1577;
+                                            &#1575;&#1604;&#1605;&#1589;&#1594;&#1585;&#1577;
+                                            &#1604;&#1604;&#1578;&#1589;&#1606;&#1610;&#1601; --%>
+                                            <img src='<%# Eval("PhotoUrl") %>' alt='<%# Eval("Name") %>'
+                                                onerror="this.src='/ar/images/placeholderImage.webp'" />
                                             <span>
                                                 <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
                                                     ? DataBinder.Eval(Container.DataItem, "NameEn" ) :
@@ -1464,7 +1551,7 @@ display: none !important;
                             </div>
 
 
-                            
+
 
                             <asp:Repeater ID="rptCategories" runat="server"
                                 OnItemDataBound="rptCategories_ItemDataBound">
@@ -1476,70 +1563,95 @@ display: none !important;
                                                 System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru"
                                                 ? DataBinder.Eval(Container.DataItem, "NameRu" ) :
                                                 DataBinder.Eval(Container.DataItem, "Name" ) %>
-                                                <span style="display: none;" class="dropDownBtn"><i class="fa-solid fa-angles-down"></i></span>
+                                                <span style="display: none;" class="dropDownBtn"><i
+                                                        class="fa-solid fa-angles-down"></i></span>
                                         </h2>
 
                                         <ul class="foodDrowdown">
                                             <asp:Repeater ID="rptFoodItems" runat="server">
-                                                <ItemTemplate>                                                    <li class="foodItem <%# Convert.ToBoolean(Eval("isCustom")) ? "custom-item" : "" %>"
+                                                <ItemTemplate>
+                                                    <li class="foodItem <%# Convert.ToBoolean(Eval(" isCustom"))
+                                                        ? "custom-item" : "" %>"
                                                         id='<%# Eval("id") %>'
-                                                        data-product-name='<%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ? Eval("NameEn") : Eval("Name") %>'
-                                                        data-price='<%# Eval("NewPrice") %>'
-                                                        onclick="handleProductClick(this, event)">
-                                                         <div class="product-qty-badge">0</div>
-                                                        <div class="foodDetailsContainer">
-                                                            <div class="foodText">
-                                                                <h4 class="foodName">
-                                                                    <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
-                                                                        ? DataBinder.Eval(Container.DataItem, "NameEn" )
-                                                                        :
-                                                                        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru"
-                                                                        ? DataBinder.Eval(Container.DataItem, "NameRu" )
-                                                                        : DataBinder.Eval(Container.DataItem, "Name" )
-                                                                        %>
-                                                                </h4>
-                                                                <p class="foodContent">
-                                                                    <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
-                                                                        ?
-                                                                        DataBinder.Eval(Container.DataItem, "DescriptionEn"
-                                                                        ) :
-                                                                        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru"
-                                                                        ?
-                                                                        DataBinder.Eval(Container.DataItem, "DescriptionRu"
-                                                                        ) :
-                                                                        DataBinder.Eval(Container.DataItem, "Description"
-                                                                        ) %>
-                                                                </p>
-                                                                <%# Convert.ToInt32(Eval("PrepearMin")) > 0 ?
-                                                                    string.Format("<small style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-utensils'></i> {0} دقيقة</small>", Eval("PrepearMin"))
-                                                                    : "" %>
-                                                            </div>
-                                                            <div class="foodPricing">
-                                                                <%# (Eval("OldPrice").ToString()) !=(Eval("NewPrice").ToString())
-                                                                    ? "<span class='foodOldPrice'>EGP" + Convert.ToDecimal(Eval("OldPrice")).ToString("0.##") + "</span>" : "" %>
-                                                                    <span class="foodNewPrice">
-                                                                        <%# Convert.ToDecimal(Eval("NewPrice")).ToString("0.##") %>
-                                                                        <%= Resources.Texts.Currency %>
-                                                                    </span>
-                                                            </div>
-                                                        </div>
+                                                            data-product-name='<%#
+                                                                System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
+                                                                ? Eval("NameEn") : Eval("Name") %>'
+                                                                data-price='<%# Eval("NewPrice") %>'
+                                                                    data-has-addons='<%# Eval("hasAddons") %>'
+                                                                        data-is-custom='<%# Eval("isCustom") %>'
+                                                                            onclick="handleProductClick(this, event)">
+                                                                            <div class="product-qty-badge">0</div>
+                                                                            <div class="foodDetailsContainer">
+                                                                                <div class="foodText">
+                                                                                    <h4 class="foodName">
+                                                                                        <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
+                                                                                            ?
+                                                                                            DataBinder.Eval(Container.DataItem, "NameEn"
+                                                                                            ) :
+                                                                                            System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru"
+                                                                                            ?
+                                                                                            DataBinder.Eval(Container.DataItem, "NameRu"
+                                                                                            ) :
+                                                                                            DataBinder.Eval(Container.DataItem, "Name"
+                                                                                            ) %>
+                                                                                    </h4>
+                                                                                    <p class="foodContent">
+                                                                                        <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
+                                                                                            ?
+                                                                                            DataBinder.Eval(Container.DataItem, "DescriptionEn"
+                                                                                            ) :
+                                                                                            System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru"
+                                                                                            ?
+                                                                                            DataBinder.Eval(Container.DataItem, "DescriptionRu"
+                                                                                            ) :
+                                                                                            DataBinder.Eval(Container.DataItem, "Description"
+                                                                                            ) %>
+                                                                                    </p>
+                                                                                    <%# Convert.ToInt32(Eval("PrepearMin")) > 0 ? string.Format("<small style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-utensils'></i> {0} دقيقة</small>", Eval("PrepearMin")) : "" %>
+                                                                                </div>
+                                                                                <div class="foodPricing">
+                                                                                    <%# (Eval("OldPrice").ToString())
+                                                                                        !=(Eval("NewPrice").ToString())
+                                                                                        ? "<span class='foodOldPrice'>EGP"
+                                                                                        +
+                                                                                        Convert.ToDecimal(Eval("OldPrice")).ToString("0.##")
+                                                                                        + "</span>" : "" %>
+                                                                                        <span class="foodNewPrice">
+                                                                                            <%# Convert.ToDecimal(Eval("NewPrice")).ToString("0.##")
+                                                                                                %>
+                                                                                                <%= Resources.Texts.Currency
+                                                                                                    %>
+                                                                                        </span>
+                                                                                </div>
+                                                                            </div>
 
-                                                        <div class="foodImage">
-                                                            <img src='<%# Eval("PhotoUrl") %>' alt="food image" onerror="this.onerror=null;this.src='images/placeholderImage.webp';" />
-                                                            <div class="addToCart">
-                                                                <%# Convert.ToBoolean(Eval("isCustom")) ?
-                                                                    "<span class='addToCartBtn'><i class='fa-solid fa-angle-left'></i></span>" :
-                                                                    @"<span class='addToCartBtn' onclick='handleAddToCartClick(event, this)' title='" + Resources.Texts.addtocart + @"'>
-                                                                        <i class='fa fa-plus'></i>
-                                                                    </span>
-                                                                    <div class='qty-control card-qty' style='display:none;' onclick='event.stopPropagation()'>
-                                                                        <button onclick='handleCardQty(event, this, -1)'><i class='fa-solid fa-minus'></i></button>
-                                                                        <span class='qty-val'>1</span>
-                                                                        <button onclick='handleCardQty(event, this, 1)'><i class='fa-solid fa-plus'></i></button>
-                                                                    </div>"
-                                                                %>
-                                                            </div>
-                                                        </div>
+                                                                            <div class="foodImage">
+                                                                                <img src='<%# Eval("PhotoUrl") %>'
+                                                                                    alt="food image"
+                                                                                    onerror="this.src='/ar/images/placeholderImage.webp';" />
+                                                                                <div class="addToCart">
+                                                                                    <%# Convert.ToBoolean(Eval("isCustom"))
+                                                                                        ? "<span class='addToCartBtn'><i class='fa-solid fa-angle-left'></i></span>"
+                                                                                        : @"<span class='addToCartBtn'
+                                                                                        onclick='handleAddToCartClick(event, this)'
+                                                                                        title='" + Resources.Texts.addtocart + @"'>
+                                                                                        <i class='fa fa-plus'></i>
+                                                                                        </span>
+                                                                                        <div class='qty-control card-qty'
+                                                                                            style='display:none;'
+                                                                                            onclick='event.stopPropagation()'>
+                                                                                            <button
+                                                                                                onclick='handleCardQty(event, this, -1)'><i
+                                                                                                    class='fa-solid fa-minus'></i></button>
+                                                                                            <span
+                                                                                                class='qty-val'>1</span>
+                                                                                            <button
+                                                                                                onclick='handleCardQty(event, this, 1)'><i
+                                                                                                    class='fa-solid fa-plus'></i></button>
+                                                                                        </div>"
+                                                                                        %>
+                                                                                </div>
+                                                                            </div>
                                                     </li>
                                                 </ItemTemplate>
                                             </asp:Repeater>
@@ -1548,142 +1660,7 @@ display: none !important;
                                 </ItemTemplate>
                             </asp:Repeater>
 
-                            <div id="hardcoded-product-modal-content" style="display:none;">
-                                <div class="full-modal-container">
-                                    <div class="modal-banner">
-                                        <img src="images/placeholderImage.webp" alt="ربع كيلو شاورما فراخ">
-                                        <button class="modal-close-btn" onclick="Swal.close()">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </div>
 
-                                    <div class="modal-content-body">
-                                        <div class="modal-main-info">
-                                            <div class="title-price-row">
-                                                <h1>ربع كيلو شاورما فراخ</h1>
-                                                <span class="compact-price" style="display:none;">130 ج.م</span>
-                                            </div>
-                                            <p class="modal-desc">شاورما دجاج مع التومية</p>
-                                        </div>
-
-                                        <div class="modal-section">
-                                            <div class="section-header">
-                                                <h3>اختار الحجم</h3>
-                                                <span class="required-badge">إجباري</span>
-                                            </div>
-                                            <div class="options-list">
-                                                <div class="option-row"  data-item-id="size-small" data-size-id="size-small" onclick="selectModalOption(this, 130, 'size-small')">
-                                                    <span>صغير</span>
-                                                    <div class="price-radio">
-                                                        <span>130 ج.م</span>
-                                                        <div class="radio-circle"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="option-row" data-item-id="size-medium" data-size-id="size-medium" onclick="selectModalOption(this, 180, 'size-medium')">
-                                                    <span>وسط</span>
-                                                    <div class="price-radio">
-                                                        <span>180 ج.م</span>
-                                                        <div class="radio-circle"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="option-row" data-item-id="size-large" data-size-id="size-large" onclick="selectModalOption(this, 230, 'size-large')">
-                                                    <span>كبير</span>
-                                                    <div class="price-radio">
-                                                        <span>230 ج.م</span>
-                                                        <div class="radio-circle"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal-section upsell-section">
-                                            <div class="section-header">
-                                                <h3>غالباً ما يُطلب مع</h3>
-                                            </div>
-                                            <div class="swiper related-products-swiper">
-                                                <div class="swiper-wrapper">
-                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-orange-juice" data-upsell-id="upsell-orange-juice">
-                                                        <div class="upsell-img-wrapper">
-                                                            <div class="upsell-badge" style="display:none;">1</div>
-                                                            <img src="images/placeholderImage.webp" alt="upsell">
-                                                            <div class="upsell-add-btn" onclick="addUpsellItem(this, 25, 'upsell-orange-juice', 'عصير برتقال')">
-                                                                <i class="fa-solid fa-plus"></i>
-                                                            </div>
-                                                            <div class="qty-control" onclick="event.stopPropagation()">
-                                                                <button onclick="updateUpsellQty(this, -1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-minus"></i></button>
-                                                                <span class="upsell-qty-val">1</span>
-                                                                <button onclick="updateUpsellQty(this, 1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-plus"></i></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="upsell-info">
-                                                            <h5>عصير برتقال</h5>
-                                                            <p>EGP 25.00</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-green-salad" data-upsell-id="upsell-green-salad">
-                                                        <div class="upsell-img-wrapper">
-                                                            <div class="upsell-badge" style="display:none;">1</div>
-                                                            <img src="images/placeholderImage.webp" alt="upsell">
-                                                            <div class="upsell-add-btn" onclick="addUpsellItem(this, 35, 'upsell-green-salad', 'سلطة خضراء')">
-                                                                <i class="fa-solid fa-plus"></i>
-                                                            </div>
-                                                            <div class="qty-control" onclick="event.stopPropagation()">
-                                                                <button onclick="updateUpsellQty(this, -1, 35, 'upsell-green-salad')"><i class="fa-solid fa-minus"></i></button>
-                                                                <span class="upsell-qty-val">1</span>
-                                                                <button onclick="updateUpsellQty(this, 1, 35, 'upsell-green-salad')"><i class="fa-solid fa-plus"></i></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="upsell-info">
-                                                            <h5>سلطة خضراء</h5>
-                                                            <p>EGP 35.00</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-toum" data-upsell-id="upsell-toum">
-                                                        <div class="upsell-img-wrapper">
-                                                            <div class="upsell-badge" style="display:none;">1</div>
-                                                            <img src="images/placeholderImage.webp" alt="upsell">
-                                                            <div class="addToCart">
-                                                                <div class="upsell-add-btn" onclick="addUpsellItem(this, 15, 'upsell-toum', 'تومية')">
-                                                                    <i class="fa-solid fa-plus"></i>
-                                                                </div>
-                                                                <div class="qty-control" onclick="event.stopPropagation()">
-                                                                    <button onclick="updateUpsellQty(this, -1, 15, 'upsell-toum')"><i class="fa-solid fa-minus"></i></button>
-                                                                    <span class="upsell-qty-val">1</span>
-                                                                    <button onclick="updateUpsellQty(this, 1, 15, 'upsell-toum')"><i class="fa-solid fa-plus"></i></button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="upsell-info">
-                                                            <h5>تومية</h5>
-                                                            <p>EGP 15.00</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                          <div class="modal-section">
-                                            <div class="section-header">
-                                                <h3>ملاحظات</h3>
-                                                <span class="optional-badge">اختياري</span>
-                                            </div>
-                                            <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا..."></textarea>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="modal-footer-sticky">
-                                        <div class="qty-control">
-                                            <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
-                                            <span id="modal-qty">1</span>
-                                            <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
-                                        </div>
-                                        <button class="add-to-cart-big" onclick="submitModalCart()">
-                                            <span>إضافة للسلة</span>
-                                            <strong id="modal-total-price">اختار الحجم</strong>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
                         </article>
                     </figure>
 
@@ -1776,810 +1753,916 @@ display: none !important;
 
         <style>
             /* &#1581;&#1575;&#1608;&#1610;&#1577; &#1575;&#1604;&#1578;&#1589;&#1606;&#1610;&#1601; - &#1580;&#1593;&#1604; &#1575;&#1604;&#1593;&#1606;&#1575;&#1589;&#1585; &#1601;&#1608;&#1602; &#1576;&#1593;&#1590;&#1607;&#1575; */
-.category-pill {
-    display: flex;
-    flex-direction: column; /* &#1604;&#1580;&#1593;&#1604; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1601;&#1608;&#1602; &#1608;&#1575;&#1604;&#1603;&#1604;&#1605;&#1577; &#1578;&#1581;&#1578; */
-    align-items: center;
-    gap: 8px; /* &#1605;&#1587;&#1575;&#1601;&#1577; &#1576;&#1610;&#1606; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1608;&#1575;&#1604;&#1606;&#1589; */
-    padding: 10px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-    border-bottom: 3px solid transparent; /* &#1582;&#1591; &#1588;&#1601;&#1575;&#1601; &#1575;&#1601;&#1578;&#1585;&#1575;&#1590;&#1610;&#1575;&#1611; */
-}
-
-/* &#1573;&#1592;&#1607;&#1575;&#1585; &#1608;&#1578;&#1606;&#1587;&#1610;&#1602; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; */
-.category-pill img {
-    display: block !important; /* ط·آ¥ط¸â€‍ط·ط›ط·آ§ط·طŒ &#1575;&#1604;&#1600; display: none &#1575;&#1604;&#1587;&#1575;&#1576;&#1602; */
-    width: 60px;  /* ط¸ظ¹ط¸â€¦ط¸ئ’ط¸â€ ط¸ئ’ ط·ع¾ط¸ئ’ط·آ¨ط¸ظ¹ط·آ± ط·آ£ط¸ث† ط·ع¾ط·آµط·ط›ط¸ظ¹ط·آ± ط·آ§ط¸â€‍ط·آ­ط·آ¬ط¸â€¦ */
-    height: 60px;
-    border-radius: 50%; /* &#1604;&#1580;&#1593;&#1604; &#1589;&#1608;&#1585;&#1577; &#1575;&#1604;&#1601;&#1574;&#1577; &#1583;&#1575;&#1574;&#1585;&#1610;&#1577; */
-    object-fit: cover;
-    background-color: #f8f8f8;
-    border: 1px solid #eee;
-}
-
-/* &#1581;&#1575;&#1604;&#1577; &#1575;&#1604;&#1593;&#1606;&#1589;&#1585; &#1575;&#1604;&#1606;&#1588;&#1591; */
-.category-pill.active {
-    color: #ffc119;
-    border-bottom: 3px solid #ffc119;
-}
-
-.category-pill.active img {
-    border-color: #ffc119;
-    transform: scale(1.1); /* ط·ع¾ط¸ئ’ط·آ¨ط¸ظ¹ط·آ± ط·آ¨ط·آ³ط¸ظ¹ط·آ· ط¸â€‍ط¸â€‍ط·آµط¸ث†ط·آ±ط·آ© ط·آ§ط¸â€‍ط¸â€ ط·آ´ط·آ·ط·آ© */
-}
-        /* Navbar Icons Visibility for this page only */
-        .search-nav-icon, .fav-nav-icon {
-            display: flex !important;
-        }
-
-        @media (max-width: 768px) {
-            .action-buttons {
+            .category-pill {
                 display: flex;
+                flex-direction: column;
+                /* &#1604;&#1580;&#1593;&#1604; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1601;&#1608;&#1602; &#1608;&#1575;&#1604;&#1603;&#1604;&#1605;&#1577; &#1578;&#1581;&#1578; */
+                align-items: center;
+                gap: 8px;
+                /* &#1605;&#1587;&#1575;&#1601;&#1577; &#1576;&#1610;&#1606; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1608;&#1575;&#1604;&#1606;&#1589; */
+                padding: 10px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                flex-shrink: 0;
+                border-bottom: 3px solid transparent;
+                /* &#1582;&#1591; &#1588;&#1601;&#1575;&#1601; &#1575;&#1601;&#1578;&#1585;&#1575;&#1590;&#1610;&#1575;&#1611; */
+            }
+
+            /* &#1573;&#1592;&#1607;&#1575;&#1585; &#1608;&#1578;&#1606;&#1587;&#1610;&#1602; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; */
+            .category-pill img {
+                display: block !important;
+                /* ط·آ¥ط¸â€‍ط·ط›ط·آ§ط·طŒ &#1575;&#1604;&#1600; display: none &#1575;&#1604;&#1587;&#1575;&#1576;&#1602; */
+                width: 60px;
+                /* ط¸ظ¹ط¸â€¦ط¸ئ’ط¸â€ ط¸ئ’ ط·ع¾ط¸ئ’ط·آ¨ط¸ظ¹ط·آ± ط·آ£ط¸ث† ط·ع¾ط·آµط·ط›ط¸ظ¹ط·آ± ط·آ§ط¸â€‍ط·آ­ط·آ¬ط¸â€¦ */
+                height: 60px;
+                border-radius: 50%;
+                /* &#1604;&#1580;&#1593;&#1604; &#1589;&#1608;&#1585;&#1577; &#1575;&#1604;&#1601;&#1574;&#1577; &#1583;&#1575;&#1574;&#1585;&#1610;&#1577; */
+                object-fit: cover;
+                background-color: #f8f8f8;
+                border: 1px solid #eee;
+            }
+
+            /* &#1581;&#1575;&#1604;&#1577; &#1575;&#1604;&#1593;&#1606;&#1589;&#1585; &#1575;&#1604;&#1606;&#1588;&#1591; */
+            .category-pill.active {
+                color: #ffc119;
+                border-bottom: 3px solid #ffc119;
+            }
+
+            .category-pill.active img {
+                border-color: #ffc119;
+                transform: scale(1.1);
+                /* ط·ع¾ط¸ئ’ط·آ¨ط¸ظ¹ط·آ± ط·آ¨ط·آ³ط¸ظ¹ط·آ· ط¸â€‍ط¸â€‍ط·آµط¸ث†ط·آ±ط·آ© ط·آ§ط¸â€‍ط¸â€ ط·آ´ط·آ·ط·آ© */
+            }
+
+            /* Navbar Icons Visibility for this page only */
+            .search-nav-icon,
+            .fav-nav-icon {
+                display: flex !important;
+            }
+
+            @media (max-width: 768px) {
+                .action-buttons {
+                    display: flex;
+                    gap: 5px;
+                }
+
+                .icon-btn {
+                    padding: 5px;
+                }
+            }
+
+            @media(max-width:480px) {
+                .action-buttons {
+                    width: calc(100% - 88px);
+                    justify-content: end;
+                }
+            }
+
+            .bottom-sheet-modal {
+                border-top-left-radius: 20px !important;
+                border-top-right-radius: 20px !important;
+                border-bottom-left-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                margin: 0 !important;
+                max-height: 90vh;
+                overflow: hidden;
+            }
+
+            .compact-modal-container {
+                width: 100%;
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .compact-modal-header {
+                min-height: 50px;
+                padding: 15px;
+                display: flex;
+                justify-content: center;
+                position: relative;
+                background: white;
+                border-top-left-radius: 20px;
+                border-top-right-radius: 20px;
+            }
+
+            .compact-modal-header .handle {
+                width: 40px;
+                height: 4px;
+                background: #ddd;
+                border-radius: 2px;
+            }
+
+            .compact-close {
+                position: absolute;
+                right: 15px;
+                top: 10px;
+                background: #fffcfc;
+                border: none;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            .title-price-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 5px;
+            }
+
+            .compact-price {
+                font-weight: 700;
+                color: var(--fd-blue);
+                font-size: 1.1rem;
+            }
+
+            /* Upsell Redesign Styles */
+            .upsell-section .section-subtitle {
+                font-size: 0.85rem;
+                color: #666;
+                margin-top: -5px;
+                margin-bottom: 15px;
+            }
+
+            .upsell-card-new {
+                background: transparent;
+                text-align: left;
+                width: 140px !important;
+            }
+
+            .upsell-img-wrapper {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 1/1;
+                margin-bottom: 8px;
+            }
+
+            .upsell-img-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 16px;
+            }
+
+            .upsell-add-btn {
+                position: absolute;
+                bottom: 8px;
+                right: 8px;
+                width: 32px;
+                height: 32px;
+                background: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                cursor: pointer;
+                color: #ff6b00;
+                font-size: 14px;
+                transition: transform 0.2s;
+            }
+
+            .upsell-add-btn:active {
+                transform: scale(0.9);
+            }
+
+            .upsell-info {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                height: 100%;
+                max-height: 45px;
+            }
+
+            .upsell-info h5 {
+                font-size: 0.9rem;
+                margin: 0;
+                font-weight: 600;
+                color: #333;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                min-height: fit-content;
+                text-overflow: ellipsis;
+            }
+
+            .upsell-info p {
+                font-size: 0.85rem;
+                color: #666;
+                margin: 2px 0 0;
+                font-weight: 500;
+                margin-top: auto;
+            }
+
+            .related-products-swiper {
+                height: auto !important;
+                padding-bottom: 10px !important;
+            }
+
+            .upsell-card-new {
+                height: fit-content !important;
+            }
+
+            .upsell-card-new .qty-control {
+                position: absolute;
+                bottom: 8px;
+                right: 8px;
+                background: white;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                border-radius: 20px;
+                padding: 2px 5px;
+                display: none;
+                align-items: center;
+                gap: 5px;
+                z-index: 10;
+            }
+
+            .upsell-card-new .qty-control button {
+                width: 26px;
+                height: 26px;
+                font-size: 10px;
+            }
+
+            .upsell-card-new .upsell-badge {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background: #ff6b00;
+                color: white;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                font-weight: bold;
+                z-index: 11;
+                border: 2px solid white;
+            }
+
+            /* Cart Badge Styles */
+
+
+            .addons-badge,
+            .notes-badge {
+                font-size: 0.7rem;
+                padding: 3px 10px;
+                border-radius: 12px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                white-space: nowrap;
+                font-weight: 600;
+                white-space: nowrap;
+                min-width: fit-content;
+                cursor: pointer;
+                min-height: 26px;
+                transition: transform 0.2s, background 0.2s;
+            }
+
+            .addons-badge {
+                background: #e7f3ff;
+                color: #007bff;
+                border: 1px solid #cce5ff;
+            }
+
+            .notes-badge {
+                background: #fff4e5;
+                color: #ff9800;
+                border: 1px solid #ffe8cc;
+            }
+
+            .addons-badge.suggestion-badge {
+                background: #fffdf0;
+                color: #d4a017;
+                white-space: nowrap;
+                min-width: fit-content;
+                border: 1px dashed #ffc119;
+                opacity: 0.9;
+            }
+
+            .addons-badge:hover,
+            .notes-badge:hover {
+                transform: scale(1.05);
+                background: #f0f0f0;
+            }
+
+            .cart-item-size {
+                display: block;
+                font-size: 0.8rem;
+                color: #777;
+                margin-top: 2px;
+            }
+
+            .customized-cart-item .orderedItemName {
+                color: #333;
+                font-weight: 600;
+            }
+
+            .checkout-item-size {
+                font-size: 0.85rem;
+                color: #888;
+                margin-right: 5px;
+            }
+
+            .checkout-item-badges {
+                display: inline-flex;
+                gap: 5px;
+                margin-right: 10px;
+            }
+
+            .checkout-item-badges .addons-badge,
+            .checkout-item-badges .notes-badge {
+                cursor: pointer;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.75rem;
+            }
+
+            /* Compact Modal Styles */
+            .compact-modal-container {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                background: #f8f9fa;
+                text-align: right;
+            }
+
+            .compact-modal-header {
+                min-height: 50px;
+                padding: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                background: white;
+                border-bottom: 1px solid #eee;
+            }
+
+            .handle {
+                width: 40px;
+                height: 4px;
+                background: #ddd;
+                border-radius: 2px;
+            }
+
+            .compact-close {
+                position: absolute;
+                inset-inline-end: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #f0f0f0;
+                border: none;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            .modal-content-body {
+                padding: 20px;
+                overflow-y: auto;
+                flex: 1;
+            }
+
+            .modal-main-info {
+                margin-bottom: 20px;
+            }
+
+            .title-price-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+
+            .modal-main-info h1 {
+                font-size: 1.4rem;
+                font-weight: 800;
+                margin: 0;
+                color: #1a1a1a;
+            }
+
+            .compact-price {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--fd-blue);
+            }
+
+            .modal-desc {
+                color: #666;
+                font-size: 0.9rem;
+                margin: 8px 0 0;
+                line-height: 1.5;
+            }
+
+            .modal-section {
+                margin-top: 24px;
+            }
+
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+
+            .section-header h3 {
+                margin: 0;
+                font-size: 1rem;
+                font-weight: 700;
+                color: #333;
+            }
+
+            .optional-badge {
+                background: #eee;
+                padding: 3px 10px;
+                border-radius: 12px;
+                font-size: 0.75rem;
+                color: #777;
+            }
+
+            #product-notes {
+                width: 100%;
+                border: 1px solid #ddd;
+                border-radius: 12px;
+                padding: 12px;
+                min-height: 80px;
+                font-family: inherit;
+                resize: none;
+                font-size: 0.95rem;
+                background: #fff;
+            }
+
+            .modal-footer-sticky {
+                position: sticky;
+                bottom: 0;
+                background: white;
+                flex-wrap: wrap;
+                padding: 16px 20px;
+                display: flex;
+                justify-content: baseline;
+                align-items: center;
+                gap: 16px;
+                border-top: 1px solid #eee;
+                box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+                z-index: 100;
+            }
+
+            .qty-control {
+                display: flex;
+                align-items: center;
+                background: #f0f0f0;
+                border-radius: 25px;
+                padding: 4px;
+                gap: 15px;
+            }
+
+            .qty-control button {
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                border: none;
+                background: white;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                color: #333;
+            }
+
+            #modal-qty {
+                font-weight: 800;
+                font-size: 1rem;
+                min-width: 20px;
+                text-align: center;
+            }
+
+            .add-to-cart-big {
+                flex: 1;
+                background: var(--fd-blue);
+                color: white;
+                border: none;
+                height: 48px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 20px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: opacity 0.2s;
+            }
+
+            .add-to-cart-big:active {
+                opacity: 0.9;
+            }
+
+            .add-to-cart-big strong {
+                font-size: 0.95rem;
+                background: rgba(255, 255, 255, 0.2);
+                padding: 4px 10px;
+                border-radius: 8px;
+            }
+
+            /* Bottom Sheet Animations */
+            @keyframes slideInUpCustom {
+                from {
+                    transform: translateY(100%);
+                }
+
+                to {
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes slideOutDownCustom {
+                from {
+                    transform: translateY(0);
+                }
+
+                to {
+                    transform: translateY(100%);
+                }
+            }
+
+            .animate__slideInUpCustom {
+                animation: slideInUpCustom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .animate__slideOutDownCustom {
+                animation: slideOutDownCustom 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            /* Nested Upsells in Cart */
+            .cart-item-group {
+                background: #fff;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 1.25rem;
+                margin-bottom: 1rem;
+                min-height: fit-content;
+                /* padding: 0.5rem; */
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            }
+
+            .cart-item-group:hover {
+                border-color: var(--fd-blue);
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+            }
+
+            .cart-item-group .orderedItem {
+                border: none !important;
+                background: transparent !important;
+                margin-bottom: 0 !important;
+                padding-bottom: 0.75rem !important;
+            }
+
+            .cart-item-customizations {
+                padding: 8px 12px 8px 45px;
+                margin-top: 2px;
+                border-top: 1px dashed #eee;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                background: #fcfcfc;
+            }
+
+            .customization-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.85rem;
+                color: #777;
+                align-items: center;
+            }
+
+            .customization-row span:first-child {
+                display: flex;
+                align-items: center;
                 gap: 5px;
             }
-            .icon-btn {
+
+            .customization-row span:first-child::before {
+                content: "أ¢â‚¬آ¢";
+                color: var(--fd-blue);
+                font-weight: bold;
+            }
+
+            .cust-price {
+                font-weight: 600;
+                color: #444;
+                font-size: 0.8rem;
+            }
+
+            .cart-nested-upsells {
+                margin-top: 2px;
+            }
+
+            .upsell-cart-item {
+                background: #f9f9f9 !important;
+                padding-block: 8px !important;
+                padding-inline: 1rem !important;
+                border: none !important;
+                border-right: 3px solid #ffc119 !important;
+                margin-bottom: 2px !important;
+                border-radius: 0 !important;
+                opacity: 0.95;
+                display: flex !important;
+                align-items: center;
+            }
+
+            .upsell-connector {
+                width: 10px;
+                height: 2px;
+                background: #ffc119;
+                margin-left: 8px;
+                opacity: 0.5;
+            }
+
+            .orderedItem.upsell-cart-item {
+                padding-inline: 1rem !important;
+            }
+
+            .upsell-qty-label {
+                color: #ffc119;
+                font-weight: 700;
+                margin-inline-start: 5px;
+            }
+
+            .removeUpsellItem {
+                color: #ccc;
+                cursor: pointer;
+                font-size: 1rem;
                 padding: 5px;
+                margin-inline-start: auto;
             }
-        }
 
-        @media(max-width:480px){
-            .action-buttons{
-                 width: calc(100% - 88px);
-        justify-content: end;
+            .removeUpsellItem:hover {
+                color: #ff4d4d;
             }
-        }
 
-        .bottom-sheet-modal {
-            border-top-left-radius: 20px !important;
-            border-top-right-radius: 20px !important;
-            border-bottom-left-radius: 0 !important;
-            border-bottom-right-radius: 0 !important;
-            margin: 0 !important;
-            max-height: 90vh;
-            overflow: hidden;
-        }
+            .bottom-sheet-modal {
+                border-bottom-left-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                max-width: 800px;
+            }
 
-        .compact-modal-container {
-            width: 100%;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+            .fav-nav-icon {
+                transition: all 0.3s ease !important;
+            }
 
-        .compact-modal-header { min-height: 50px;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            position: relative;
-            background: white;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-        }
+            .fav-nav-icon.active i,
+            .favorite-heart.active i {
+                color: #ff4d4f !important;
+            }
 
-        .compact-modal-header .handle {
-            width: 40px;
-            height: 4px;
-            background: #ddd;
-            border-radius: 2px;
-        }
+            @keyframes heartPop {
+                0% {
+                    transform: scale(1);
+                }
 
-        .compact-close {
-            position: absolute;
-            right: 15px;
-            top: 10px;
-            background: #fffcfc;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
+                50% {
+                    transform: scale(1.35);
+                }
 
-        .title-price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 5px;
-        }
+                100% {
+                    transform: scale(1);
+                }
+            }
 
-        .compact-price {
-            font-weight: 700;
-            color: var(--fd-blue);
-            font-size: 1.1rem;
-        }
+            @keyframes heartSink {
+                0% {
+                    transform: scale(1);
+                }
 
-        /* Upsell Redesign Styles */
-        .upsell-section .section-subtitle {
-            font-size: 0.85rem;
-            color: #666;
-            margin-top: -5px;
-            margin-bottom: 15px;
-        }
+                50% {
+                    transform: scale(0.7);
+                }
 
-        .upsell-card-new {
-            background: transparent;
-            text-align: left;
-            width: 140px !important;
-        }
+                100% {
+                    transform: scale(1);
+                }
+            }
 
-        .upsell-img-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1/1;
-            margin-bottom: 8px;
-        }
+            .animate-pop {
+                transition: none !important;
+                animation: heartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            }
 
-        .upsell-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 16px;
-        }
+            .animate-sink {
+                transition: none !important;
+                animation: heartSink 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            }
 
-        .upsell-add-btn {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            cursor: pointer;
-            color: #ff6b00;
-            font-size: 14px;
-            transition: transform 0.2s;
-        }
+            /* Cart Addon Handlers */
+            .cust-handlers {
+                display: flex;
+                width: fit-content;
+                align-items: center;
+                gap: 8px;
+                background: #f8f8f8;
+                padding: 4px 10px;
+                border-radius: 20px;
+                border: 1px solid #eee;
+                margin-inline-start: 10px;
 
-        .upsell-add-btn:active { transform: scale(0.9); }
+            }
 
-        .upsell-info{
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            height: 100%;
-            max-height: 60px;
-        }
-        .upsell-info h5 {
-            font-size: 0.9rem;
-            margin: 0;
-            font-weight: 600;
-            color: #333;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            min-height: fit-content;
-            text-overflow: ellipsis;
-        }
+            .custom-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
 
-        .upsell-info p {
-            font-size: 0.85rem;
-            color: #666;
-            margin: 2px 0 0;
-            font-weight: 500;
-            margin-top: auto;
-        }
+            @media (max-width: 768px) {
+                .custom-grid {
+                    display: none !important;
+                }
+            }
 
-        .related-products-swiper {
-            height: auto !important;
-            padding-bottom: 10px !important;
-        }
-        .upsell-card-new {
-            height: fit-content !important;
-        }
+            .cust-handlers button {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                border: none;
+                background: var(--fd-blue);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 10px;
+                cursor: pointer;
+                color: white;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                transition: all 0.2s;
+            }
 
-        .upsell-card-new .qty-control {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            border-radius: 20px;
-            padding: 2px 5px;
-            display: none;
-            align-items: center;
-            gap: 5px;
-            z-index: 10;
-        }
-        .upsell-card-new .qty-control button {
-            width: 26px;
-            height: 26px;
-            font-size: 10px;
-        }
-        .upsell-card-new .upsell-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #ff6b00;
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: bold;
-            z-index: 11;
-            border: 2px solid white;
-        }
+            .cust-handlers button:hover {
+                background: var(--fd-blue);
+                color: #fff;
+            }
 
-        /* Cart Badge Styles */
-        .cart-item-badges {
-            display: flex;
-            flex-direction: row;
-            gap: 8px;
-            margin-top: 5px;
-            flex-wrap: nowrap;
-        }
+            .cust-qty-val {
+                font-weight: 800;
+                font-size: 11px;
+                min-width: 12px;
+                text-align: center;
+                color: #333;
+            }
 
-        .addons-badge, .notes-badge {
-            font-size: 0.7rem;
-            padding: 3px 10px;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-            font-weight: 600;
-            cursor: pointer;
-            min-height: 26px;
-            transition: transform 0.2s, background 0.2s;
-        }
+            .remove-addon-btn,
+            .removeUpsellItem {
+                margin-inline-start: 8px;
+                color: #ddd;
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: color 0.2s;
+            }
 
-        .addons-badge {
-            background: #e7f3ff;
-            color: #007bff;
-            border: 1px solid #cce5ff;
-        }
+            .remove-addon-btn:hover,
+            .removeUpsellItem:hover {
+                color: #ff4d4d;
+            }
 
-        .notes-badge {
-            background: #fff4e5;
-            color: #ff9800;
-            border: 1px solid #ffe8cc;
-        }
+            .cust-row-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-grow: 1;
+            }
 
-        .addons-badge.suggestion-badge {
-            background: #fffdf0;
-            color: #d4a017;
-            border: 1px dashed #ffc119;
-            opacity: 0.9;
-        }
+            .customization-row {
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding: 10px 0 !important;
+                border-bottom: 1px dashed #eee;
+                display: flex !important;
+            }
 
-        .addons-badge:hover, .notes-badge:hover {
-            transform: scale(1.05);
-            background: #f0f0f0;
-        }
+            .customization-row:last-child {
+                border-bottom: none;
+            }
 
-        .cart-item-size {
-            display: block;
-            font-size: 0.8rem;
-            color: #777;
-            margin-top: 2px;
-        }
+            .compact-modal-container .swal2-textarea {
+                border-radius: 15px !important;
+                padding: 15px !important;
+                border: 1px solid #eee !important;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+                font-size: 0.95rem !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
 
-        .customized-cart-item .orderedItemName {
-            color: #333;
-            font-weight: 600;
-        }
+            .notes-badge {
+                background: #e6f3ff;
+                color: #007bff;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 11px;
+                cursor: pointer;
+                font-weight: 600;
+                margin-inline-start: 5px;
+            }
 
-        .checkout-item-size {
-            font-size: 0.85rem;
-            color: #888;
-            margin-right: 5px;
-        }
+            /* Modal Radio-like behavior styling removed/updated */
+            .quick-card.active .check-box {
+                display: none !important;
+            }
 
-        .checkout-item-badges {
-            display: inline-flex;
-            gap: 5px;
-            margin-right: 10px;
-        }
+            .quick-card.active {
+                border-color: var(--fd-blue) !important;
+                background-color: #fff9e6 !important;
+            }
 
-        .checkout-item-badges .addons-badge,
-        .checkout-item-badges .notes-badge {
-            cursor: pointer;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-        }
+            .quick-qty-control {
+                position: absolute;
+                bottom: 8px;
+                right: 8px;
+                display: none;
+                align-items: center;
+                background: #fff;
+                border: 1px solid var(--fd-blue);
+                border-radius: 20px;
+                padding: 2px 6px;
+                gap: 10px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                z-index: 5;
+            }
 
-        /* Compact Modal Styles */
-        .compact-modal-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            background: #f8f9fa;
-            text-align: right;
-        }
+            .quick-card.active .quick-qty-control {
+                display: flex;
+            }
 
-        .compact-modal-header {
-            min-height: 50px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: white;
-            border-bottom: 1px solid #eee;
-        }
+            .quick-qty-control button {
+                background: var(--fd-blue);
+                color: #fff;
+                border: none;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                transition: all 0.2s;
+            }
 
-        .handle {
-            width: 40px;
-            height: 4px;
-            background: #ddd;
-            border-radius: 2px;
-        }
+            .quick-qty-control button:hover {
+                transform: scale(1.1);
+                background: #ff6b00;
+            }
 
-        .compact-close {
-            position: absolute;
-            inset-inline-end: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #f0f0f0;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .modal-content-body {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .modal-main-info {
-            margin-bottom: 20px;
-        }
-
-        .title-price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .modal-main-info h1 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin: 0;
-            color: #1a1a1a;
-        }
-
-        .compact-price {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--fd-blue);
-        }
-
-        .modal-desc {
-            color: #666;
-            font-size: 0.9rem;
-            margin: 8px 0 0;
-            line-height: 1.5;
-        }
-
-        .modal-section {
-            margin-top: 24px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .section-header h3 {
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #333;
-        }
-
-        .optional-badge {
-            background: #eee;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            color: #777;
-        }
-
-        #product-notes {
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 12px;
-            min-height: 80px;
-            font-family: inherit;
-            resize: none;
-            font-size: 0.95rem;
-            background: #fff;
-        }
-
-        .modal-footer-sticky {
-            position: sticky;
-            bottom: 0;
-            background: white;
-            flex-wrap: wrap;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: baseline;
-            align-items: center;
-            gap: 16px;
-            border-top: 1px solid #eee;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-            z-index: 100;
-        }
-
-        .qty-control {
-            display: flex;
-            align-items: center;
-            background: #f0f0f0;
-            border-radius: 25px;
-            padding: 4px;
-            gap: 15px;
-        }
-
-        .qty-control button {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            border: none;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            color: #333;
-        }
-
-        #modal-qty {
-            font-weight: 800;
-            font-size: 1rem;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        .add-to-cart-big {
-            flex: 1;
-            background: var(--fd-blue);
-            color: white;
-            border: none;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .add-to-cart-big:active { opacity: 0.9; }
-
-        .add-to-cart-big strong {
-            font-size: 0.95rem;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 10px;
-            border-radius: 8px;
-        }
-        /* Bottom Sheet Animations */
-        @keyframes slideInUpCustom {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        @keyframes slideOutDownCustom {
-            from { transform: translateY(0); }
-            to { transform: translateY(100%); }
-        }
-        .animate__slideInUpCustom {
-            animation: slideInUpCustom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .animate__slideOutDownCustom {
-            animation: slideOutDownCustom 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Nested Upsells in Cart */
-        .cart-item-group {
-            background: #fff;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 1.25rem;
-            margin-bottom: 1rem;
-            min-height: fit-content;
-            /* padding: 0.5rem; */
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        }
-        .cart-item-group:hover {
-            border-color: var(--fd-blue);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-        }
-        .cart-item-group .orderedItem {
-            border: none !important;
-            background: transparent !important;
-            margin-bottom: 0 !important;
-            padding-bottom: 0.75rem !important;
-        }
-        .cart-item-customizations {
-            padding: 8px 12px 8px 45px;
-            margin-top: 2px;
-            border-top: 1px dashed #eee;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            background: #fcfcfc;
-        }
-        .customization-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: #777;
-            align-items: center;
-        }
-        .customization-row span:first-child {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .customization-row span:first-child::before {
-            content: "أ¢â‚¬آ¢";
-            color: var(--fd-blue);
-            font-weight: bold;
-        }
-        .cust-price {
-            font-weight: 600;
-            color: #444;
-            font-size: 0.8rem;
-        }
-        .cart-nested-upsells {
-            margin-top: 2px;
-        }
-        .upsell-cart-item {
-            background: #f9f9f9 !important;
-padding-block: 8px !important;
-padding-inline: 1rem !important;
-          border: none !important;
-            border-right: 3px solid #ffc119 !important;
-            margin-bottom: 2px !important;
-            border-radius: 0 !important;
-            opacity: 0.95;
-            display: flex !important;
-            align-items: center;
-        }
-        .upsell-connector {
-            width: 10px;
-            height: 2px;
-            background: #ffc119;
-            margin-left: 8px;
-            opacity: 0.5;
-        }
-        .orderedItem.upsell-cart-item{
-            padding-inline: 1rem !important;
-        }
-        .upsell-qty-label {
-            color: #ffc119;
-            font-weight: 700;
-            margin-inline-start: 5px;
-        }
-        .removeUpsellItem {
-            color: #ccc;
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 5px;
-            margin-inline-start: auto;
-        }
-        .removeUpsellItem:hover {
-            color: #ff4d4d;
-        }
-
-        .bottom-sheet-modal {
-            border-bottom-left-radius: 0 !important;
-            border-bottom-right-radius: 0 !important;
-            max-width: 800px;
-        }
-
-        .fav-nav-icon.active i {
-            color: palevioletred  !important;
-        }
-
-        /* Cart Addon Handlers */
-        .cust-handlers {
-            display: flex;
-            width: fit-content;
-            align-items: center;
-            gap: 8px;
-                        background: #f8f8f8;
-            padding: 4px 10px;
-            border-radius: 20px;
-            border: 1px solid #eee;
-            margin-inline-start: 10px;
-
-        }
-        .custom-grid{
-            display: grid;
-            grid-template-columns: repeat(2, 1fr) !important;
-        }
-        @media (max-width: 768px) {
-  .custom-grid {
-    display: none !important;
-  }
-}
-
-        .cust-handlers button {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: none;
-            background: var(--fd-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            cursor: pointer;
-            color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: all 0.2s;
-        }
-        .cust-handlers button:hover {
-            background: var(--fd-blue);
-            color: #fff;
-        }
-        .cust-qty-val {
-            font-weight: 800;
-            font-size: 11px;
-            min-width: 12px;
-            text-align: center;
-            color: #333;
-        }
-        .remove-addon-btn, .removeUpsellItem {
-            margin-inline-start: 8px;
-            color: #ddd;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .remove-addon-btn:hover, .removeUpsellItem:hover {
-            color: #ff4d4d;
-        }
-        .cust-row-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-grow: 1;
-        }
-        .customization-row {
-            flex-direction: row !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            padding: 10px 0 !important;
-            border-bottom: 1px dashed #eee;
-            display: flex !important;
-        }
-        .customization-row:last-child {
-            border-bottom: none;
-        }
-
-        .compact-modal-container .swal2-textarea {
-            border-radius: 15px !important;
-            padding: 15px !important;
-            border: 1px solid #eee !important;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
-            font-size: 0.95rem !important;
-            width: 100% !important;
-            box-sizing: border-box !important;
-        }
-        .notes-badge {
-            background: #e6f3ff;
-            color: #007bff;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-inline-start: 5px;
-        }
-
-        /* Modal Radio-like behavior styling removed/updated */
-        .quick-card.active .check-box {
-            display: none !important;
-        }
-        .quick-card.active {
-            border-color: var(--fd-blue) !important;
-            background-color: #fff9e6 !important;
-        }
-
-        .quick-qty-control {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            display: none;
-            align-items: center;
-            background: #fff;
-            border: 1px solid var(--fd-blue);
-            border-radius: 20px;
-            padding: 2px 6px;
-            gap: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 5;
-        }
-        .quick-card.active .quick-qty-control {
-            display: flex;
-        }
-        .quick-qty-control button {
-            background: var(--fd-blue);
-            color: #fff;
-            border: none;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .quick-qty-control button:hover {
-            transform: scale(1.1);
-            background: #ff6b00;
-        }
-        .quick-qty-val {
-            font-weight: 700;
-            font-size: 14px;
-            min-width: 18px;
-            text-align: center;
-            color: #333;
-        }
-
+            .quick-qty-val {
+                font-weight: 700;
+                font-size: 14px;
+                min-width: 18px;
+                text-align: center;
+                color: #333;
+            }
         </style>
 
-    <script>
-        let currentTriggeringProduct = null;
+        <script>
+            let currentTriggeringProduct = null;
 
-        function shareShop(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            if (navigator.share) {
-                navigator.share({
-                    title: document.querySelector('.availableShopName').innerText,
-                    url: window.location.href
-                }).catch(() => {});
-            } else {
-                // Clipboard fallback
-                navigator.clipboard.writeText(window.location.href).then(() => {
-                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'تم نسخ الرابط', showConfirmButton: false, timer: 1500 });
-                });
-            }
-        }
-
-        function openProductModal(triggerEl, productName, description = "طعم لا يقاوم محضر من أجود المكونات", isCustom = false, price = 100) {
-            currentTriggeringProduct = triggerEl;
-            if (isCustom) {
-                openHardcodedModal(null, productName, price, triggerEl, description);
-                return;
+            function shareShop(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if (navigator.share) {
+                    navigator.share({
+                        title: document.querySelector('.availableShopName').innerText,
+                        url: window.location.href
+                    }).catch(() => { });
+                } else {
+                    // Clipboard fallback
+                    navigator.clipboard.writeText(window.location.href).then(() => {
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'تم نسخ الرابط', showConfirmButton: false, timer: 1500 });
+                    });
+                }
             }
 
-            window.history.pushState({ modal: 'product' }, '');
-            basePrice = price;
-            addonsPrice = 0;
-            quantity = 1;
+            function openProductModal(triggerEl, productName, description = "طعم لا يقاوم محضر من أجود المكونات", isCustom = false, price = 100) {
+                currentTriggeringProduct = triggerEl;
+                if (isCustom) {
+                    openHardcodedModal(null, productName, price, triggerEl, description);
+                    return;
+                }
 
-            const modalOptions = {
-                html: `
+                window.history.pushState({ modal: 'product' }, '');
+                basePrice = price;
+                addonsPrice = 0;
+                quantity = 1;
+
+                const modalOptions = {
+                    html: `
                     <div class="compact-modal-container">
                         <div class="compact-modal-header">
                             <div class="handle"></div>
@@ -2615,421 +2698,468 @@ padding-inline: 1rem !important;
                         </div>
                     </div>
                 `,
-                showConfirmButton: false,
-                width: '100%',
-                padding: '0',
-                background: '#f8f9fa',
-                position: 'bottom',
-                customClass: { popup: 'bottom-sheet-modal' },
-                scrollbarPadding: false,
-                showClass: { popup: 'animate__animated animate__slideInUpCustom animate__faster' },
-                hideClass: { popup: 'animate__animated animate__slideOutDownCustom animate__faster' },
-                didOpen: () => { },
-                willClose: () => {
-                    if (window.history.state && window.history.state.modal === 'product') {
-                        window.history.back();
+                    showConfirmButton: false,
+                    width: '100%',
+                    padding: '0',
+                    background: '#f8f9fa',
+                    position: 'bottom',
+                    customClass: { popup: 'bottom-sheet-modal' },
+                    scrollbarPadding: false,
+                    showClass: { popup: 'animate__animated animate__slideInUpCustom animate__faster' },
+                    hideClass: { popup: 'animate__animated animate__slideOutDownCustom animate__faster' },
+                    didOpen: () => { },
+                    willClose: () => {
+                        if (window.history.state && window.history.state.modal === 'product') {
+                            window.history.back();
+                        }
                     }
+                };
+                Swal.fire(modalOptions);
+            }
+
+
+
+            let basePrice = 0;
+            let currentProductBasePrice = 130;
+            let addonsPrice = 0;
+            let quantity = 1;
+            let currentCustomization = { size: null, extras: [], upsells: [] };
+
+            function selectModalOption(el, totalSizePrice, sizeId) {
+                const rows = el.parentElement.querySelectorAll('.option-row');
+                rows.forEach(r => r.classList.remove('active'));
+                el.classList.add('active');
+
+                currentCustomization.size = {
+                    id: sizeId,
+                    name: el.querySelector('span').innerText,
+                    price: totalSizePrice
+                };
+                basePrice = totalSizePrice;
+                updateModalTotal();
+            }
+            window.openNotesModal = function (itemId, shopId) {
+                const currentCart = window.cart || cart;
+                const item = currentCart.items.find(i => i.id === itemId && i.shopId === shopId);
+                if (!item) return;
+
+                // Redirect to the new compact notes modal for consistency
+                if (typeof openSimpleNotesModal === 'function') {
+                    openSimpleNotesModal(null, item.name, item.price, item.description || '', item.id);
                 }
             };
-            Swal.fire(modalOptions);
-        }
-
-        function toggleShopFavorite() {
-            const shopId = document.getElementById('shopId')?.innerText.trim();
-            if (!shopId) return;
-
-            let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-            const index = favorites.indexOf(shopId);
-            const favIcon = document.querySelector('#favIconNav i');
-
-            if (index > -1) {
-                favorites.splice(index, 1);
-                if (favIcon) favIcon.className = 'fa-regular fa-heart';
-                Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0632\u0627\u0644\u0629 \u0645\u0646 \u0627\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
-            } else {
-                favorites.push(shopId);
-                if (favIcon) favIcon.className = 'fa-solid fa-heart';
-                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0644\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
-            }
-            localStorage.setItem('favoriteShops', JSON.stringify(favorites));
-        }
-
-        function checkFavoriteStatus() {
-            const shopId = document.getElementById('shopId')?.innerText.trim();
-            const favIcon = document.querySelector('#favIconNav i');
-            if (!shopId || !favIcon) return;
-
-            let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-            if (favorites.indexOf(shopId) > -1) {
-                favIcon.className = 'fa-solid fa-heart';
-            } else {
-                favIcon.className = 'fa-regular fa-heart';
-            }
-        }
-        document.addEventListener('DOMContentLoaded', checkFavoriteStatus);
-
-        let basePrice = 0;
-        let currentProductBasePrice = 130;
-        let addonsPrice = 0;
-        let quantity = 1;
-        let currentCustomization = { size: null, extras: [], upsells: [] };
-
-        function selectModalOption(el, totalSizePrice, sizeId) {
-            const rows = el.parentElement.querySelectorAll('.option-row');
-            rows.forEach(r => r.classList.remove('active'));
-            el.classList.add('active');
-
-            currentCustomization.size = {
-                id: sizeId,
-                name: el.querySelector('span').innerText,
-                price: totalSizePrice
-            };
-            basePrice = totalSizePrice;
-            updateModalTotal();
-        }
-        window.openNotesModal = function(itemId, shopId) {
-            const currentCart = window.cart || cart;
-            const item = currentCart.items.find(i => i.id === itemId && i.shopId === shopId);
-            if (!item) return;
-
-            // Redirect to the new compact notes modal for consistency
-            if (typeof openSimpleNotesModal === 'function') {
-                openSimpleNotesModal(null, item.name, item.price, item.description || '', item.id);
-            }
-        };
 
 
-        function toggleExtra(el, price, id) {
-            // Section removed but function kept for compatibility if called
-            el.classList.toggle('active');
-            recalculateAddonsPrice();
-            updateModalTotal();
-        }
+            function toggleExtra(el, price, id, name) {
+                el.classList.toggle('active');
+                const isAdded = el.classList.contains('active');
 
-        function recalculateAddonsPrice() {
-            let total = 0;
-            if (currentCustomization.extras) currentCustomization.extras.forEach(x => total += (x.price || 0));
-            if (currentCustomization.upsells) currentCustomization.upsells.forEach(x => total += ((x.price || 0) * (x.qty || 0)));
-            addonsPrice = total;
-        }
-
-        function updateModalQty(delta) {
-            quantity = Math.max(1, quantity + delta);
-            const qtyEl = document.querySelector('.swal2-container #modal-qty') || document.getElementById('modal-qty');
-            if (qtyEl) qtyEl.innerText = quantity;
-            updateModalTotal();
-        }
-
-        function updateModalTotal() {
-            const el = document.querySelector('.swal2-container #modal-total-price') || document.getElementById('modal-total-price');
-            if (!el) return;
-
-            // Check if sizes are present in the DOM (only for hardcoded customization modal)
-            const hasSizes = !!(document.querySelector('.swal2-container .option-row') || document.getElementById('option-row'));
-
-            if (hasSizes && !currentCustomization.size) {
-                el.innerHTML = 'اختار الحجم';
-                const btn = document.querySelector('.swal2-container .add-to-cart-big');
-                if (btn) btn.style.opacity = '0.5';
-                return;
-            }
-
-            const btn = document.querySelector('.swal2-container .add-to-cart-big');
-            if (btn) btn.style.opacity = '1';
-
-            const total = (basePrice * quantity) + addonsPrice;
-            el.innerHTML = total.toFixed(2) + ' \u062C.\u0645';
-        }
-
-        function handleProductClick(el, event) {
-            // Check if this is a custom item (like Quarter/Half Shawarma)
-            const isCustom = el.classList.contains('custom-item');
-
-            // For regular items, block modal if clicking cart buttons
-            if (!isCustom) {
-                if (event.target.closest('.addToCart') || event.target.closest('.qty-control')) return;
-            }
-            const name = el.getAttribute('data-product-name');
-            const desc = el.querySelector('.foodContent')?.innerText || '';
-            const price = parseFloat(el.getAttribute('data-price')) || 100;
-            openProductModal(el, name, desc, isCustom, price);
-        }
-
-        function handleAddToCartClick(event, btn) {
-            event.preventDefault();
-            event.stopPropagation();
-            const itemEl = btn.closest('.foodItem');
-            const id = itemEl.getAttribute('id');
-            const name = itemEl.getAttribute('data-product-name');
-            const price = parseFloat(itemEl.getAttribute('data-price'));
-
-            const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-            if (window.cart) {
-                window.cart.addItem({
-                    id, name, price,
-                    shopId: shopId,
-                    shopName: document.querySelector('.shop-header-info h1')?.innerText || ''
-                }, 1);
-            }
-
-            // UI Switch to Qty Control
-            syncProductBadges();
-        }
-
-        function handleCardQty(event, btn, delta) {
-            event.preventDefault();
-            event.stopPropagation();
-            const itemEl = btn.closest('.foodItem');
-            const id = itemEl.getAttribute('id');
-            const shopId = document.getElementById('shopId')?.innerText.trim() || '';
-
-            if (window.cart) {
-                if (delta > 0) window.cart.increaseItem(id, shopId);
-                else window.cart.decreaseItem(id, shopId);
-            }
-            syncProductBadges();
-        }
-
-        function syncProductBadges() {
-            if (!window.cart || !window.cart.items) return;
-            const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-            const counts = {};
-            window.cart.items.forEach(item => {
-                if (String(item.shopId) === shopId) {
-                    // Get base ID (remove size suffix if exists)
-                    const baseId = item.id.split('-size-')[0];
-                    counts[baseId] = (counts[baseId] || 0) + item.amount;
+                if (isAdded) {
+                    // Add if not already there
+                    if (!currentCustomization.extras.some(x => String(x.id) === String(id))) {
+                        currentCustomization.extras.push({ id: id, name: name, price: price, qty: 1 });
+                    }
+                } else {
+                    // Remove
+                    currentCustomization.extras = currentCustomization.extras.filter(x => String(x.id) !== String(id));
                 }
-            });
 
-            document.querySelectorAll('.foodItem').forEach(el => {
-                const id = el.getAttribute('id');
-                const count = counts[id] || 0;
-
-                // Update badge
-                const badge = el.querySelector('.product-qty-badge');
+                // UI feedback for badge and controls
+                const badge = el.querySelector('.extra-badge');
+                const controls = el.querySelector('.extra-qty-control');
                 if (badge) {
-                    badge.innerText = count;
-                    badge.style.display = count > 0 ? 'flex' : 'none';
+                    badge.style.display = isAdded ? 'flex' : 'none';
+                    badge.innerText = '1';
+                }
+                if (controls) {
+                    controls.style.display = isAdded ? 'flex' : 'none';
+                    const qtyVal = controls.querySelector('.extra-qty-val');
+                    if (qtyVal) qtyVal.innerText = '1';
                 }
 
-                // Update Card UI (plus button vs qty control)
-                const addBtn = el.querySelector('.addToCartBtn');
-                const qtyCtrl = el.querySelector('.card-qty');
-                const qtyVal = el.querySelector('.qty-val');
-
-                if (addBtn && qtyCtrl) {
-                    if (count > 0 && !el.classList.contains('custom-item')) {
-                        addBtn.style.display = 'none';
-                        qtyCtrl.style.display = 'flex';
-                        if (qtyVal) qtyVal.innerText = count;
-                    } else {
-                        addBtn.style.display = 'flex';
-                        qtyCtrl.style.display = 'none';
-                    }
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(syncProductBadges, 500); // Wait for cart initialization
-        });
-
-        let currentEditItem = null;
-
-        function submitModalCart() {
-            const popup = document.querySelector('.swal2-popup');
-            if (!popup) {
-                Swal.close();
-                return;
+                recalculateAddonsPrice();
+                updateModalTotal();
             }
 
-            const hasSizes = !!(popup.querySelector('.option-row') || document.getElementById('option-row'));
-            if (hasSizes && (!currentCustomization || !currentCustomization.size)) {
-                const priceEl = popup.querySelector('#modal-total-price');
-                if (priceEl) {
-                    priceEl.style.color = 'red';
-                    setTimeout(() => priceEl.style.color = '', 1000);
-                }
-                return;
-            }
-
-            const productName = popup.querySelector('h1')?.innerText.split(' - ')[0] || 'Product';
-            const notesEl = popup.querySelector('#product-notes') || popup.querySelector('textarea');
-            const notes = notesEl?.value || '';
-
-            const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-            const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
-
-            // Unique ID based on product ID and size ID
-            const baseId = currentCustomization?.baseItemId || currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id.split('-size-')[0] : 'custom');
-            const sizeSuffix = (currentCustomization && currentCustomization.size) ? `-size-${currentCustomization.size.id}` : '';
-            const uniqueId = baseId + sizeSuffix;
-
-            const isCustomProduct = !!(currentTriggeringProduct?.classList.contains('custom-item') || currentEditItem?.isCustomProduct);
-            const hasActualCustomizations = !!(currentCustomization && (
-                (currentCustomization.extras && currentCustomization.extras.length > 0) ||
-                (currentCustomization.upsells && currentCustomization.upsells.length > 0) ||
-                (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small')
-            ));
-
-            const mainItem = {
-                id: uniqueId,
-                name: productName,
-                price: basePrice,
-                productBasePrice: currentProductBasePrice,
-                isCustomProduct: isCustomProduct,
-                isCustomized: isCustomProduct || hasActualCustomizations,
-                hasActualCustomizations: hasActualCustomizations,
-                customization: currentCustomization ? {
-                    size: currentCustomization.size,
-                    extras: [...currentCustomization.extras],
-                    upsells: [...currentCustomization.upsells],
-                    notes: notes
-                } : { notes: notes },
-                shopId: shopId,
-                shopName: shopName,
-                notes: notes,
-                image: popup.querySelector('.modal-banner img')?.src || ''
-            };
-            mainItem.hasAddons = mainItem.isCustomized;
-
-            let addedStatus = false;
-            if (window.cart) {
-                if (currentEditItem) {
-                    window.cart.removeItem(currentEditItem.id, currentEditItem.shopId);
-                }
-                addedStatus = window.cart.addItem(mainItem, quantity, !!currentEditItem);
-            }
-
-            if (addedStatus === false) return;
-
-            // Force close current modal before showing success
-            if (typeof Swal !== 'undefined') {
-                Swal.close();
-            }
-
-            setTimeout(() => {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'تمت الإضافة بنجاح',
-                        timer: 1500,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
+            function recalculateAddonsPrice() {
+                let total = 0;
+                if (currentCustomization.extras) {
+                    currentCustomization.extras.forEach(x => {
+                        total += (x.price || 0) * (x.qty || 1);
                     });
                 }
-            }, 100);
-        }
-
-        function addUpsellItem(btn, price, id, name) {
-            const wrapper = btn.closest('.upsell-img-wrapper');
-            const qtyCtrl = wrapper.querySelector('.qty-control');
-            const badge = wrapper.querySelector('.upsell-badge');
-
-            btn.style.display = 'none';
-            qtyCtrl.style.display = 'flex';
-            if (badge) {
-                badge.style.display = 'flex';
-                badge.innerText = '1';
+                if (currentCustomization.upsells) {
+                    currentCustomization.upsells.forEach(x => {
+                        total += (x.price || 0) * (x.qty || 1);
+                    });
+                }
+                addonsPrice = total;
             }
 
-            currentCustomization.upsells.push({ id: id, name: name, price: price, qty: 1 });
-            addonsPrice += price;
-            updateModalTotal();
-        }
+            function updateExtraQty(event, delta, price, extraId) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
 
-        function updateUpsellQty(btn, delta, price, id) {
-            const container = btn.closest('.qty-control');
-            const valSpan = container.querySelector('.upsell-qty-val');
-            let currentQty = parseInt(valSpan.innerText);
+                const extra = currentCustomization.extras.find(e => String(e.id) === String(extraId));
+                if (!extra) return;
 
-            const newQty = Math.max(0, currentQty + delta);
-            valSpan.innerText = newQty;
+                extra.qty = (extra.qty || 1) + delta;
 
-            // Update customization state
-            const upsell = currentCustomization.upsells.find(x => x.id === id);
-            if (upsell) {
-                upsell.qty = newQty;
+                if (extra.qty < 1) {
+                    // Remove the extra if qty becomes 0
+                    currentCustomization.extras = currentCustomization.extras.filter(e => String(e.id) !== String(extraId));
+                    const row = document.querySelector(`.extra-item[data-extra-id="${extraId}"]`);
+                    if (row) {
+                        row.classList.remove('active');
+                        const badge = row.querySelector('.extra-badge');
+                        if (badge) badge.style.display = 'none';
+                        const controls = row.querySelector('.extra-qty-control');
+                        if (controls) controls.style.display = 'none';
+                    }
+                } else {
+                    // Update display
+                    const row = document.querySelector(`.extra-item[data-extra-id="${extraId}"]`);
+                    if (row) {
+                        const badge = row.querySelector('.extra-badge');
+                        if (badge) {
+                            badge.innerText = extra.qty;
+                            badge.style.display = 'flex';
+                        }
+                        const qtyVal = row.querySelector('.extra-qty-val');
+                        if (qtyVal) qtyVal.innerText = extra.qty;
+                    }
+                }
+
+                recalculateAddonsPrice();
+                updateModalTotal();
             }
 
-            // Update modal price
-            addonsPrice += (delta * price);
-            updateModalTotal();
+            function updateModalQty(delta) {
+                quantity = Math.max(1, quantity + delta);
+                const qtyEl = document.querySelector('.swal2-container #modal-qty') || document.getElementById('modal-qty');
+                if (qtyEl) qtyEl.innerText = quantity;
+                updateModalTotal();
+            }
 
-            if (newQty === 0) {
-                currentCustomization.upsells = currentCustomization.upsells.filter(x => x.id !== id);
+            function updateModalTotal() {
+                const el = document.querySelector('.swal2-container #modal-total-price') || document.getElementById('modal-total-price');
+                if (!el) return;
+
+                // Check if sizes are present in the DOM (only for hardcoded customization modal)
+                const hasSizes = !!(document.querySelector('.swal2-container .option-row') || document.getElementById('option-row'));
+
+                if (hasSizes && !currentCustomization.size) {
+                    el.innerHTML = 'اختار الحجم';
+                    const btn = document.querySelector('.swal2-container .add-to-cart-big');
+                    if (btn) btn.style.opacity = '0.5';
+                    return;
+                }
+
+                const btn = document.querySelector('.swal2-container .add-to-cart-big');
+                if (btn) btn.style.opacity = '1';
+
+                const total = (basePrice * quantity) + addonsPrice;
+                el.innerHTML = total.toFixed(2) + ' \u062C.\u0645';
+            }
+
+            function handleProductClick(el, event) {
+                // Check if this is a custom item (like Quarter/Half Shawarma)
+                const isCustom = el.classList.contains('custom-item');
+
+                // For regular items, block modal if clicking cart buttons
+                if (!isCustom) {
+                    if (event.target.closest('.addToCart') || event.target.closest('.qty-control')) return;
+                }
+                const name = el.getAttribute('data-product-name');
+                const desc = el.querySelector('.foodContent')?.innerText || '';
+                const price = parseFloat(el.getAttribute('data-price')) || 100;
+                openProductModal(el, name, desc, isCustom, price);
+            }
+
+            function handleAddToCartClick(event, btn) {
+                event.preventDefault();
+                event.stopPropagation();
+                const itemEl = btn.closest('.foodItem');
+                const id = itemEl.getAttribute('id');
+                const name = itemEl.getAttribute('data-product-name');
+                const price = parseFloat(itemEl.getAttribute('data-price'));
+
+                const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+                if (window.cart) {
+                    window.cart.addItem({
+                        id, name, price,
+                        shopId: shopId,
+                        shopName: document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
+                        deliveryTime: document.querySelector('.timer')?.innerText.trim() || '',
+                        isCustomProduct: itemEl.getAttribute('data-has-addons') === '1' || itemEl.classList.contains('custom-item')
+                    }, 1);
+                }
+
+                // UI Switch to Qty Control
+                syncProductBadges();
+            }
+
+            function handleCardQty(event, btn, delta) {
+                event.preventDefault();
+                event.stopPropagation();
+                const itemEl = btn.closest('.foodItem');
+                const id = itemEl.getAttribute('id');
+                const shopId = document.getElementById('shopId')?.innerText.trim() || '';
+
+                if (window.cart) {
+                    if (delta > 0) window.cart.increaseItem(id, shopId);
+                    else window.cart.decreaseItem(id, shopId);
+                }
+                syncProductBadges();
+            }
+
+            function syncProductBadges() {
+                if (!window.cart || !window.cart.items) return;
+                const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+                const counts = {};
+                window.cart.items.forEach(item => {
+                    if (String(item.shopId) === shopId) {
+                        // Get base ID (remove size suffix if exists)
+                        const baseId = String(item.id).split('-size-')[0];
+                        counts[baseId] = (counts[baseId] || 0) + item.amount;
+                    }
+                });
+
+                document.querySelectorAll('.foodItem').forEach(el => {
+                    const id = el.getAttribute('id');
+                    const count = counts[id] || 0;
+
+                    // Update badge
+                    const badge = el.querySelector('.product-qty-badge');
+                    if (badge) {
+                        badge.innerText = count;
+                        badge.style.display = count > 0 ? 'flex' : 'none';
+                    }
+
+                    // Update Card UI (plus button vs qty control)
+                    const addBtn = el.querySelector('.addToCartBtn');
+                    const qtyCtrl = el.querySelector('.card-qty');
+                    const qtyVal = el.querySelector('.qty-val');
+
+                    if (addBtn && qtyCtrl) {
+                        if (count > 0 && !el.classList.contains('custom-item')) {
+                            addBtn.style.display = 'none';
+                            qtyCtrl.style.display = 'flex';
+                            if (qtyVal) qtyVal.innerText = count;
+                        } else {
+                            addBtn.style.display = 'flex';
+                            qtyCtrl.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(syncProductBadges, 500); // Wait for cart initialization
+            });
+
+            let currentEditItem = null;
+
+            function submitModalCart() {
+                const popup = document.querySelector('.swal2-popup');
+                if (!popup) {
+                    Swal.close();
+                    return;
+                }
+
+                const hasSizes = !!(popup.querySelector('.option-row') || document.getElementById('option-row'));
+                if (hasSizes && (!currentCustomization || !currentCustomization.size)) {
+                    const priceEl = popup.querySelector('#modal-total-price');
+                    if (priceEl) {
+                        priceEl.style.color = 'red';
+                        setTimeout(() => priceEl.style.color = '', 1000);
+                    }
+                    return;
+                }
+
+                const productName = popup.querySelector('h1')?.innerText.split(' - ')[0] || 'Product';
+                const notesEl = popup.querySelector('#product-notes') || popup.querySelector('textarea');
+                const notes = notesEl?.value || '';
+
+                const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+                const shopName = document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '';
+                const deliveryTime = document.querySelector('.timer')?.innerText.trim() || '';
+
+                // Unique ID based on product ID and size ID
+                const baseId = currentCustomization?.baseItemId || currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id : 'custom');
+                const sizeId = (currentCustomization && currentCustomization.size) ? currentCustomization.size.id : '';
+                const uniqueId = baseId + (sizeId ? `-size-${sizeId}` : '');
+
+                const isCustomProduct = !!(currentCustomization?.isCustomProduct || currentTriggeringProduct?.closest('.foodItem')?.classList.contains('custom-item') || currentTriggeringProduct?.classList.contains('custom-item') || currentEditItem?.isCustomProduct);
+                const hasActualCustomizations = !!(currentCustomization && (
+                    (currentCustomization.extras && currentCustomization.extras.length > 0) ||
+                    (currentCustomization.upsells && currentCustomization.upsells.length > 0) ||
+                    (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small') ||
+                    !!notes
+                ));
+
+                const mainItem = {
+                    id: baseId,
+                    cartItemId: uniqueId,
+                    sizeId: sizeId,
+                    name: productName,
+                    price: basePrice,
+                    productBasePrice: currentProductBasePrice,
+                    isCustomProduct: isCustomProduct,
+                    isCustomized: isCustomProduct || hasActualCustomizations,
+                    hasActualCustomizations: hasActualCustomizations,
+                    customization: isCustomProduct
+                        ? {
+                            size: currentCustomization?.size || null,
+                            extras: currentCustomization?.extras || [],
+                            upsells: currentCustomization?.upsells || [],
+                            notes: notes || ''
+                        }
+                        : null,
+                    shopId: shopId,
+                    shopName: shopName,
+                    deliveryTime: deliveryTime,
+                    notes: notes,
+                    image: popup.querySelector('.modal-banner img')?.src || ''
+                };
+                mainItem.hasAddons = mainItem.isCustomized;
+
+                let addedStatus = false;
+                if (window.cart) {
+                    const targetShopId = mainItem.shopId || GLOBAL_shop_ID;
+                    const shopExists = window.cart.items.some(i => String(i.shopId) === String(targetShopId));
+                    const isSameShopEdit = currentEditItem && String(currentEditItem.shopId) === String(targetShopId);
+                    const isDifferentShop = !isSameShopEdit && !shopExists && window.cart.items.length > 0;
+
+                    if (!isDifferentShop && currentEditItem) {
+                        window.cart.removeItem(currentEditItem.cartItemId || currentEditItem.id, currentEditItem.shopId);
+                    }
+                    addedStatus = window.cart.addItem(mainItem, quantity, !!currentEditItem);
+                }
+
+                if (addedStatus === false) return;
+
+                // Force close current modal before showing success
+                if (typeof Swal !== 'undefined') {
+                    Swal.close();
+                }
+
+                setTimeout(() => {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'تمت الإضافة بنجاح',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            toast: true,
+                            position: 'top-end'
+                        });
+                    }
+                }, 100);
+            }
+
+            function addUpsellItem(btn, price, id, name) {
                 const wrapper = btn.closest('.upsell-img-wrapper');
-                wrapper.querySelector('.upsell-add-btn').style.display = 'flex';
-                wrapper.querySelector('.upsell-badge').style.display = 'none';
-                container.style.display = 'none';
-                valSpan.innerText = 1; // Reset for next time
-            } else {
-                const wrapper = btn.closest('.upsell-img-wrapper');
+                const qtyCtrl = wrapper.querySelector('.qty-control');
                 const badge = wrapper.querySelector('.upsell-badge');
-                badge.innerText = newQty;
-                badge.style.display = 'flex';
-            }
-        }
 
-        window.addEventListener('popstate', function() {
-            if (Swal.isVisible()) {
-                Swal.close();
-            }
-            if (typeof closeSideCart === 'function') {
-                closeSideCart();
-            }
-        });
+                btn.style.display = 'none';
+                qtyCtrl.style.display = 'flex';
+                if (badge) {
+                    badge.style.display = 'flex';
+                    badge.innerText = '1';
+                }
 
-        function openSizesModal(el, name) { openProductModal(el, name); }
-        function selectSwalSize(el) {
-            document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        function openProductModal(triggerEl, name, desc, isCustom, price) {
-            if (isCustom) {
-                openHardcodedModal(null, name, price, triggerEl, desc);
-            } else {
-                openSimpleNotesModal(triggerEl, name, price, desc);
-            }
-        }
-
-        function openSimpleNotesModal(el, name, price, desc = '', idOverride = null) {
-            currentTriggeringProduct = el;
-            currentEditItem = null;
-            basePrice = parseFloat(price) || 0;
-            addonsPrice = 0;
-            quantity = 1;
-            currentCustomization = {
-                size: null,
-                extras: [],
-                upsells: [],
-                notes: ''
-            };
-
-            const id = idOverride || el.getAttribute('id');
-            const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-
-            // Check if already in cart to pre-populate notes
-            const existingInCart = window.cart?.items.find(i => i.id === id && i.shopId === shopId);
-            if (existingInCart) {
-                currentEditItem = existingInCart;
-                quantity = existingInCart.amount;
-                currentCustomization.notes = existingInCart.customization?.notes || existingInCart.notes || '';
+                currentCustomization.upsells.push({ id: id, name: name, price: price, qty: 1 });
+                addonsPrice += price;
+                updateModalTotal();
             }
 
-            const actualDesc = desc || el?.querySelector('.foodContent')?.innerText || '';
-            const currency = 'ج.م';
+            function updateUpsellQty(btn, delta, price, id) {
+                const container = btn.closest('.qty-control');
+                const valSpan = container.querySelector('.upsell-qty-val');
+                let currentQty = parseInt(valSpan.innerText);
 
-            // IF ITS A CUSTOM ITEM i need the size cost instead and present the cost next to the name
-            let displayPrice = price;
-            if (existingInCart && existingInCart.isCustomized && existingInCart.customization?.size) {
-                displayPrice = existingInCart.customization.size.price || price;
+                const newQty = Math.max(0, currentQty + delta);
+                valSpan.innerText = newQty;
+
+                // Update customization state
+                const upsell = currentCustomization.upsells.find(x => x.id === id);
+                if (upsell) {
+                    upsell.qty = newQty;
+                }
+
+                // Update modal price
+                addonsPrice += (delta * price);
+                updateModalTotal();
+
+                if (newQty === 0) {
+                    currentCustomization.upsells = currentCustomization.upsells.filter(x => x.id !== id);
+                    const wrapper = btn.closest('.upsell-img-wrapper');
+                    wrapper.querySelector('.upsell-add-btn').style.display = 'flex';
+                    wrapper.querySelector('.upsell-badge').style.display = 'none';
+                    container.style.display = 'none';
+                    valSpan.innerText = 1; // Reset for next time
+                } else {
+                    const wrapper = btn.closest('.upsell-img-wrapper');
+                    const badge = wrapper.querySelector('.upsell-badge');
+                    badge.innerText = newQty;
+                    badge.style.display = 'flex';
+                }
             }
 
-            const modalHtml = `
+            window.addEventListener('popstate', function () {
+                if (Swal.isVisible()) {
+                    Swal.close();
+                }
+                if (typeof closeSideCart === 'function') {
+                    closeSideCart();
+                }
+            });
+
+            function openSizesModal(el, name) { openProductModal(el, name); }
+            function selectSwalSize(el) {
+                document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
+                el.classList.add('active');
+            }
+
+
+            function openSimpleNotesModal(el, name, price, desc = '', idOverride = null) {
+                currentTriggeringProduct = el;
+                currentEditItem = null;
+                basePrice = parseFloat(price) || 0;
+                addonsPrice = 0;
+                quantity = 1;
+                currentCustomization = {
+                    size: null,
+                    extras: [],
+                    upsells: [],
+                    notes: ''
+                };
+
+                const id = idOverride || el.getAttribute('id');
+                const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+
+                // Check if already in cart to pre-populate notes
+                const existingInCart = window.cart?.items.find(i => i.id === id && i.shopId === shopId);
+                if (existingInCart) {
+                    currentEditItem = existingInCart;
+                    quantity = existingInCart.amount;
+                    currentCustomization.notes = existingInCart.customization?.notes || existingInCart.notes || '';
+                }
+
+                const actualDesc = desc || el?.querySelector('.foodContent')?.innerText || '';
+                const currency = 'ج.م';
+
+                // IF ITS A CUSTOM ITEM i need the size cost instead and present the cost next to the name
+                let displayPrice = price;
+                if (existingInCart && existingInCart.isCustomized && existingInCart.customization?.size) {
+                    displayPrice = existingInCart.customization.size.price || price;
+                }
+
+                const modalHtml = `
                 <div class="compact-modal-container">
                     <div class="compact-modal-header">
                         <div class="handle"></div>
@@ -3064,1056 +3194,985 @@ padding-inline: 1rem !important;
                 </div>
             `;
 
-            Swal.fire({
-                html: modalHtml,
-                showConfirmButton: false,
-                position: 'bottom',
-                width: '100%',
-                padding: '0',
-                background: '#f8f9fa',
-                showClass: {
-                    popup: 'animate__animated animate__slideInUpCustom animate__faster'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__slideOutDownCustom animate__faster'
-                },
-                customClass: {
-                    container: 'swal2-rtl',
-                    popup: 'bottom-sheet-modal'
-                },
-                didOpen: () => {
-                    updateModalTotal();
-                }
-            });
-        }
-
-        function toggleFavorite(event, element) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
+                Swal.fire({
+                    html: modalHtml,
+                    showConfirmButton: false,
+                    position: 'bottom',
+                    width: '100%',
+                    padding: '0',
+                    background: '#f8f9fa',
+                    showClass: {
+                        popup: 'animate__animated animate__slideInUpCustom animate__faster'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__slideOutDownCustom animate__faster'
+                    },
+                    customClass: {
+                        container: 'swal2-rtl',
+                        popup: 'bottom-sheet-modal'
+                    },
+                    didOpen: () => {
+                        updateModalTotal();
+                    }
+                });
             }
 
-            const shopIdEl = document.getElementById('shopId');
-            if (!shopIdEl) return;
-            const shopId = shopIdEl.innerText.trim();
-            const icon = element.querySelector('i');
-            let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-            const index = favorites.findIndex(f => String(f.id) === String(shopId));
-
-            if (index === -1) {
-                // Add to favorites
-                const shopData = {
-                    id: shopId,
-                    name: document.querySelector('.shop-header-info h1')?.innerText.trim() || '',
-                    photo: document.querySelector('.shop-header-img img')?.src || '',
-                    desc: document.querySelector('.shopFoods')?.innerText.trim() || '',
-                    descEn: '',
-                    deliveryTime: document.querySelector('.timer')?.innerText.trim() || '',
-                    deliveryCost: document.getElementById('deliveryCostValue')?.innerText.trim() || '',
-                    rate: document.getElementById('rawRating')?.innerText.trim() || '',
-                    isOpened: document.getElementById('isOpened')?.innerText.trim() || '',
-                    url: window.location.href
-                };
-                favorites.push(shopData);
-                element.classList.add('is-favorite');
-                element.classList.add('active'); // For navbar icon
-                if (icon) {
-                    icon.classList.remove('fa-regular');
-                    icon.classList.add('fa-solid');
+            function toggleFavorite(event, element) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
-                element.classList.add('animate-twirl');
-                setTimeout(() => element.classList.remove('animate-twirl'), 800);
-            } else {
-                // Remove from favorites
-                favorites.splice(index, 1);
-                element.classList.remove('is-favorite');
-                element.classList.remove('active'); // For navbar icon
-                if (icon) {
-                    icon.classList.remove('fa-solid');
-                    icon.classList.add('fa-regular');
-                }
-            }
-            localStorage.setItem('favoriteShops', JSON.stringify(favorites));
 
-            // Sync other heart (if any)
-            syncAllHearts();
-        }
+                const urlParams = new URLSearchParams(window.location.search);
+                const shopId = urlParams.get('id');
+                if (!shopId) return;
 
-        function syncAllHearts() {
-            const shopIdEl = document.getElementById('shopId');
-            if (!shopIdEl) return;
-            const shopId = shopIdEl.innerText.trim();
-            const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-            const isFav = favorites.some(f => String(f.id) === String(shopId));
+                let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
+                const index = favorites.findIndex(f => String(f.id) === String(shopId));
 
-            const hearts = [
-                document.getElementById('shopHeartIcon'),
-                document.getElementById('favIconNav')
-            ];
-
-            hearts.forEach(heart => {
-                if (!heart) return;
-                const icon = heart.querySelector('i');
-                if (isFav) {
-                    heart.classList.add('is-favorite', 'active');
-                    if (icon) { icon.classList.remove('fa-regular'); icon.classList.add('fa-solid'); }
+                if (index === -1) {
+                    // Add to favorites
+                    const shopData = {
+                        id: shopId,
+                        name: document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
+                        nameEn: '',
+                        img: document.querySelector('.shop-profile-img')?.src || document.querySelector('.availableShop img')?.src || '',
+                        desc: document.getElementById('shopFoodsContent')?.innerText.trim() || '',
+                        descEn: '',
+                        deliveryTime: document.querySelector('.timer')?.innerText.trim() || '',
+                        deliveryCost: document.getElementById('deliveryCostValue')?.innerText.trim() || '',
+                        rate: (() => { const raw = document.getElementById('rawRating')?.innerText.trim() || document.querySelector('.shopRating .rating-number')?.innerText.trim() || '0'; return parseFloat(raw.replace(/[^\d.]/g, '')).toFixed(1); })(),
+                        isOpened: document.getElementById('isOpened')?.innerText.trim() || '',
+                        url: window.location.href
+                    };
+                    favorites.push(shopData);
                 } else {
-                    heart.classList.remove('is-favorite', 'active');
-                    if (icon) { icon.classList.remove('fa-solid'); icon.classList.add('fa-regular'); }
+                    // Remove from favorites
+                    favorites.splice(index, 1);
                 }
-            });
-        }
+                localStorage.setItem('favoriteShops', JSON.stringify(favorites));
 
-        function handleNavFavorite(event, btn) {
-            toggleFavorite(event, btn);
-        }
-
-        function handleNavSearch(event) {
-            event.preventDefault();
-            const searchInput = document.getElementById('selectedShopSearcher');
-            if (searchInput) {
-                searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                searchInput.focus();
-            }
-        }
-
-
-
-        function initFavorites() {
-            const shopIdEl = document.getElementById('shopId');
-            if (!shopIdEl) return;
-            const shopId = shopIdEl.innerText.trim();
-            const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-            const heart = document.getElementById('shopHeartIcon');
-            if (!heart) return;
-            const icon = heart.querySelector('i');
-
-            if (favorites.some(f => String(f.id) === String(shopId))) {
-                heart.classList.add('is-favorite');
-                if (icon) {
-                    icon.classList.remove('fa-regular');
-                    icon.classList.add('fa-solid');
+                // Toast notification
+                if (index === -1) {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0644\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
+                } else {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0632\u0627\u0644\u0629 \u0645\u0646 \u0627\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
                 }
-            } else {
-                heart.classList.remove('is-favorite');
-                if (icon) {
-                    icon.classList.remove('fa-solid');
-                    icon.classList.add('fa-regular');
-                }
-            }
-        }
 
-        // Active Sidebar Styling logic with Scroll Spy
-        function initSidebarActiveState() {
-            const allLinks = document.querySelectorAll('.foodNavLinks a, .category-pill');
-            const sections = document.querySelectorAll('.foodList');
-            let isManualClick = false;
-            let clickTimeout;
-            let currentActiveId = null;
-
-            function syncActiveState(id) {
-                if (!id || id === currentActiveId) return;
-                currentActiveId = id;
-
-                allLinks.forEach(l => l.classList.remove('active'));
-                const targetLinks = document.querySelectorAll(`.foodNavLinks a[href="#${id}"], .category-pill[href="#${id}"]`);
-
-                targetLinks.forEach(link => {
-                    link.classList.add('active');
-                });
-
-                // Only update hash on manual click to avoid jumping/history pollution during scroll
-                if (history.replaceState && isManualClick) {
-                    history.replaceState(null, null, '#' + id);
-                }
+                // Sync other heart and animate both simultaneously
+                syncAllHearts(true);
             }
 
-            // Set initial state (Hash > Query Param > First Link)
-            const urlParams = new URLSearchParams(window.location.search);
-            const categoryIdParam = urlParams.get('categoryID');
-            const hash = window.location.hash.replace('#', '');
+            function syncAllHearts(animate = false) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const shopId = urlParams.get('id');
+                if (!shopId) return;
+                const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
+                const isFav = favorites.some(f => String(f.id) === String(shopId));
 
-            if (hash) {
-                syncActiveState(hash);
-            } else if (categoryIdParam) {
-                syncActiveState(categoryIdParam);
-            } else if (allLinks.length > 0) {
-                const firstId = allLinks[0].getAttribute('href')?.replace('#', '');
-                if (firstId) syncActiveState(firstId);
-            }
+                const hearts = [
+                    document.querySelector('[id$="shopHeartIcon"]'),
+                    document.getElementById('favIconNav')
+                ];
 
-            // Scroll Spy logic
-            const observerOptions = {
-                root: null,
-                rootMargin: '-15% 0px -75% 0px',
-                threshold: 0
-            };
+                hearts.forEach(heart => {
+                    if (!heart) return;
+                    const icon = heart.querySelector('i');
+                    const target = heart;
 
-            const observer = new IntersectionObserver((entries) => {
-                if (isManualClick) return;
+                    if (isFav) {
+                        heart.classList.remove('is-favorite', 'active');
+                        void heart.offsetWidth;
+                        heart.classList.add('is-favorite', 'active');
+                        if (icon) {
+                            icon.classList.remove('fa-regular');
+                            icon.classList.add('fa-solid');
+                        }
 
-                // Find the entry that is most visible
-                const visibleEntries = entries.filter(e => e.isIntersecting);
-                if (visibleEntries.length > 0) {
-                    // Sort by how close they are to the top
-                    visibleEntries.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-                    syncActiveState(visibleEntries[0].target.id);
-                }
-            }, observerOptions);
+                        if (animate) {
+                            target.classList.remove('animate-pop', 'animate-sink');
+                            void target.offsetWidth;
+                            target.classList.add('animate-pop');
+                            setTimeout(() => {
+                                target.classList.remove('animate-pop');
+                            }, 400);
+                        }
+                    } else {
+                        heart.classList.remove('is-favorite', 'active');
+                        if (icon) {
+                            icon.classList.remove('fa-solid');
+                            icon.classList.add('fa-regular');
+                        }
 
-            sections.forEach(section => observer.observe(section));
-
-            // Click handling
-            allLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    const id = this.getAttribute('href').replace('#', '');
-                    if (!id) return;
-
-                    isManualClick = true;
-                    clearTimeout(clickTimeout);
-
-                    syncActiveState(id);
-
-                    clickTimeout = setTimeout(() => {
-                        isManualClick = false;
-                    }, 800);
-                });
-            });
-        }
-
-        function openHardcodedModal(editItem = null, prodName = null, prodPrice = null, triggerEl = null, prodDesc = null, focusNotes = false) {
-            currentTriggeringProduct = triggerEl;
-            currentEditItem = editItem;
-
-            // Determine the base price of the product (the "Small" price)
-            let productBasePrice = 130;
-            if (editItem) {
-                productBasePrice = editItem.productBasePrice || 130;
-            } else if (prodPrice) {
-                productBasePrice = prodPrice;
-            } else if (triggerEl) {
-                productBasePrice = parseFloat(triggerEl.getAttribute('data-price')) || 130;
-            }
-
-            currentProductBasePrice = productBasePrice;
-
-            basePrice = productBasePrice;
-            addonsPrice = 0;
-            quantity = editItem ? editItem.amount : 1;
-            currentCustomization = {
-                size: editItem ? { ...editItem.customization.size } : null,
-                extras: [],
-                upsells: []
-            };
-
-            const actualName = prodName || (editItem ? editItem.name : '\u0631\u0628\u0639 \u0643\u064A\u0644\u0648 \u0634\u0627\u0648\u0631\u0645\u0627 \u0641\u0631\u0627\u062E');
-            const actualImg = (triggerEl ? triggerEl.querySelector('img')?.src : null) || (editItem ? editItem.image : 'images/placeholderImage.webp');
-            const actualDesc = prodDesc || (editItem ? editItem.description : '\u0634\u0627\u0648\u0631\u0645\u0627 \u062F\u062C\u0627\u062C \u0645\u0639 \u0627\u0644\u062A\u0648\u0645\u064A\u0629');
-
-            // If editing, populate state
-            if (editItem && editItem.customization) {
-                currentCustomization.extras = editItem.customization.extras ? [...editItem.customization.extras] : [];
-                currentCustomization.upsells = editItem.customization.upsells ? [...editItem.customization.upsells] : [];
-
-                basePrice = currentCustomization.size ? (currentCustomization.size.price || productBasePrice) : productBasePrice;
-                recalculateAddonsPrice();
-            }
-
-            Swal.fire({
-                html: document.getElementById('hardcoded-product-modal-content').innerHTML,
-                showConfirmButton: false,
-                width: '600px',
-                padding: '0',
-                background: '#f8f9fa',
-                customClass: { popup: 'product-modal-popup' },
-                didOpen: () => {
-                    const popup = document.querySelector('.swal2-popup');
-
-                    // Set dynamic content
-                    popup.querySelector('h1').innerHTML = actualName;
-
-                    // Remove compact price from name row as per user request
-                    const compactPriceEl = popup.querySelector('.compact-price');
-                    if (compactPriceEl) compactPriceEl.style.display = 'none';
-
-                    popup.querySelector('.modal-banner img').src = actualImg;
-                    popup.querySelector('.modal-desc').innerHTML = actualDesc;
-                    popup.querySelector('#modal-qty').innerText = quantity;
-
-                    const notesArea = popup.querySelector('#product-notes') || popup.querySelector('textarea');
-                    if (notesArea) notesArea.value = editItem ? (editItem.customization?.notes || editItem.notes || '') : '';
-
-                    if (focusNotes && notesArea) {
-                        setTimeout(() => {
-                            notesArea.focus();
-                            notesArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 500);
-                    }
-
-                    // DYNAMICALLY UPDATE SIZE PRICES
-                    const sizeRows = popup.querySelectorAll('.option-row');
-                    if (sizeRows.length >= 3) {
-                        const prices = [currentProductBasePrice, currentProductBasePrice + 50, currentProductBasePrice + 100];
-                        sizeRows.forEach((row, idx) => {
-                            const p = prices[idx];
-                            const priceSpan = row.querySelector('.price-radio span');
-                            if (priceSpan) priceSpan.innerText = p + ' ج.م';
-
-                            row.onclick = () => selectModalOption(row, p, row.getAttribute('data-size-id'));
-                        });
-                    }
-
-                    // Pre-select size
-                    if (currentCustomization.size) {
-                        const sizeRow = popup.querySelector(`.option-row[data-size-id="${currentCustomization.size.id}"]`);
-                        if (sizeRow) {
-                            popup.querySelectorAll('.option-row').forEach(r => r.classList.remove('active'));
-                            sizeRow.classList.add('active');
+                        if (animate) {
+                            target.classList.remove('animate-pop', 'animate-sink');
+                            void target.offsetWidth;
+                            target.classList.add('animate-sink');
+                            setTimeout(() => {
+                                target.classList.remove('animate-sink');
+                            }, 400);
                         }
                     }
+                });
+            }
 
+            function handleNavFavorite(event, btn) {
+                toggleFavorite(event, btn);
+            }
 
-                    // Pre-select extras
-                    currentCustomization.extras.forEach(ex => {
-                        const exRow = popup.querySelector(`.extra-item[data-quickOption-id="${ex.id}"]`);
-                        if (exRow) exRow.classList.add('active');
+            function handleNavSearch(event) {
+                event.preventDefault();
+                const searchInput = document.getElementById('selectedShopSearcher');
+                if (searchInput) {
+                    searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    searchInput.focus();
+                }
+            }
+
+            function initFavorites() {
+                syncAllHearts(false);
+            }
+
+            // Active Sidebar Styling logic with Scroll Spy
+            function initSidebarActiveState() {
+                const allLinks = document.querySelectorAll('.foodNavLinks a, .category-pill');
+                const sections = document.querySelectorAll('.foodList');
+                let isManualClick = false;
+                let clickTimeout;
+                let currentActiveId = null;
+
+                function syncActiveState(id) {
+                    if (!id || id === currentActiveId) return;
+                    currentActiveId = id;
+
+                    allLinks.forEach(l => l.classList.remove('active'));
+                    const targetLinks = document.querySelectorAll(`.foodNavLinks a[href="#${id}"], .category-pill[href="#${id}"]`);
+
+                    targetLinks.forEach(link => {
+                        link.classList.add('active');
                     });
 
-                    // Pre-select upsells
-                    currentCustomization.upsells.forEach(up => {
-                        const upCard = popup.querySelector(`.upsell-card-new[data-upsell-id="${up.id}"]`);
-                        if (upCard) {
-                            const addBtn = upCard.querySelector('.upsell-add-btn');
-                            const qtyCtrl = upCard.querySelector('.qty-control');
-                            const badge = upCard.querySelector('.upsell-badge');
-                            const qtyVal = upCard.querySelector('.upsell-qty-val');
+                    // Only update hash on manual click to avoid jumping/history pollution during scroll
+                    if (history.replaceState && isManualClick) {
+                        history.replaceState(null, null, '#' + id);
+                    }
+                }
 
-                            if (addBtn) addBtn.style.display = 'none';
-                            if (qtyCtrl) qtyCtrl.style.display = 'flex';
-                            if (badge) {
-                                badge.style.display = 'flex';
-                                badge.innerText = up.qty;
-                            }
-                            if (qtyVal) qtyVal.innerText = up.qty;
-                        }
+                // Set initial state (Hash > Query Param > First Link)
+                const urlParams = new URLSearchParams(window.location.search);
+                const categoryIdParam = urlParams.get('categoryID');
+                const hash = window.location.hash.replace('#', '');
+
+                if (hash) {
+                    syncActiveState(hash);
+                } else if (categoryIdParam) {
+                    syncActiveState(categoryIdParam);
+                } else if (allLinks.length > 0) {
+                    const firstId = allLinks[0].getAttribute('href')?.replace('#', '');
+                    if (firstId) syncActiveState(firstId);
+                }
+
+                // Scroll Spy logic
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '-15% 0px -75% 0px',
+                    threshold: 0
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    if (isManualClick) return;
+
+                    // Find the entry that is most visible
+                    const visibleEntries = entries.filter(e => e.isIntersecting);
+                    if (visibleEntries.length > 0) {
+                        // Sort by how close they are to the top
+                        visibleEntries.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+                        syncActiveState(visibleEntries[0].target.id);
+                    }
+                }, observerOptions);
+
+                sections.forEach(section => observer.observe(section));
+
+                // Click handling
+                allLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        const id = this.getAttribute('href').replace('#', '');
+                        if (!id) return;
+
+                        isManualClick = true;
+                        clearTimeout(clickTimeout);
+
+                        syncActiveState(id);
+
+                        clickTimeout = setTimeout(() => {
+                            isManualClick = false;
+                        }, 800);
                     });
+                });
+            }
 
-                    // Init Swipers
-                    new Swiper('.related-products-swiper', { slidesPerView: 'auto', spaceBetween: 12, freeMode: true });
+            function openHardcodedModal(editItem = null, prodName = null, prodPrice = null, triggerEl = null, prodDesc = null, focusNotes = false) {
+                // This function now delegates to openProductModal to ensure we fetch real data from the database
+                // instead of using the dummy hardcoded template.
+                openProductModal(triggerEl || editItem?.id, editItem, focusNotes);
+            }
 
-                    updateModalTotal();
+            document.addEventListener('DOMContentLoaded', () => {
+                // Override global favorites functions for PlaceShop page to ensure they sync in real-time
+                window.toggleFavorite = toggleFavorite;
+                window.initFavorites = initFavorites;
+                window.handleNavFavorite = handleNavFavorite;
+                window.handleNavSearch = handleNavSearch;
+
+                initFavorites();
+                initSidebarActiveState();
+
+                // Show search + fav icons ONLY on PlaceShop page
+                const searchIcon = document.getElementById('searchIconNav');
+                const favIcon = document.getElementById('favIconNav');
+                if (searchIcon) searchIcon.style.display = 'flex';
+                if (favIcon) favIcon.style.display = 'flex';
+
+                // Set page title from shop name
+                const shopNameEl = document.getElementById('shopNameContent') || document.querySelector('.availableShopName');
+                if (shopNameEl && shopNameEl.innerText.trim()) {
+                    document.title = shopNameEl.innerText.trim();
                 }
             });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initFavorites();
-            syncAllHearts(); // Update navbar icon too
-            initSidebarActiveState();
-        });
-    </script>
-    <style>
-        .swal-sizes-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            text-align: right;
-        }
-        .size-option {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 15px;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .size-option:hover {
-            background: #fdfdfd;
-            border-color: #ffc119;
-        }
-        .size-option.active {
-            background: #fffdf5;
-            border-color: #ffc119;
-            box-shadow: 0 0 0 1px #ffc119;
-        }
-        /* Sidebar active styling */
-        #foodListsNav {
-            background: white;
-            border-radius: 12px;
-            overflow-x: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
-            position: sticky;
-            top: 140px;
-        }
-
-        #foodListsNav h3 {
-            color: black;
-            padding: 15px;
-            margin: 0;
-            font-size: 1.2rem;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .foodNavLinks {
-            padding: 10px;
-        }
-
-        .foodNavLinks a {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 12px 15px;
-            display: flex;
-            align-items: center;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            color: #555;
-            text-decoration: none;
-            font-size: 0.95rem;
-            border: 1px solid transparent;
-        }
-
-        .foodNavLinks a:hover {
-            background: #fff9e6;
-            color: #ffc119;
-            transform: translateX(-5px);
-        }
-
-        .swal2-popup.product-modal-popup {
-            border-radius: 16px !important;
-            overflow: hidden;
-        }
-
-        .full-modal-container {
-            width: 100%;
-            height: auto;
-            max-height: 90vh;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            background: #fff;
-            position: relative;
-            text-align: right;
-            direction: rtl;
-        }
-
-        .modal-banner {
-            position: relative;
-            width: 100%;
-            height: 225px;
-            background: #eee;
-        }
-
-        .modal-banner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .modal-close-btn {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .modal-content-body {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 20px;
-            padding-bottom: 0px;
-        }
-
-        .modal-main-info h1 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
-
-        .modal-desc {
-            color: #777;
-            font-size: 0.9rem;
-            margin-bottom: 25px;
-            text-align: initial;
-        }
-        .swal2-container{
-            padding: 0;
-        }
-
-        .modal-section {
-            margin-bottom: 30px;
-            textarea{
-                width: 100%;
-                background-color: #fffcfc;
-                padding: 1rem;
-                border-radius:1rem;
-                resize: none;
-                border-color: rgba(0, 0, 0, 0.1);
-                height: 150px;
+        </script>
+        <style>
+            .swal-sizes-container {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                text-align: right;
             }
-        }
 
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .section-header h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .required-badge {
-            background: #fff3cd;
-            color: #856404;
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-
-        .optional-badge {
-            background: #eee;
-            color: #666;
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-
-        /* Option Rows */
-        .option-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-        }
-
-        .price-radio {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .radio-circle {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ddd;
-            border-radius: 50%;
-            position: relative;
-        }
-
-        .option-row.active .radio-circle {
-            border-color: #ffc119;
-        }
-
-        .option-row.active .radio-circle::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 10px;
-            height: 10px;
-            background: #ffc119;
-            border-radius: 50%;
-        }
-
-        /* Swiper Quick Cards */
-        .quick-choices-swiper {
-            padding: 5px 0;
-            display: flex;
-        }
-
-        .quick-choices-swiper .swiper-wrapper {
-            align-items: stretch;
-        }
-
-        .quick-card {
-            width: 200px !important;
-            height: auto;
-            background: white;
-            border: 1px solid rgba(0,0,0,0.2);
-            border-radius: 12px;
-            padding: 15px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-
-        .quick-card .check-box {
-            margin-top: auto;
-            align-self: flex-start;
-        }
-
-        .quick-card.active {
-            border-color: #ffc119;
-            background: #fffdf5;
-        }
-
-        .quick-card h4 {
-            margin: 10px 0 5px;
-            font-size: 0.95rem;
-        }
-
-        .quick-card-badge {
-            font-size: 0.7rem;
-            color: #e67e22;
-            background: #fff3e0;
-            padding: 2px 6px;
-            border-radius: 4px;
-            width: fit-content;
-        }
-
-        /* Extras List */
-        .extra-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #fffcfc;
-            cursor: pointer;
-        }
-
-        .check-box {
-            width: 22px;
-            height: 22px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .extra-item.active .check-box, .quick-card.active .check-box {
-            background: #ffc119;
-            border-color: #ffc119;
-        }
-
-        .extra-item.active .check-box::after, .quick-card.active .check-box::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: white;
-            font-size: 12px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        /* Sticky Footer */
-        .modal-footer-sticky {
-            position: sticky;
-            bottom: 0;
-            justify-content: center;
-            background: white;
-            flex-wrap: wrap;
-            padding: 15px 20px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            z-index: 100;
-        }
-
-        .qty-control {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #f8f9fa;
-            padding: 5px 15px;
-            border-radius: 30px;
-            border: 1px solid #eee;
-        }
-
-        .qty-control button {
-            background: none;
-            border: none;
-            color: #ffc119;
-            font-size: 1.1rem;
-            cursor: pointer;
-        }
-
-        .add-to-cart-big {
-            background: #ffc119;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 12px 25px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            align-items: center;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        /* Upsell Cards */
-        .related-products-swiper {
-            padding: 10px 0;
-        }
-
-.swiper-wrapper:has(.upsell-card){
-    max-height: 220px;
-}
-        .upsell-card img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-
-        }
-        .upsell-card {
-            width: 200px !important;
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            max-height: 220px;
-            text-align: center;
-            padding-bottom: 15px;
-            height: 100%; /* Equal height */
-            display: flex;
-            flex-direction: column;
-        }
-
-        .upsell-card h5 {
-            margin: 10px 10px 5px;
-            font-size: 0.9rem;
-            flex-grow: 1; /* Push button to bottom */
-        }
-
-        /* Swiper Slide Equal Height Fix */
-        .swiper-wrapper {
-            display: flex !important;
-            align-items: stretch !important;
-            touch-action: pan-y !important;
-        }
-
-        .swiper-slide {
-            height: auto !important;
-        }
-
-        .quick-card {
-            background: white;
-            border: 1px solid  rgba(0,0,0,0.2);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            width: 200px !important;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .upsell-card p {
-            color: #ffc119;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 10px;
-        }
-
-        .upsell-card button {
-            background: #fff9e6;
-            color: #ffc119;
-            border: 1px solid #ffc119;
-            border-radius: 20px;
-            padding: 5px 20px;
-            margin-inline: 0.5rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .upsell-card button:hover {
-            background: #ffc119;
-            color: white;
-        }
-
-        /* Quantity Badge on Product Grid */
-        .product-qty-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #e88b0e;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: none; /* Hidden by default */
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            box-shadow: 0 2px 8px rgba(255,193,25,0.4);
-            z-index: 5;
-            border: 2px solid white;
-        }
-
-        /* Upsell Quantity Control */
-        .upsell-qty-container {
-            display: none; /* Shown when item is added */
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 5px;
-        }
-
-        .upsell-qty-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 1px solid #ffc119;
-            background: white;
-            color: #ffc119;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-
-        .upsell-qty-btn:hover {
-            background: #ffc119;
-            color: white;
-        }
-
-        .upsell-qty-val {
-            font-size: 0.9rem;
-            font-weight: 700;
-            min-width: 15px;
-            color: #333;
-        }
-
-        .upsell-remove-btn {
-            color: #ff4d4d;
-            font-size: 0.75rem;
-            cursor: pointer;
-            margin-top: 5px;
-            display: block;
-            text-decoration: underline;
-        }
-
-        /* Fix Swiper scroll blocking */
-        .swiper-wrapper {
-            touch-action: pan-y !important;
-        }
-
-        .related-products-swiper {
-            overflow: visible !important;
-        }
-
-        /* User Edit Fix: Empty Cart Margin */
-        #emptyCart {
-            margin-bottom: 0px !important;
-        }
-
-        /* Shop Pay Methods Badges */
-        .shopPayMethods {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .pay-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 50px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            border: 1px solid transparent;
-            transition: transform 0.2s;
-            margin: 0;
-        }
-
-        .pay-badge i {
-            font-size: 0.65rem;
-        }
-
-        /* Accent Colors */
-        .pay-badge.tracking {
-            color: #4361ee;
-            background: #f0f3ff;
-            border-color: #dbeafe;
-        }
-
-        .pay-badge.safe {
-            color: #06d6a0;
-            background: #e7fbf5;
-            border-color: #cbf6eb;
-        }
-
-        .pay-badge.free {
-            color: #ff2d55; /* Bright Pink Accent */
-            background: #fff5f7;
-            border-color: #ffe0e5;
-        }
-
-        .shopDelivery {
-            display: flex;
-            flex-wrap: wrap;
-            color: #666;
-        }
-
-        .shopDelivery span {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            font-weight: 500;
-            i{
-                font-size: 0.7rem;
+            .size-option {
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 15px;
+                border: 1px solid #eee;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: 0.2s;
             }
-        }
 
-
-
-        /* Mobile Full Screen Modal */
-        @media (max-width: 600px) {
-            #shopBanner {
-                height: 250px !important;
-}
-            .swal2-container:has(.product-modal-popup) {
-                padding: 0 !important;
+            .size-option:hover {
+                background: #fdfdfd;
+                border-color: #ffc119;
             }
+
+            .size-option.active {
+                background: #fffdf5;
+                border-color: #ffc119;
+                box-shadow: 0 0 0 1px #ffc119;
+            }
+
+            /* Sidebar active styling */
+            #foodListsNav {
+                background: white;
+                border-radius: 12px;
+                overflow-x: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                border: 1px solid #eee;
+                position: sticky;
+                top: 140px;
+            }
+
+            #foodListsNav h3 {
+                color: black;
+                padding: 15px;
+                margin: 0;
+                font-size: 1.2rem;
+                text-align: center;
+                font-weight: 700;
+            }
+
+            .foodNavLinks {
+                padding: 10px;
+            }
+
+            .foodNavLinks a {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                padding: 12px 15px;
+                display: flex;
+                align-items: center;
+                border-radius: 8px;
+                margin-bottom: 5px;
+                color: #555;
+                text-decoration: none;
+                font-size: 0.95rem;
+                border: 1px solid transparent;
+            }
+
+            .foodNavLinks a:hover {
+                background: #fff9e6;
+                color: #ffc119;
+                transform: translateX(-5px);
+            }
+
             .swal2-popup.product-modal-popup {
-                width: 100vw !important;
-                max-width: 100vw !important;
-                height: 100dvh !important;
-                max-height: 100dvh !important;
-                border-radius: 0 !important;
-                margin: 0 !important;
+                border-radius: 16px !important;
+                overflow: hidden;
             }
+
             .full-modal-container {
-                height: 100dvh !important;
-                max-height: 100dvh !important;
+                width: 100%;
+                height: auto;
+                max-height: 90vh;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                background: #fff;
+                position: relative;
+                text-align: right;
+                direction: rtl;
             }
-        }
 
-        /* Missing Modal Styles */
-        .title-price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-            width: 100%;
-        }
-        .compact-price {
-            font-weight: 700;
-            color: #ffc119;
-            font-size: 1.2rem;
-        }
-        .upsell-card-new {
-            width: 150px !important;
-            flex-shrink: 0;
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-        }
-        .upsell-img-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        .upsell-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .upsell-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #ffc119;
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 800;
-            z-index: 5;
-            border: 1.5px solid white;
-        }
-        .upsell-add-btn {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            width: 30px;
-            height: 30px;
-            background: white;
-            color: #ffc119;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            cursor: pointer;
-            z-index: 5;
-            font-size: 0.9rem;
-        }
-        .upsell-info h5 {
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin: 0 0 4px;
-            color: #333;
-        }
-        .upsell-info p {
-            font-size: 0.8rem;
-            color: #ffc119;
-            font-weight: 700;
-            margin: 0;
-                        margin-top: auto;
+            .modal-banner {
+                position: relative;
+                width: 100%;
+                min-height: 225px;
+                max-height: 225px;
+                background: #eee;
+                height: 225px;
+            }
 
-        }
-        .qty-control.card-qty {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 2px 8px;
-            gap: 10px;
-        }
-        .qty-control.card-qty button {
-            background: var(--fd-blue);
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 4px;
-            font-size: 0.8rem;
-        }
-    </style>
+            .modal-banner img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .modal-close-btn {
+                position: absolute;
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+                background: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+                cursor: pointer;
+                z-index: 10;
+            }
+
+            .modal-content-body {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 20px;
+                padding-bottom: 0px;
+            }
+
+            .modal-main-info h1 {
+                font-size: 1.5rem;
+                margin-bottom: 5px;
+                font-weight: 700;
+            }
+
+            .modal-desc {
+                color: #777;
+                font-size: 0.9rem;
+                margin-bottom: 25px;
+                text-align: initial;
+            }
+
+            .swal2-container {
+                padding: 0;
+            }
+
+            .modal-section {
+                margin-bottom: 30px;
+
+                textarea {
+                    width: 100%;
+                    background-color: #fffcfc;
+                    padding: 1rem;
+                    border-radius: 1rem;
+                    resize: none;
+                    border-color: rgba(0, 0, 0, 0.1);
+                    height: 150px;
+                }
+            }
+
+
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+
+            .section-header h3 {
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .required-badge {
+                background: #fff3cd;
+                color: #856404;
+                font-size: 0.75rem;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+
+            .optional-badge {
+                background: #eee;
+                color: #666;
+                font-size: 0.75rem;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+
+            /* Option Rows */
+            .option-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 0;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+            }
+
+            .price-radio {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .radio-circle {
+                width: 20px;
+                height: 20px;
+                border: 2px solid #ddd;
+                border-radius: 50%;
+                position: relative;
+            }
+
+            .option-row.active .radio-circle {
+                border-color: #ffc119;
+            }
+
+            .option-row.active .radio-circle::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 10px;
+                height: 10px;
+                background: #ffc119;
+                border-radius: 50%;
+            }
+
+            /* Swiper Quick Cards */
+            .quick-choices-swiper {
+                padding: 5px 0;
+                display: flex;
+            }
+
+            .quick-choices-swiper .swiper-wrapper {
+                align-items: stretch;
+            }
+
+            .quick-card {
+                width: 200px !important;
+                height: auto;
+                background: white;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                border-radius: 12px;
+                padding: 15px;
+                position: relative;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+
+            .quick-card .check-box {
+                margin-top: auto;
+                align-self: flex-start;
+            }
+
+            .quick-card.active {
+                border-color: #ffc119;
+                background: #fffdf5;
+            }
+
+            .quick-card h4 {
+                margin: 10px 0 5px;
+                font-size: 0.95rem;
+            }
+
+            .quick-card-badge {
+                font-size: 0.7rem;
+                color: #e67e22;
+                background: #fff3e0;
+                padding: 2px 6px;
+                border-radius: 4px;
+                width: fit-content;
+            }
+
+            /* Extras List */
+            .extra-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 0;
+                border-bottom: 1px solid #fffcfc;
+                cursor: pointer;
+            }
+
+            .check-box {
+                width: 22px;
+                height: 22px;
+                border: 2px solid #ddd;
+                border-radius: 4px;
+                position: relative;
+            }
+
+            .extra-item.active .check-box,
+            .quick-card.active .check-box {
+                background: #ffc119;
+                border-color: #ffc119;
+            }
+
+            .extra-item.active .check-box::after,
+            .quick-card.active .check-box::after {
+                content: '\f00c';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+                color: white;
+                font-size: 12px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            /* Sticky Footer */
+            .modal-footer-sticky {
+                position: sticky;
+                bottom: 0;
+                justify-content: center;
+                background: white;
+                flex-wrap: wrap;
+                padding: 15px 20px;
+                box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
+                z-index: 100;
+            }
+
+            .qty-control {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                background: #f8f9fa;
+                padding: 5px 15px;
+                border-radius: 30px;
+                border: 1px solid #eee;
+            }
+
+            .qty-control button {
+                background: none;
+                border: none;
+                color: #ffc119;
+                font-size: 1.1rem;
+                cursor: pointer;
+            }
+
+            .add-to-cart-big {
+                background: #ffc119;
+                color: white;
+                border: none;
+                border-radius: 30px;
+                padding: 12px 25px;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                align-items: center;
+                font-weight: 700;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+
+            /* Upsell Cards */
+            .related-products-swiper {
+                padding: 10px 0;
+            }
+
+            .swiper-wrapper:has(.upsell-card) {
+                max-height: 220px;
+            }
+
+            .upsell-card img {
+                width: 100%;
+                height: 100px;
+                object-fit: cover;
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+
+            }
+
+            .upsell-card {
+                width: 200px !important;
+                background: white;
+                border: 1px solid #eee;
+                border-radius: 12px;
+                max-height: 220px;
+                text-align: center;
+                padding-bottom: 15px;
+                height: 100%;
+                /* Equal height */
+                display: flex;
+                flex-direction: column;
+            }
+
+            .upsell-card h5 {
+                margin: 10px 10px 5px;
+                font-size: 0.9rem;
+                flex-grow: 1;
+                /* Push button to bottom */
+            }
+
+            /* Swiper Slide Equal Height Fix */
+            .swiper-wrapper {
+                display: flex !important;
+                align-items: stretch !important;
+                touch-action: pan-y !important;
+            }
+
+            .swiper-slide {
+                height: auto !important;
+            }
+
+            .quick-card {
+                background: white;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                border-radius: 12px;
+                padding: 15px;
+                text-align: center;
+                width: 200px !important;
+                cursor: pointer;
+                transition: all 0.2s;
+                position: relative;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .upsell-card p {
+                color: #ffc119;
+                font-weight: 700;
+                font-size: 0.85rem;
+                margin-bottom: 10px;
+            }
+
+            .upsell-card button {
+                background: #fff9e6;
+                color: #ffc119;
+                border: 1px solid #ffc119;
+                border-radius: 20px;
+                padding: 5px 20px;
+                margin-inline: 0.5rem;
+                font-size: 0.8rem;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .upsell-card button:hover {
+                background: #ffc119;
+                color: white;
+            }
+
+            /* Quantity Badge on Product Grid */
+            .product-qty-badge {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #e88b0e;
+                color: white;
+                width: 28px;
+                height: 26px;
+                border-radius: 50%;
+                display: none;
+                /* Hidden by default */
+                align-items: center;
+                justify-content: center;
+                font-size: 0.85rem;
+                font-weight: 700;
+                box-shadow: 0 2px 8px rgba(255, 193, 25, 0.4);
+                z-index: 5;
+                border: 2px solid white;
+            }
+
+            /* Upsell Quantity Control */
+            .upsell-qty-container {
+                display: none;
+                /* Shown when item is added */
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 5px;
+            }
+
+            .upsell-qty-btn {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: 1px solid #ffc119;
+                background: white;
+                color: #ffc119;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.7rem;
+                cursor: pointer;
+            }
+
+            .upsell-qty-btn:hover {
+                background: #ffc119;
+                color: white;
+            }
+
+            .upsell-qty-val {
+                font-size: 0.9rem;
+                font-weight: 700;
+                min-width: 15px;
+                color: #333;
+            }
+
+            .upsell-remove-btn {
+                color: #ff4d4d;
+                font-size: 0.75rem;
+                cursor: pointer;
+                margin-top: 5px;
+                display: block;
+                text-decoration: underline;
+            }
+
+            /* Fix Swiper scroll blocking */
+            .swiper-wrapper {
+                touch-action: pan-y !important;
+            }
+
+            .related-products-swiper {
+                overflow: visible !important;
+            }
+
+            /* User Edit Fix: Empty Cart Margin */
+            #emptyCart {
+                margin-bottom: 0px !important;
+            }
+
+            /* Shop Pay Methods Badges */
+            .shopPayMethods {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .pay-badge {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                padding: 6px 10px;
+                border-radius: 50px;
+                font-size: 0.6rem;
+                font-weight: 700;
+                border: 1px solid transparent;
+                transition: transform 0.2s;
+                margin: 0;
+            }
+
+            .pay-badge i {
+                font-size: 0.65rem;
+            }
+
+            /* Accent Colors */
+            .pay-badge.tracking {
+                color: #4361ee;
+                background: #f0f3ff;
+                border-color: #dbeafe;
+            }
+
+            .pay-badge.safe {
+                color: #06d6a0;
+                background: #e7fbf5;
+                border-color: #cbf6eb;
+            }
+
+            .pay-badge.free {
+                color: #ff2d55;
+                /* Bright Pink Accent */
+                background: #fff5f7;
+                border-color: #ffe0e5;
+            }
+
+            .shopDelivery {
+                display: flex;
+                flex-wrap: wrap;
+                color: #666;
+            }
+
+            .shopDelivery span {
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                font-weight: 500;
+
+                i {
+                    font-size: 0.7rem;
+                }
+            }
+
+
+
+            /* Mobile Full Screen Modal */
+            @media (max-width: 600px) {
+                #shopBanner {
+                    height: 250px !important;
+                }
+
+                .swal2-container:has(.product-modal-popup) {
+                    padding: 0 !important;
+                }
+
+                .swal2-popup.product-modal-popup {
+                    width: 100vw !important;
+                    max-width: 100vw !important;
+                    height: 100dvh !important;
+                    max-height: 100dvh !important;
+                    border-radius: 0 !important;
+                    margin: 0 !important;
+                }
+
+                .full-modal-container {
+                    height: 100dvh !important;
+                    max-height: 100dvh !important;
+                }
+            }
+
+            /* Missing Modal Styles */
+            .title-price-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 5px;
+                width: 100%;
+            }
+
+            .compact-price {
+                font-weight: 700;
+                color: #ffc119;
+                font-size: 1.2rem;
+            }
+
+            .upsell-card-new {
+                width: 150px !important;
+                flex-shrink: 0;
+                background: white;
+                border: 1px solid #eee;
+                border-radius: 12px;
+                padding: 10px;
+                text-align: center;
+            }
+
+            .upsell-img-wrapper {
+                position: relative;
+                width: 100%;
+                height: 100px;
+                border-radius: 8px;
+                overflow: hidden;
+                margin-bottom: 8px;
+            }
+
+            .upsell-img-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .upsell-badge {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                background: #ffc119;
+                color: white;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75rem;
+                font-weight: 800;
+                z-index: 5;
+                border: 1.5px solid white;
+            }
+
+            .upsell-add-btn {
+                position: absolute;
+                bottom: 5px;
+                left: 5px;
+                width: 30px;
+                height: 30px;
+                background: white;
+                color: #ffc119;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                cursor: pointer;
+                z-index: 5;
+                font-size: 0.9rem;
+            }
+
+            .upsell-info h5 {
+                font-size: 0.85rem;
+                font-weight: 700;
+                margin: 0 0 4px;
+                color: #333;
+            }
+
+            .upsell-info p {
+                font-size: 0.8rem;
+                color: #ffc119;
+                font-weight: 700;
+                margin: 0;
+                margin-top: auto;
+
+            }
+
+            .qty-control.card-qty {
+                background: #f8f9fa;
+                border-radius: 20px;
+                padding: 2px 8px;
+                gap: 10px;
+            }
+
+            .qty-control.card-qty button {
+                background: var(--fd-blue);
+                border: none;
+                color: white;
+                cursor: pointer;
+                padding: 4px;
+                font-size: 0.8rem;
+            }
+        </style>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script>
             currentCustomization = {
@@ -4126,33 +4185,59 @@ padding-inline: 1rem !important;
             };
             const currentLang = '<%= System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower() %>';
 
-    // نصوص المودال واللودر باللغات الثلاث
-    const translations = {
-        ar: {
-            loading: "جاري التحميل...",
-            errorTitle: "خطأ!",
-            connectionError: "حدث خطأ أثناء الاتصال بالسيرفر",
-            errorMessage: "عذراً، لم نتمكن من جلب البيانات"
-        },
-        en: {
-            loading: "Loading...",
-            errorTitle: "Error!",
-            connectionError: "Connection error with the server",
-            errorMessage: "Sorry, we couldn't fetch the data"
-        },
-        ru: {
-            loading: "Загрузка...",
-            errorTitle: "Ошибка!",
-            connectionError: "Ошибка соединения с сервером",
-            errorMessage: "К сожалению, لم نتمكن من الحصول على البيانات"
-        }
-    };
+            // نصوص المودال واللودر باللغات الثلاث
+            const translations = {
+                ar: {
+                    loading: "جاري التحميل...",
+                    errorTitle: "خطأ!",
+                    connectionError: "حدث خطأ أثناء الاتصال بالسيرفر",
+                    errorMessage: "عذراً، لم نتمكن من جلب البيانات"
+                },
+                en: {
+                    loading: "Loading...",
+                    errorTitle: "Error!",
+                    connectionError: "Connection error with the server",
+                    errorMessage: "Sorry, we couldn't fetch the data"
+                },
+                ru: {
+                    loading: "Загрузка...",
+                    errorTitle: "Ошибка!",
+                    connectionError: "Ошибка соединения с сервером",
+                    errorMessage: "К сожалению, لم نتمكن من الحصول على البيانات"
+                }
+            };
 
-    // اختيار نصوص اللغة الحالية (الافتراضية هي العربية إذا لم تكن إنجليزية أو روسية)
-    const t = translations[currentLang] || translations.ar;
-            function openProductModal(triggerEl) {
+            // اختيار نصوص اللغة الحالية (الافتراضية هي العربية إذا لم تكن إنجليزية أو روسية)
+            const t = translations[currentLang] || translations.ar;
+            function openProductModal(triggerEl, arg2 = null, arg3 = null, arg4 = null, arg5 = null) {
+                let editItem = null;
+                let focusNotes = false;
+
+                // Handle legacy signature: (triggerEl, name, desc, isCustom, price)
+                if (typeof arg2 === 'string') {
+                    focusNotes = false;
+                } else {
+                    // New signature: (triggerEl, editItem, focusNotes)
+                    editItem = arg2;
+                    focusNotes = !!arg3;
+                }
+
                 let id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
+                const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+
+                if (!editItem && id && window.cart) {
+                    // Try to find the item in the cart by base ID or full ID (handling sizes)
+                    editItem = window.cart.items.find(i => (String(i.id) === String(id) || String(i.id).startsWith(id + '-size-')) && String(i.shopId) === String(shopId));
+                }
+
+                // If id is not found and we have an editItem, use its ID
+                if (!id && editItem) {
+                    id = String(editItem.id).split('-size-')[0]; // Remove size suffix for the data fetch
+                }
+
                 currentTriggeringProduct = (typeof triggerEl === 'object') ? triggerEl : null;
+                currentEditItem = editItem;
+
                 Swal.fire({
                     title: t.loading,
                     allowOutsideClick: false,
@@ -4172,7 +4257,7 @@ padding-inline: 1rem !important;
                     success: function (res) {
                         var data = res.d; // البيانات الناتجة من الـ WebMethod
                         if (data.success) {
-                            renderProductModal(data);
+                            renderProductModal(data, editItem, focusNotes);
                         } else {
                             alert(data.message);
                         }
@@ -4181,22 +4266,48 @@ padding-inline: 1rem !important;
 
             }
 
-            function renderProductModal(data) {
-                // 1. تجهيز كود الأحجام (Sizes)
+            function renderProductModal(data, editItem = null, focusNotes = false) {
+                // Initialize customization state
+                const hasAvailableAddons = !!((data.sizes && data.sizes.length > 0) || (data.extras && data.extras.length > 0) || (data.upsellItems && data.upsellItems.length > 0));
+
+                let savedSize = null;
+                if (editItem) {
+                    const editSizeId = editItem.customization?.size?.id || editItem.sizeId || (typeof editItem.customization?.size === 'string' || typeof editItem.customization?.size === 'number' ? editItem.customization.size : null);
+                    if (editSizeId && data.sizes) {
+                        const found = data.sizes.find(s => String(s.id) === String(editSizeId));
+                        if (found) {
+                            savedSize = { id: found.id, name: found.name, price: found.price };
+                        }
+                    }
+                    if (!savedSize && editItem.customization?.size && typeof editItem.customization.size === 'object') {
+                        savedSize = { ...editItem.customization.size };
+                    }
+                }
+
                 currentCustomization = {
                     baseItemId: data.id,
-                    selectedSizeId: null,
-                    extras: [],
-                    upsells: [], // تأكد من إضافة هذا السطر هنا أيضاً
-                    quantity: 1,
-                    notes: ''
+                    isCustomProduct: hasAvailableAddons || editItem?.isCustomProduct,
+                    selectedSizeId: savedSize?.id || null,
+                    size: savedSize,
+                    extras: editItem?.customization?.extras ? [...editItem.customization.extras] : [],
+                    upsells: editItem?.customization?.upsells ? [...editItem.customization.upsells] : [],
+                    quantity: editItem?.amount || 1,
+                    notes: editItem?.customization?.notes || editItem?.notes || ''
                 };
+
+                // Initialize prices and quantity
+                quantity = currentCustomization.quantity;
+                currentProductBasePrice = data.price;
+                basePrice = currentCustomization.size ? (currentCustomization.size.price || data.price) : data.price;
+                recalculateAddonsPrice();
+
+                // 1. Prepare Sizes HTML
                 var sizesHtml = '';
                 if (data.sizes && data.sizes.length > 0) {
-                    data.sizes.forEach(function (size, index) {
-                        var activeClass = index === 0 ? 'active' : '';
+                    data.sizes.forEach(function (size) {
+                        var activeClass = (currentCustomization.size && String(currentCustomization.size.id) === String(size.id)) ? 'active' : '';
                         sizesHtml += `
-                <div class="option-row" data-item-id="${size.menuItemid}" data-size-id="${size.id}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
+                <div class="option-row ${activeClass}" data-item-id="${size.menuItemid}" data-size-id="${size.id}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
                     <span>${size.name}</span>
                     <div class="price-radio">
                         <span>${size.price} ج.م</span>
@@ -4206,22 +4317,56 @@ padding-inline: 1rem !important;
                     });
                 }
 
-                // 2. تجهيز كود المنتجات الإضافية (Upsell Section)
+                // 2. Prepare Extras HTML (if any in data)
+                var extrasHtml = '';
+                if (data.extras && data.extras.length > 0) {
+                    data.extras.forEach(function (ex) {
+                        const existingExtra = currentCustomization.extras.find(e => String(e.id) === String(ex.id));
+                        const isAdded = !!existingExtra;
+                        const qty = existingExtra ? (existingExtra.qty || 1) : 1;
+                        const activeClass = isAdded ? 'active' : '';
+
+                        extrasHtml += `
+                        <div class="option-row extra-item ${activeClass}" data-extra-id="${ex.id}" data-price="${ex.price}" onclick="toggleExtra(this, ${ex.price}, '${ex.id}', '${ex.name}')">
+                            <div class="extra-main-info">
+                                <div class="extra-badge" style="display: ${isAdded ? 'flex' : 'none'};">${qty}</div>
+                                <span>${ex.name}</span>
+                                <span class="extra-unit-price">+ ${ex.price} ج.م</span>
+                            </div>
+                            <div class="extra-actions">
+                                <div class="qty-control extra-qty-control" style="display: ${isAdded ? 'flex' : 'none'};" onclick="event.stopPropagation()">
+                                    <button onclick="updateExtraQty(event, -1, ${ex.price}, '${ex.id}')"><i class="fa-solid fa-minus"></i></button>
+                                    <span class="extra-qty-val">${qty}</span>
+                                    <button onclick="updateExtraQty(event, 1, ${ex.price}, '${ex.id}')"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <div class="price-radio">
+                                    <div class="radio-circle"></div>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                }
+
+                // 3. Prepare Upsells HTML
                 var upsellHtml = '';
                 if (data.upsellItems && data.upsellItems.length > 0) {
                     var upsellSlides = '';
                     data.upsellItems.forEach(function (item) {
+                        const existingUpsell = currentCustomization.upsells.find(u => u.id === item.id);
+                        const isAdded = !!existingUpsell;
+                        const qty = existingUpsell ? existingUpsell.qty : 1;
+
                         upsellSlides += `
                 <div class="swiper-slide upsell-card-new" data-item-id="${item.id}" data-upsell-id="${item.id}">
                     <div class="upsell-img-wrapper">
-                        <div class="upsell-badge" style="display:none;">1</div>
+                        <div class="upsell-badge" style="display: ${isAdded ? 'flex' : 'none'};">${qty}</div>
                         <img src="${item.photoUrl || 'images/placeholderImage.webp'}" alt="${item.name}">
-                        <div class="upsell-add-btn" onclick="addUpsellItem(this, ${item.price}, '${item.id}', '${item.name}')">
+                        <div class="upsell-add-btn" style="display: ${isAdded ? 'none' : 'flex'};" onclick="addUpsellItem(this, ${item.price}, '${item.id}', '${item.name}')">
                             <i class="fa-solid fa-plus"></i>
                         </div>
-                        <div class="qty-control" onclick="event.stopPropagation()">
+                        <div class="qty-control" style="display: ${isAdded ? 'flex' : 'none'};" onclick="event.stopPropagation()">
                             <button onclick="updateUpsellQty(this, -1, ${item.price}, '${item.id}')"><i class="fa-solid fa-minus"></i></button>
-                            <span class="upsell-qty-val">1</span>
+                            <span class="upsell-qty-val">${qty}</span>
                             <button onclick="updateUpsellQty(this, 1, ${item.price}, '${item.id}')"><i class="fa-solid fa-plus"></i></button>
                         </div>
                     </div>
@@ -4245,7 +4390,7 @@ padding-inline: 1rem !important;
             </div>`;
                 }
 
-                // 3. بناء الـ HTML الكامل للمودال بناءً على التصميم الجديد
+                // 4. Build Full Modal HTML
                 var modalHtml = `
     <div class="full-modal-container">
         <div class="modal-banner">
@@ -4273,6 +4418,15 @@ padding-inline: 1rem !important;
                 <div class="options-list">${sizesHtml}</div>
             </div>` : ''}
 
+            ${extrasHtml !== '' ? `
+            <div class="modal-section extras-section">
+                <div class="section-header">
+                    <h3>الإضافات</h3>
+                    <span class="optional-badge">اختياري</span>
+                </div>
+                <div class="options-list">${extrasHtml}</div>
+            </div>` : ''}
+
             ${upsellHtml}
 
             <div class="modal-section">
@@ -4280,32 +4434,35 @@ padding-inline: 1rem !important;
                     <h3>ملاحظات</h3>
                     <span class="optional-badge">اختياري</span>
                 </div>
-                <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا..."></textarea>
+                <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا...">${currentCustomization.notes}</textarea>
             </div>
         </div>
 
         <div class="modal-footer-sticky">
             <div class="qty-control">
                 <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
-                <span id="modal-qty">1</span>
+                <span id="modal-qty">${quantity}</span>
                 <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
             </div>
             <button class="add-to-cart-big" onclick="submitModalCart(${data.id})">
-                <span>إضافة للسلة</span>
-                <strong id="modal-total-price">${data.sizes.length > 0 ? 'اختار الحجم' : data.price + ' ج.م'}</strong>
+                <span>${editItem ? 'تحديث السلة' : 'إضافة للسلة'}</span>
+                <strong id="modal-total-price">...</strong>
             </button>
         </div>
     </div>`;
 
-                // 4. عرض الـ Modal
+                // 5. Display Modal
                 Swal.fire({
                     html: modalHtml,
                     showConfirmButton: false,
                     width: '500px',
                     padding: '0',
-                    customClass: { container: 'p-0' },
+                    customClass: {
+                        container: 'p-0',
+                        popup: 'product-modal-popup'
+                    },
                     didOpen: () => {
-                        // تشغيل الـ Swiper إذا وُجدت منتجات Upsell
+                        // Initialize Swipers
                         if (data.upsellItems && data.upsellItems.length > 0) {
                             new Swiper('.related-products-swiper', {
                                 slidesPerView: 'auto',
@@ -4313,6 +4470,19 @@ padding-inline: 1rem !important;
                                 freeMode: true
                             });
                         }
+
+                        // Handle focus notes
+                        if (focusNotes) {
+                            const notesArea = document.querySelector('.swal2-container #product-notes');
+                            if (notesArea) {
+                                setTimeout(() => {
+                                    notesArea.focus();
+                                    notesArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 500);
+                            }
+                        }
+
+                        updateModalTotal();
                     }
                 });
             }
@@ -4354,13 +4524,13 @@ padding-inline: 1rem !important;
                 }
             }
 
-            window.copyToClipboard = function(url) {
+            window.copyToClipboard = function (url) {
                 navigator.clipboard.writeText(url).then(() => {
                     Swal.fire({ icon: 'success', title: 'Copied!', timer: 1500, showConfirmButton: false });
                 });
             };
 
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 // Show Global Share buttons on PlaceShop page
                 const desktopBtn = document.getElementById('navShareBtn');
                 const mobileBtn = document.getElementById('mobileNavShare');

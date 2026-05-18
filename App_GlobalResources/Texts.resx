@@ -852,6 +852,18 @@
   <data name="Pickup" xml:space="preserve">
     <value>استلام</value>
   </data>
+  <data name="InShop" xml:space="preserve">
+    <value>طلب في المحل</value>
+  </data>
+  <data name="InShopMethodTitle" xml:space="preserve">
+    <value>طلب في المحل</value>
+  </data>
+  <data name="EatInShop" xml:space="preserve">
+    <value>طلب في المحل</value>
+  </data>
+  <data name="InShopSummaryMsg" xml:space="preserve">
+    <value>نحن غير مسؤولين في حال عدم حضوركم أو التأخر عن الموعد في المطعم</value>
+  </data>
   <data name="DeliveryFeeLabel" xml:space="preserve">
     <value>رسوم التوصيل:</value>
   </data>

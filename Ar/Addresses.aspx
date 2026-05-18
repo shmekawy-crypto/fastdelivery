@@ -1,8 +1,8 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Addresses.aspx.cs" Inherits="Ar_Addresses"  EnableEventValidation="false"%>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Addresses.aspx.cs" Inherits="Ar_Addresses"  EnableEventValidation="false"%>
 <%@ Import Namespace="System.Web" %>
 <%@ Import Namespace="System.Globalization" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-    <asp:Literal ID="litTitle" runat="server" Text="<%$ Resources:texts, Title %>"></asp:Literal>
+    <title><asp:Literal ID="litTitle" runat="server" Text="<%$ Resources:texts, Title %>"></asp:Literal></title>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -12,7 +12,7 @@
             $("#OmapModal").modal("show");
         }
     </script>
-     
+
     <section id="userDashboard">
         <asp:HiddenField ID="hfSelectedArea" runat="server" />
         <div class="userProfileField">
@@ -28,6 +28,7 @@
             <article class="profileContainer">
                    <ul class="profileSettings">
                     <li><a href="profile.aspx"><asp:Literal runat="server" Text="<%$ Resources:texts, AccountInfo %>" /></a></li>
+                    <li><a href="Favorites.aspx"><asp:Literal runat="server" Text="<%$ Resources:texts, nav_favorites %>" /></a></li>
                     <li class="active"><a href="Addresses.aspx"><asp:Literal runat="server" Text="<%$ Resources:texts, DeliveryAddresses %>" /></a></li>
                     <li><a href="POrders.aspx"><asp:Literal runat="server" Text="<%$ Resources:texts, PreviousOrders %>" /></a></li>
                 </ul>
@@ -39,7 +40,7 @@
                         <asp:Literal runat="server" Text="<%$ Resources:texts, AddNewAddress %>" />
                     </button>
                 </div>
-                   
+
                 <figure id="fgrdata">
                 <button class="addLocationBtn" type="button" data-bs-toggle="modal" data-bs-target="#OmapModal"><i class="fa-solid fa-circle-plus"></i> <asp:Literal runat="server" Text="<%$ Resources:texts, AddNewAddress %>" /></button>
 
@@ -47,19 +48,19 @@
                    <ItemTemplate>
                                <div class="user-location">
   <h4><%# Eval("AddressName")%></h4>
-  
+
      <p>
                                     <%# Eval("AType").ToString() == "0" ?
                                         GetLiteralText("Street") + Eval("StreetName") + " | " + GetLiteralText("Building") + Eval("Build") + " | " + GetLiteralText("Floor") + Eval("FloorNo") + " | " + GetLiteralText("Apartment") + Eval("adepartmentNo") :
                                         Eval("AType").ToString() == "1" ?
                                         GetLiteralText("Street") + Eval("StreetName") + " | " + GetLiteralText("House") + Eval("Build") :
-                                        GetLiteralText("Street") + Eval("StreetName") + " | " + GetLiteralText("Building") + Eval("Build") + " | " + GetLiteralText("Floor") + Eval("FloorNo") + " | " + GetLiteralText("Office") + Eval("adepartmentNo") 
+                                        GetLiteralText("Street") + Eval("StreetName") + " | " + GetLiteralText("Building") + Eval("Build") + " | " + GetLiteralText("Floor") + Eval("FloorNo") + " | " + GetLiteralText("Office") + Eval("adepartmentNo")
                                     %>
                                 </p>
    <p><asp:Literal runat="server" Text="<%$ Resources:texts, Mobile %>" />: <%# Eval("Mobile") %></p>
                                 <p><asp:Literal runat="server" Text="<%$ Resources:texts, LocationType %>" />: <%# Eval("AType").ToString() == "0" ? GetLiteralText("Apartment") : Eval("AType").ToString() == "1" ? GetLiteralText("House") : GetLiteralText("Office") %></p>
 
-  
+
  <asp:LinkButton ID="lnkEdit" runat="server" CommandName="EditAddress" CommandArgument='<%# Eval("ID") %>' CssClass="editLocationBtn">
                                     <i class="fa-solid fa-pen"></i> <asp:Literal runat="server" Text="<%$ Resources:texts, Edit %>" />
                                 </asp:LinkButton>
@@ -70,14 +71,14 @@
                                 </asp:LinkButton>
 </div>
                        </ItemTemplate>
-                         
+
                     </asp:Repeater>
                     </figure>
 
             </article>
         </div>
     </section>
-   
+
     <div class="modal fade" id="OmapModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered d-flex align-items-center justify-content-center">
         <div class="modal-content">
@@ -258,7 +259,7 @@
 </div>
         <asp:HiddenField ID="litSelectGov"  runat="server"  value='<%$ Resources:texts, SelectGov %>'  />
 <asp:HiddenField ID="litSelectArea" runat="server" value='<%$ Resources:texts, SelectArea %>' />
-    
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="PageScripts" runat="Server">
     <script defer>
@@ -520,7 +521,7 @@ function reverseGeocode(latlng, retries = 2) {
         }
         setMarker(coords);
         map.setView(coords, 15);
-        reverseGeocode(coords);       
+        reverseGeocode(coords);
     }
 
 </script>
@@ -532,24 +533,24 @@ function reverseGeocode(latlng, retries = 2) {
     document.getElementById(radioId).checked = true;
 
     // get the textbox element
-    
+
       var txtfloorNumber= document.getElementById('<%= floorNumber.ClientID %>');
       var txtapartmentNumber= document.getElementById('<%= apartmentNumber.ClientID %>');
       var txtbuilding= document.getElementById('<%= building.ClientID %>');
-     
+
       var rvapartmentNumber = document.getElementById('<%= rvapartmentNumber.ClientID %>');
       var rvfloorNumber = document.getElementById('<%= rvfloorNumber.ClientID %>');
       // hide or show textbox depending on which radio is clicked
       if (radioId === '<%= apartmentType.ClientID %>') {
           document.getElementById('<%= apartmentType.ClientID %>').click()
-      
+
           txtfloorNumber.style.display = 'block';
           txtapartmentNumber.style.display = 'block';
           txtbuilding.placeholder ='إسم البناية';
           txtapartmentNumber.placeholder = 'رقم الشقة';
           ValidatorEnable(rvapartmentNumber, true);
           ValidatorEnable(rvfloorNumber, true);
-          
+
       }
         if (radioId === '<%= houseType.ClientID %>') {
           document.getElementById('<%= houseType.ClientID %>').click()
@@ -567,7 +568,7 @@ function reverseGeocode(latlng, retries = 2) {
           txtapartmentNumber.placeholder = 'المكتب';
           ValidatorEnable(rvapartmentNumber, true);
           ValidatorEnable(rvfloorNumber, true);
-         
+
       }
 
   }
@@ -772,7 +773,7 @@ function reverseGeocode(latlng, retries = 2) {
 
         {
             border-radius: 0.25rem;
-            border: 1px solid rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 0.2rem 1rem;
             width: 100%;
             max-width: 300px;
@@ -793,7 +794,7 @@ function reverseGeocode(latlng, retries = 2) {
             border-radius: 2rem;
             padding: 0.5rem 1rem;
             font-size: 0.75rem;
-            border: 1px solid rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             background-color: transparent;
             transition: var(--transition);
             font-weight: bold;
@@ -885,13 +886,13 @@ function reverseGeocode(latlng, retries = 2) {
             isolation: isolate;
             width: 100%;
             max-width: 300px;
-            svg;
+            svg
 
         {
             position: absolute;
             left: 0.5rem;
             top: 0.5rem;
-            width: 16px;
+            width: 14px;
         }
 
         }
@@ -984,7 +985,7 @@ function reverseGeocode(latlng, retries = 2) {
             top: 60px;
             left: 0;
             flex-direction: column;
-            z-index: -1000;            
+            z-index: -1000;
             transition: var(--transition);
             display:none;
         }
@@ -1014,15 +1015,15 @@ function reverseGeocode(latlng, retries = 2) {
             font-size: 1.125rem;
             padding: 0.25rem 1.5rem;
             border-radius: 0.5rem;
-            border: 2px solid #0056b3;
+            border: 2px solid #ff6b00;
             transition: var(--transition);
-            background-color: #0056b3;
+            background-color: #ff6b00;
             color: white;
             &:hover;
 
         {
             background-color: transparent;
-            color: #0056b3;
+            color: #ff6b00;
         }
 
         }
@@ -1033,7 +1034,7 @@ function reverseGeocode(latlng, retries = 2) {
         }
 
             .user-location:nth-child(even) {
-                background-color: whitesmoke;
+                background-color: #f8f9fa;
             }
 
         .editLocationBtn {
@@ -1073,7 +1074,7 @@ function reverseGeocode(latlng, retries = 2) {
         .hidden {
             display: none;
         }
-        
+
         #map {
             height: 500px;
         }
@@ -1105,21 +1106,19 @@ function reverseGeocode(latlng, retries = 2) {
         background-color: var(--fd-blue) !important;
     font-size: 1rem !important;
     max-width: 250px;
-   
+
     border-color: transparent !important;
 }
         .mapBtns {
-    
+
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.25);
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
     width: 100%;
 }
-    </style> 
+    </style>
     <style>
         /* make the modal wider */
 #OmapModal .modal-dialog {
@@ -1151,7 +1150,7 @@ function reverseGeocode(latlng, retries = 2) {
     padding: 10px 15px; /* smaller and tighter */
 }
 
-    </style>  
+    </style>
     <style>
         /* layout the radio buttons horizontally */
 #OmapModal .radio-buttons {
@@ -1185,11 +1184,7 @@ function reverseGeocode(latlng, retries = 2) {
             font-size: 20px;
             margin-bottom: 5px;
         }
-
-        .header {
-            background: linear-gradient(135deg, #fffbe6 0%, #ffffff 0%, #fffbe6 10%) !important;
-        }
-    </style> 
+    </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script>
          $('#<%= ddlArea.ClientID %>').change(function() {

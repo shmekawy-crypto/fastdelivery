@@ -17,7 +17,7 @@ public partial class Places_Menu : System.Web.UI.Page
         {
             LoadInitialData();
             BindMenuItems(); // تحميل كل الأصناف عند البداية
-            InitializeTables();
+            InitializeTables();
         }
     }
 
@@ -55,8 +55,8 @@ public partial class Places_Menu : System.Web.UI.Page
         }
     }
 
-    // *** منطق البحث ***
-    protected void btnSearch_Click(object sender, EventArgs e)
+    // *** منطق البحث ***
+    protected void btnSearch_Click(object sender, EventArgs e)
     {
         BindMenuItems(txtSearch.Text.Trim());
     }
@@ -64,20 +64,20 @@ public partial class Places_Menu : System.Web.UI.Page
     protected void txtSearch_TextChanged(object sender, EventArgs e)
     {
         BindMenuItems(txtSearch.Text.Trim()); // بحث تلقائي عند الكتابة
-    }
+    }
 
     private void BindMenuItems(string searchText = "")
     {
         int pid = Convert.ToInt32(Session["PlaceID"]);
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            string sql = @"SELECT mi.*, m.Name as MenuName 
-                           FROM MenuItems mi 
-                           JOIN Menus m ON mi.MenuID = m.id 
-                           WHERE mi.PlaceID = @pid";
+            string sql = @"SELECT mi.*, m.Name as MenuName 
+                           FROM MenuItems mi 
+                           JOIN Menus m ON mi.MenuID = m.id 
+                           WHERE mi.PlaceID = @pid";
 
-            // إضافة جملة البحث لو الحقل مش فاضي
-            if (!string.IsNullOrEmpty(searchText))
+            // إضافة جملة البحث لو الحقل مش فاضي
+            if (!string.IsNullOrEmpty(searchText))
             {
                 sql += " AND (mi.Name LIKE @search OR mi.NameEn LIKE @search OR mi.NameRu LIKE @search)";
             }
@@ -101,7 +101,7 @@ public partial class Places_Menu : System.Web.UI.Page
 
     private void SyncGridsWithViewState()
     {
-        DataTable dtS = (DataTable)ViewState["Sizes"];
+          DataTable dtS = (DataTable)ViewState["Sizes"];
         foreach (GridViewRow row in gvSizes.Rows)
         {
             string sid = ((Label)row.FindControl("lblSizeID")).Text;
@@ -127,7 +127,25 @@ public partial class Places_Menu : System.Web.UI.Page
         int placeId = Convert.ToInt32(Session["PlaceID"]);
         string photoPath = string.IsNullOrEmpty(hfExistingPhoto.Value) ? "images/items/default.png" : hfExistingPhoto.Value;
 
-        if (fuItemPhoto.HasFile)
+        // معالجة الصورة من الـ HiddenField (Base64) لضمان عدم ضياعها مع الـ AJAX
+        if (!string.IsNullOrEmpty(hfImageBase64.Value))
+        {
+            try
+            {
+                string b64 = hfImageBase64.Value;
+                string header = b64.Substring(0, b64.IndexOf(";"));
+                string extension = "." + header.Substring(header.IndexOf("/") + 1);
+                string data = b64.Substring(b64.IndexOf(",") + 1);
+                byte[] bytes = Convert.FromBase64String(data);
+                string fileName = Guid.NewGuid().ToString() + extension;
+                string folderPath = Server.MapPath("~/ar/images/items/");
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+                File.WriteAllBytes(folderPath + fileName, bytes);
+                photoPath = "images/items/" + fileName;
+            }
+            catch { }
+        }
+        else if (fuItemPhoto.HasFile)
         {
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(fuItemPhoto.FileName);
             fuItemPhoto.SaveAs(Server.MapPath("~/ar/images/items/") + fileName);
@@ -143,8 +161,8 @@ public partial class Places_Menu : System.Web.UI.Page
                 int itemId;
                 if (ViewState["EditID"] == null)
                 {
-                    string sql = @"INSERT INTO MenuItems (MenuID, PlaceID, Name, NameEn, NameRu, Description, DescriptionEn, DescriptionRu, PhotoUrl, IsAvailable, CreatedAt, PrepearMin, Price, DiscountValue) 
-                                   VALUES (@mid, @pid, @nAr, @nEn, @nRu, @dAr, @dEn, @dRu, @img, 1, GETDATE(), @prep, 0, 0); SELECT SCOPE_IDENTITY();";
+                    string sql = @"INSERT INTO MenuItems (MenuID, PlaceID, Name, NameEn, NameRu, Description, DescriptionEn, DescriptionRu, PhotoUrl, IsAvailable, CreatedAt, PrepearMin, Price, DiscountValue) 
+                                   VALUES (@mid, @pid, @nAr, @nEn, @nRu, @dAr, @dEn, @dRu, @img, 1, GETDATE(), @prep, 0, 0); SELECT SCOPE_IDENTITY();";
                     SqlCommand cmd = new SqlCommand(sql, conn, trans);
                     SetItemParams(cmd, placeId, photoPath);
                     itemId = Convert.ToInt32(cmd.ExecuteScalar());
@@ -219,7 +237,8 @@ public partial class Places_Menu : System.Web.UI.Page
                     ddlMenu.SelectedValue = dr["MenuID"].ToString(); txtNameAr.Text = dr["Name"].ToString(); txtNameEn.Text = dr["NameEn"].ToString(); txtNameRu.Text = dr["NameRu"].ToString();
                     txtPrepTime.Text = dr["PrepearMin"].ToString(); txtDescAr.Text = dr["Description"].ToString(); txtDescEn.Text = dr["DescriptionEn"].ToString(); txtDescRu.Text = dr["DescriptionRu"].ToString();
                     hfExistingPhoto.Value = dr["PhotoUrl"].ToString();
-                }
+                    hfImageBase64.Value = ""; // تصفير الـ base64 عند التعديل
+                }
                 dr.Close();
                 SqlDataAdapter daS = new SqlDataAdapter("SELECT MIS.Size_id as SizeID, S.Name as SizeName, MIS.Price, MIS.DiscountValue FROM MenuItems_Sizes MIS JOIN Sizes S ON MIS.Size_id = S.id WHERE MIS.MenuItems_id=" + id, conn);
                 DataTable dtS = new DataTable(); daS.Fill(dtS); ViewState["Sizes"] = dtS;
@@ -275,7 +294,7 @@ public partial class Places_Menu : System.Web.UI.Page
     private void ClearForm()
     {
         txtNameAr.Text = txtNameEn.Text = txtNameRu.Text = txtDescAr.Text = txtDescEn.Text = txtDescRu.Text = txtBasicPrice.Text = txtBasicDiscount.Text = "";
-        txtPrepTime.Text = "0"; hfExistingPhoto.Value = ""; ViewState["EditID"] = null; btnSaveAll.Text = "حفظ الصنف بالكامل";
+        txtPrepTime.Text = "0"; hfExistingPhoto.Value = ""; hfImageBase64.Value = ""; ViewState["EditID"] = null; btnSaveAll.Text = "حفظ الصنف بالكامل";
         InitializeTables(); gvSizes.DataSource = gvExtras.DataSource = null; gvSizes.DataBind(); gvExtras.DataBind(); upMenu.Update();
     }
 

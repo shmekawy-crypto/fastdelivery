@@ -66,8 +66,29 @@ public partial class Ar_Places : System.Web.UI.Page
 
             if (dt.Rows.Count > 0)
             {
-                rptGlobalBanners.DataSource = dt;
+                // الفحص الذكي: لو عدد الصور 4 أو أقل، نكرر الصفوف 3 مرات بالتبادل
+                // لتخطي حد الـ 5 صور وضمان عمل الـ Loop بدون توقف في Swiper
+                if (dt.Rows.Count <= 4)
+                {
+                    DataTable dtCloned = dt.Clone(); // نسخ هيكل الجدول (الـ Columns) بدون بيانات
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            dtCloned.ImportRow(row); // نسخ الصف بالكامل وضخه في الجدول الجديد
+                        }
+                    }
+                    rptGlobalBanners.DataSource = dtCloned;
+                }
+                else
+                {
+                    // لو الصور 5 أو أكثر، يتم ربطها مباشرة بدون تكرار
+                    rptGlobalBanners.DataSource = dt;
+                }
+
                 rptGlobalBanners.DataBind();
+                rptGlobalBanners.Visible = true;
             }
             else
             {
@@ -76,7 +97,6 @@ public partial class Ar_Places : System.Web.UI.Page
             }
         }
     }
-
     public string GetPlaceTypes(object placeId)
     {
         string types = "";

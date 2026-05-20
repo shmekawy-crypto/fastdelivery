@@ -143,9 +143,9 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
     private void BindRestaurantBanners(int placeId)
     {
         string query = @"SELECT [id], [PhotoUrl] 
-                         FROM [dbo].[Restaurant_Item_Banners] 
-                         WHERE [PlaceID] = @PlaceID AND [IsActive] = 1 
-                         ORDER BY [SortOrder] ASC";
+                     FROM [dbo].[Restaurant_Item_Banners] 
+                     WHERE [PlaceID] = @PlaceID AND [IsActive] = 1 
+                     ORDER BY [SortOrder] ASC";
 
         using (SqlConnection conn = new SqlConnection(connStr))
         {
@@ -160,17 +160,38 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
 
                 if (dt.Rows.Count > 0)
                 {
-                    rptRestaurantBanners.DataSource = dt;
+                    // الفحص الذكي: لو صور المطعم 4 أو أقل، بنكررها 3 مرات بالتبادل
+                    // عشان نضمن تخطي حد الـ 5 صور والـ Loop يشتغل بسلاسة في السويبر
+                    if (dt.Rows.Count <= 4)
+                    {
+                        DataTable dtCloned = dt.Clone(); // نسخ الهيكل والأعمدة فقط
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            foreach (DataRow row in dt.Rows)
+                            {
+                                dtCloned.ImportRow(row); // نسخ الصف وضخه في الجدول المكرر
+                            }
+                        }
+                        rptRestaurantBanners.DataSource = dtCloned;
+                    }
+                    else
+                    {
+                        // لو 5 صور أو أكثر، بنربطها مباشرة بدون تكرار
+                        rptRestaurantBanners.DataSource = dt;
+                    }
+
                     rptRestaurantBanners.DataBind();
+                    rptRestaurantBanners.Visible = true;
                 }
                 else
                 {
+                    // إخفاء الريبيتر لو المطعم مش ضايف أي بانرات حالياً
                     rptRestaurantBanners.Visible = false;
                 }
             }
         }
     }
-
     [WebMethod]
     public static object GetRestaurantBannerProducts(int bannerId)
     {

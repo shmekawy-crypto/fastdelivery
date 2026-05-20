@@ -18,7 +18,7 @@ public partial class Ar_Places : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-
+            BindGlobalHomeBanners();
             if (Request.QueryString["addid"] != null)
             {
                 int addId;
@@ -46,13 +46,43 @@ public partial class Ar_Places : System.Web.UI.Page
         }
     }
     // ضيف الدالة دي في كود الـ CS
+
+    private void BindGlobalHomeBanners()
+    {
+        // استعلام قراءة جدول إعلانات الآدمن الرئيسي
+        string query = @"SELECT id, PhotoUrl 
+                         FROM dbo.Banners 
+                         WHERE PagePlace = 'Home' AND IsActive = 1 
+                         ORDER BY SortOrder ASC";
+
+        using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+        using (SqlCommand cmd = new SqlCommand(query, conn))
+        {
+            DataTable dt = new DataTable();
+            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+            {
+                da.Fill(dt);
+            }
+
+            if (dt.Rows.Count > 0)
+            {
+                rptGlobalBanners.DataSource = dt;
+                rptGlobalBanners.DataBind();
+            }
+            else
+            {
+                // إخفاء ريبيتر البانر لو مفيش إعلانات مرفوعة من الآدمن حالياً للرئيسية
+                rptGlobalBanners.Visible = false;
+            }
+        }
+    }
+
     public string GetPlaceTypes(object placeId)
     {
         string types = "";
-        // استخدم جملة الاتصال بتاعتك اللي معرفها فوق (connStr)
         using (SqlConnection con = new SqlConnection(connStr))
         {
-            string sql = "SELECT TypeID FROM Place_Type_Map WHERE PlaceID = @pid";
+            string sql = "SELECT [TypeID] FROM [dbo].[Place_Type_Map] WHERE [PlaceID] = @pid";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@pid", placeId);
             con.Open();
@@ -60,11 +90,11 @@ public partial class Ar_Places : System.Web.UI.Page
             {
                 while (dr.Read())
                 {
-                    types += dr["TypeID"].ToString() + ",";
+                    // عمل Trim صريح لكل قيمة مضافة لمنع الفراغات الناتجة من قاعدة البيانات
+                    types += dr["TypeID"].ToString().Trim() + ",";
                 }
             }
         }
-        // بنشيل آخر فاصلة لو موجودة
         return types.TrimEnd(',');
     }
     private void BindSubCategories()
@@ -142,7 +172,7 @@ public partial class Ar_Places : System.Web.UI.Page
         cat.LoadByPrimaryKey(catId);
 
         var lang = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
-        ltname.Text = (lang == "en") ? cat.NameEn : (lang == "ru") ? cat.NameRu : cat.Name;
+        //ltname.Text = (lang == "en") ? cat.NameEn : (lang == "ru") ? cat.NameRu : cat.Name;
 
         Addresses add = new Addresses();
         add.LoadByPrimaryKey(addId);
@@ -151,7 +181,7 @@ public partial class Ar_Places : System.Web.UI.Page
         Gov gov = new Gov();
         gov.LoadByPrimaryKey(ara.Gov_id);
 
-        ltlocation.Text = ltlocation2.Text = (lang == "en") ? gov.NameEn + "-" + ara.NameEn : (lang == "ru") ? gov.NameRu + "-" + ara.NameRu : gov.Name + "-" + ara.Name;
+        ///*ltlocation.Text =*/ ltlocation2.Text = (lang == "en") ? gov.NameEn + "-" + ara.NameEn : (lang == "ru") ? gov.NameRu + "-" + ara.NameRu : gov.Name + "-" + ara.Name;
 
         using (SqlConnection con = new SqlConnection(connStr))
         {

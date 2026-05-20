@@ -19,6 +19,11 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
         if (!IsPostBack)
         {
             BindMenu();
+            if (Request.QueryString["id"] != null)
+            {
+                int placeId = Convert.ToInt32(Request.QueryString["id"].ToString());
+                BindRestaurantBanners(placeId);
+            }
             Addresses addr = new Addresses();
             addr.LoadByPrimaryKey(Convert.ToInt32(Request.QueryString["addid"].ToString()));
             Areas area = new Areas();
@@ -56,7 +61,6 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             if (usr.Ocounts == 0)
             {
                 ltdeliveryFee.Text = "0";
-                ltDeliveryCost.Text = "0";
             }
             else
             {
@@ -70,6 +74,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             ltDetails.Text = lang == "en" ? place.DescriptionEn : lang == "ru" ? place.DescriptionRu : place.Description;
 
             ltmincost.Text = place.MinOrder.ToString("F2") + " " + (string)GetGlobalResourceObject("texts", "currency");
+            ltMinOrderValue.Text = place.MinOrder.ToString("F4");
             ltdeliverytime.Text = (dzone.DeliveredTime).ToString();
             imgplace.ImageUrl = place.PhotoPath;
             imgplace.Attributes.Add("onerror", "this.src='/ar/images/placeholderImage.webp'");
@@ -135,7 +140,103 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             shopHeartIcon.Attributes["data-delivery-cost"] = ltdeliveryFee.Text;
         }
     }
+    private void BindRestaurantBanners(int placeId)
+    {
+        string query = @"SELECT [id], [PhotoUrl] 
+                         FROM [dbo].[Restaurant_Item_Banners] 
+                         WHERE [PlaceID] = @PlaceID AND [IsActive] = 1 
+                         ORDER BY [SortOrder] ASC";
 
+        using (SqlConnection conn = new SqlConnection(connStr))
+        {
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@PlaceID", placeId);
+                DataTable dt = new DataTable();
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+
+                if (dt.Rows.Count > 0)
+                {
+                    rptRestaurantBanners.DataSource = dt;
+                    rptRestaurantBanners.DataBind();
+                }
+                else
+                {
+                    rptRestaurantBanners.Visible = false;
+                }
+            }
+        }
+    }
+
+    [WebMethod]
+    public static object GetRestaurantBannerProducts(int bannerId)
+    {
+        string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
+        var itemsList = new List<object>();
+
+        // استعلام للحصول على تفاصيل الأصناف والأسعار المربوطة بجدول الأحجام التابع للإعلان المختار
+        string query = @"
+            SELECT 
+                ms.id AS UniqueSizeID,
+                mi.Name,
+                mi.Description,
+                mi.PhotoUrl,
+                mi.PrepearMin,
+                (ms.Price - ms.DiscountValue) AS NetPrice,
+                CASE 
+                    WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1 
+                    ELSE 0 
+                END AS isCustom,
+                CASE 
+                    WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1
+                    WHEN (SELECT COUNT(*) FROM MenuItems_Extras WHERE MenuItem_id = mi.id) > 0 THEN 1
+                    ELSE 0 
+                END AS hasAddons
+            FROM [dbo].[Restaurant_Banner_Sizes] rbs
+            INNER JOIN [dbo].[MenuItems_Sizes] ms ON rbs.MenuItemSizeID = ms.id
+            INNER JOIN [dbo].[MenuItems] mi ON ms.MenuItems_id = mi.id
+            INNER JOIN [dbo].[Restaurant_Item_Banners] rib ON rbs.RestaurantItemBannerID = rib.id
+            WHERE rbs.RestaurantItemBannerID = @BannerID AND rib.IsActive = 1
+            ORDER BY rib.SortOrder ASC";
+
+        try
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@BannerID", bannerId);
+                    conn.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            itemsList.Add(new
+                            {
+                                id = Convert.ToInt32(dr["UniqueSizeID"]),
+                                name = dr["Name"].ToString(),
+                                description = dr["Description"].ToString(),
+                                photoUrl = dr["PhotoUrl"].ToString(),
+                                prepearMin = Convert.ToInt32(dr["PrepearMin"]),
+                                price = Convert.ToDecimal(dr["NetPrice"]),
+                                isCustom = Convert.ToInt32(dr["isCustom"]),
+                                hasAddons = Convert.ToInt32(dr["hasAddons"])
+                            });
+                        }
+                    }
+                }
+            }
+
+            return new { success = true, data = itemsList };
+        }
+        catch (Exception ex)
+        {
+            return new { success = false, message = ex.Message };
+        }
+    }
     private void BindMenu()
     {
         using (SqlConnection conn = new SqlConnection(connStr))

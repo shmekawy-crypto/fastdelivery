@@ -251,16 +251,32 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
         {
             conn.Open();
 
-            // الكويري يجمع بيانات الطلب، العميل، العنوان، ويحسب الإجماليات وأوقات التنفيذ مع الحقول المضافة حديثاً
+            // الاستعلام بعد تعديل الحسابات المالية الشاملة للإضافات والخصومات المئوية للكوبونات بدقة
             string query = @"
             SELECT 
                 o.id, 
                 u.Name + ' ' + u.Lname AS UserName,
                 g.Name AS Gov, 
                 a.Name AS Area,
-                SUM(od.Amount * od.Price) AS total,
+                
+                -- 1. المجموع الكلي (إجمالي الأصناف + إجمالي الإضافات قبل الخصم)
+                (
+                    ISNULL((SELECT SUM(od2.Amount * od2.Price) FROM dbo.Order_Details od2 WHERE od2.Order_id = o.id), 0) +
+                    ISNULL((SELECT SUM(ode.Amount * ode.Price) FROM dbo.Order_Details_Extras ode INNER JOIN dbo.Order_Details od3 ON ode.Order_Detail_id = od3.id WHERE od3.Order_id = o.id), 0)
+                ) AS total,
+                
                 o.DeliveryCost,
-                SUM(od.Amount * od.Price) + o.DeliveryCost AS net,
+                
+                -- 2. الصافي الفعلي بعد تطبيق نسب الخصم المئوية للكوبونات (المطعم والدليفري)
+                (
+                    (
+                        ISNULL((SELECT SUM(od2.Amount * od2.Price) FROM dbo.Order_Details od2 WHERE od2.Order_id = o.id), 0) +
+                        ISNULL((SELECT SUM(ode.Amount * ode.Price) FROM dbo.Order_Details_Extras ode INNER JOIN dbo.Order_Details od3 ON ode.Order_Detail_id = od3.id WHERE od3.Order_id = o.id), 0)
+                    ) * (1.0 - (ISNULL(o.CoponDiscountR, 0) / 100.0))
+                    +
+                    (ISNULL(o.DeliveryCost, 0) * (1.0 - (ISNULL(o.CoponDiscountD, 0) / 100.0)))
+                ) AS net,
+                
                 o.Delivered, 
                 o.Accepted, 
                 o.Prepared, 
@@ -283,7 +299,6 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
                 o.ODTime,
                 o.ContactMethod
             FROM Orders o
-            INNER JOIN Order_Details od ON o.id = od.Order_id
             INNER JOIN Addresses addr ON o.Address_id = addr.ID
             INNER JOIN Users u ON addr.UserID = u.Id
             INNER JOIN Areas a ON addr.Area_id = a.id
@@ -316,15 +331,8 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             int areaId = int.Parse(ddlArea.SelectedValue);
             if (areaId > 0) { query += " AND a.id = @AreaId"; cmd.Parameters.AddWithValue("@AreaId", areaId); }
 
-            // تجميع البيانات وترتيبها بالأحدث
-            query += @"
-            GROUP BY 
-                o.id, u.Name, u.Lname, g.Name, a.Name, o.DeliveryCost, 
-                o.Delivered, o.Accepted, o.Prepared, o.InWay, o.DriverID, 
-                o.AcceptedTime, o.PreparedTime, o.InWayTime, o.DeliveredTime, o.Odate,
-                o.PaymentMethod, o.TransferPhoto, o.WalletNumber, o.CoponDiscountR,
-                o.CoponDiscountD, o.CoponDiscountRU, o.CoponDiscountDU, o.ODTime, o.ContactMethod,o.DeliveryMethod
-            ORDER BY o.id DESC";
+            // ترتيب البيانات بالأحدث
+            query += " ORDER BY o.id DESC";
 
             cmd.CommandText = query;
             SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -377,7 +385,7 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
     {
         if (e.CommandName == "ShowDetails")
         {
-            ltcontent.Text = "<iframe src='OrdersDetails.aspx?id=" + e.CommandArgument + "' width='100%' height='100%' style='overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:100%;width:100%;position:absolute;top:0px;left:0px;right:0px;bottom:0px' height='100%' width='100%'></iframe>";
+            ltcontent.Text = "<iframe src='OrdersDetails.aspx?orderId=" + e.CommandArgument + "' width='100%' height='100%' style='overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:100%;width:100%;position:absolute;top:0px;left:0px;right:0px;bottom:0px' height='100%' width='100%'></iframe>";
             string title = "تفاصيل الطلب";
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Popup", "ShowPopup('" + title + "');", true);
             return;

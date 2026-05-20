@@ -47,11 +47,13 @@ const closeCart = () => {
     }
 };
 
-// shoppingCartPopup.addEventListener("click", (e) => {
-//   if (!cartHolder.contains(e.target) && !inCartItems.contains(e.target)) {
-//     closeCart();
-//   }
-// });
+if (shoppingCartPopup) {
+    shoppingCartPopup.addEventListener("click", (e) => {
+        if (cartHolder && !cartHolder.contains(e.target)) {
+            closeCart();
+        }
+    });
+}
 
 
 

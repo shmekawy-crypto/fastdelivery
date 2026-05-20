@@ -68,6 +68,8 @@
                         <li><a href="Dashboard.aspx"><i class="glyphicon glyphicon-home"></i> الرئيسية</a></li>
                         <li><a href="Orders.aspx"><i class="glyphicon glyphicon-shopping-cart"></i> الطلبات</a></li>
                         <li><a href="Menu.aspx"><i class="glyphicon glyphicon-list"></i> المنيو</a></li>
+                        <li><a href="RestaurantBanners.aspx"><i class="glyphicon glyphicon-list"></i> الإعلانات</a></li>
+
                     </ul>
                 </div>
 

@@ -78,7 +78,7 @@ a {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 6px 50px;
+  padding: 10px 50px;
   background: var(--fd-blue) !important;
   position: fixed;
   top: 0;
@@ -3670,14 +3670,14 @@ html[dir="ltr"] {
 @media (max-width: 480px) {
   .header {
     box-shadow: none !important;
-    height: 90px !important;
+    height: 75px !important;
     padding: 0 !important;
     overflow: visible !important;
     pointer-events: none;
     z-index: 10;
   }
 
- .nav-links, #userDropDown, #login-modal-btn {
+.nav-links, #userDropDown, #login-modal-btn {
     display: none !important;
   }
 
@@ -4289,7 +4289,7 @@ html[dir='ltr'] #sideCart{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 28px;
+    width: 26px;
     height: 26px;
     border: none;
   background: var(--fd-blue);
@@ -4374,7 +4374,7 @@ html[dir='ltr'] #sideCart{
 }
 @media(max-width:480px){
   .svg-wave {
-    top: 80px;
+    top: 60px;
   }
 
 }

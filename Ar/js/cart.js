@@ -27,9 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const shopAreaIdEl = document.querySelector("#shopAreaId");
     const shopIdEl = document.querySelector("#shopId");
     const addidEl = document.querySelector("#addid") || document.querySelector("#addId");
-    const actualShopNameEl = document.getElementById("shopNameContent") || 
-                             document.querySelector(".availableShopName span") || 
-                             document.querySelector(".availableShopName") || 
+    const actualShopNameEl = document.getElementById("shopNameContent") ||
+                             document.querySelector(".availableShopName span") ||
+                             document.querySelector(".availableShopName") ||
                              document.querySelector("#shopName");
 
     let GLOBAL_placeId = placeIdEl ? String(placeIdEl.textContent).trim() : String(localStorage.getItem("GLOBAL_placeId") || "").trim();
@@ -75,14 +75,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // Setup Delivery Fee with safe active-shop coupling
     let GLOBAL_DELIVERY_FEE = parseFloat(localStorage.getItem("GLOBAL_DELIVERY_FEE")) || 0;
     const deliveryFeeEl = document.querySelector("#deliveryFee");
-    const deliveryCostValueEl = document.querySelector("#deliveryFee");
-    if (deliveryFeeEl || deliveryCostValueEl) {
-        let feeStr = "";
-        if (deliveryFeeEl && deliveryFeeEl.textContent.trim() !== "" && parseFloat(deliveryFeeEl.textContent.trim()) > 0) {
-            feeStr = deliveryFeeEl.textContent.trim();
-        } else if (deliveryCostValueEl) {
-            feeStr = deliveryCostValueEl.textContent.trim();
-        }
+    const deliveryCostValueEl = document.querySelector("#deliveryCostValue");
+    let feeStr = "";
+    if (deliveryFeeEl && deliveryFeeEl.textContent.trim() !== "") {
+        feeStr = deliveryFeeEl.textContent.trim();
+    } else if (deliveryCostValueEl && deliveryCostValueEl.textContent.trim() !== "") {
+        feeStr = deliveryCostValueEl.textContent.trim();
+    }
+    if (feeStr !== "") {
         const fee = parseFloat(feeStr);
         if (!isNaN(fee)) {
             GLOBAL_DELIVERY_FEE = fee;
@@ -100,6 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
             window.cart = this;
+            if (typeof window.updateLiveSummary === 'function') {
+                window.updateLiveSummary();
+            }
         },
 
         items: (() => {
@@ -122,8 +125,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         get deliveryFee() {
             const activeShopId = String(document.querySelector("#shopId")?.textContent || "").trim();
-            const domFee = parseFloat(document.querySelector("#deliveryFee")?.textContent.trim()) ||
-                           parseFloat(document.querySelector("#deliveryCostValue")?.textContent.trim());
+            let domFee = NaN;
+            const feeEl = document.querySelector("#deliveryFee");
+            const costEl = document.querySelector("#deliveryCostValue");
+            if (feeEl && feeEl.textContent.trim() !== "") {
+                domFee = parseFloat(feeEl.textContent.trim());
+            }
+            if (isNaN(domFee) && costEl && costEl.textContent.trim() !== "") {
+                domFee = parseFloat(costEl.textContent.trim());
+            }
 
             if (activeShopId && !isNaN(domFee)) {
                 return domFee;
@@ -137,8 +147,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         syncDeliveryFeeWithDOM() {
             const activeShopId = String(document.querySelector("#shopId")?.textContent || "").trim();
-            const domFee = parseFloat(document.querySelector("#deliveryFee")?.textContent.trim()) ||
-                           parseFloat(document.querySelector("#deliveryCostValue")?.textContent.trim());
+            let domFee = NaN;
+            const feeEl = document.querySelector("#deliveryFee");
+            const costEl = document.querySelector("#deliveryCostValue");
+            if (feeEl && feeEl.textContent.trim() !== "") {
+                domFee = parseFloat(feeEl.textContent.trim());
+            }
+            if (isNaN(domFee) && costEl && costEl.textContent.trim() !== "") {
+                domFee = parseFloat(costEl.textContent.trim());
+            }
 
             if (activeShopId && !isNaN(domFee)) {
                 let updated = false;
@@ -231,6 +248,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
+            // If it is the first order, delivery fee is 0!
+            if (window.isFirstOrder) {
+                finalDeliveryToPay = 0;
+            }
+
             const summary = {
                 subtotal: rawSubtotal.toFixed(2),
                 delivery: finalDeliveryToPay.toFixed(2),
@@ -241,14 +263,32 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("cartSummary", JSON.stringify(summary));
         },
 
-        checkoutState: JSON.parse(localStorage.getItem("checkoutState")) || {
-            paymentMethod: 'cash',
-            deliveryMethod: 'delivery',
-            contactMethod: 'ring_bell',
-            scheduledTime: '',
-            payerPhone: '',
-            paymentProofBase64: ''
-        },
+        checkoutState: (() => {
+            const defaults = {
+                paymentMethod: 'cash',
+                deliveryMethod: 'delivery',
+                contactMethod: 'phone',
+                scheduledTime: '',
+                payerPhone: '',
+                paymentProofBase64: ''
+            };
+            let state;
+            try {
+                state = JSON.parse(localStorage.getItem("checkoutState"));
+            } catch(e) {}
+            if (!state || typeof state !== 'object') {
+                state = defaults;
+                state.contactMethodMigrated = true;
+            } else {
+                state = { ...defaults, ...state };
+                if (!state.contactMethodMigrated) {
+                    state.contactMethod = 'phone';
+                    state.contactMethodMigrated = true;
+                }
+            }
+            localStorage.setItem("checkoutState", JSON.stringify(state));
+            return state;
+        })(),
 
         saveCheckoutState() {
             localStorage.setItem("checkoutState", JSON.stringify(this.checkoutState));
@@ -883,7 +923,33 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
         const totalEls = document.querySelectorAll(".totalAmount");
 
         subtotalEls.forEach(el => el.textContent = Number(summary.subtotal).toLocaleString() + ` ${texts.Currency}`);
-        deliveryEls.forEach(el => el.textContent = Number(summary.delivery).toFixed(2) + ` ${texts.Currency}`);
+        deliveryEls.forEach(el => {
+            el.textContent = Number(summary.delivery).toFixed(2) + ` ${texts.Currency}`;
+
+            // First Order Free Delivery Banner
+            const parent = el.closest(".deliveryAmount") || el.parentElement;
+            if (parent) {
+                let badge = parent.querySelector(".first-order-delivery-badge");
+                if (window.isFirstOrder) {
+                    if (!badge) {
+                        badge = document.createElement("span");
+                        badge.className = "first-order-delivery-badge";
+                        badge.style.color = "#2b8a3e";
+                        badge.style.fontWeight = "bold";
+                        badge.style.fontSize = "0.75rem";
+                        badge.style.display = "block";
+                        badge.style.marginTop = "4px";
+                        parent.appendChild(badge);
+                    }
+                    badge.innerHTML = `<i class="fa-solid fa-gift"></i> ${texts.FirstOrderFreeDelivery || "0.00 بمناسبة طلبك الأول 🎉"}`;
+                    badge.style.display = "block";
+                } else {
+                    if (badge) {
+                        badge.style.display = "none";
+                    }
+                }
+            }
+        });
         totalEls.forEach(el => el.textContent = Number(summary.total).toLocaleString() + ` ${texts.Currency}`);
 
         // Handle empty cart summary update
@@ -1088,6 +1154,51 @@ function renderCheckoutArticles(items, summary) {
         if (!itemsByShop[item.shopId]) itemsByShop[item.shopId] = { shopName: item.shopName, items: [] };
         itemsByShop[item.shopId].items.push(item);
     });
+
+    const uniqueShopIds = Object.keys(itemsByShop);
+    const isMultiShop = uniqueShopIds.length > 1;
+
+    // Manage order coupon input and disabled message based on shop count
+    const orderPromoInputWrap = document.getElementById("orderPromoInputWrap");
+    const orderPromoDisabledMsg = document.getElementById("orderPromoDisabledMsg");
+    if (orderPromoInputWrap && orderPromoDisabledMsg) {
+        if (isMultiShop) {
+            orderPromoInputWrap.style.display = "none";
+            orderPromoDisabledMsg.style.display = "flex";
+            orderPromoDisabledMsg.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <span>${texts.OrderPromoDisabledForMultiShop || 'كوبون خصم الطلب غير متاح لأن طلبك يحتوي على منتجات من عدة متاجر.'}</span>`;
+
+            // Reset applied coupon if it exists
+            if (window.promoOrder && window.promoOrder.code) {
+                window.promoOrder = { code: '', amount: 0, percentage: 0 };
+                const promoInputOrder = document.getElementById("promoInputOrder");
+                if (promoInputOrder) {
+                    promoInputOrder.value = "";
+                    promoInputOrder.disabled = false;
+                }
+                const applyBtnOrder = document.getElementById("applyBtnOrder");
+                if (applyBtnOrder) {
+                    applyBtnOrder.textContent = texts.Apply || "تطبيق";
+                    applyBtnOrder.classList.remove('remove');
+                }
+                const promoMsgOrder = document.getElementById("promoMsgOrder");
+                if (promoMsgOrder) promoMsgOrder.style.display = "none";
+            }
+        } else {
+            orderPromoInputWrap.style.display = "flex";
+            orderPromoDisabledMsg.style.display = "none";
+        }
+    }
+
+    // Add UI feedback alert banner in cart list if ordering from multiple shops
+    if (isMultiShop) {
+        const warningBanner = document.createElement("div");
+        warningBanner.className = "multi-shop-alert-banner";
+        warningBanner.innerHTML = `
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>${texts.MultiShopPromoWarning || 'تنبيه: لا يمكن استخدام كوبونات خصم الطلب عند الشراء من عدة متاجر.'}</span>
+        `;
+        checkoutCart.appendChild(warningBanner);
+    }
 
     Object.keys(itemsByShop).forEach(shopId => {
         const shopGroup = itemsByShop[shopId];
@@ -1369,13 +1480,28 @@ function renderCheckoutArticles(items, summary) {
     const deliveryEl = document.getElementById("globalTotalDelivery");
 
     if (subtotalEl) {
-        subtotalEl.innerText = `${Number(summary.subtotal || 0).toLocaleString()} ${texts.Currency || 'ج.م'}`;
+        const subtotalVal = Number(summary.subtotal || 0);
+        const orderDiscount = (window.promoOrder && window.promoOrder.amount) || 0;
+        if (orderDiscount > 0) {
+            const newSubtotal = Math.max(0, subtotalVal - orderDiscount);
+            subtotalEl.innerHTML = `<span style="text-decoration: line-through; color: #888; margin-inline-end: 8px; font-weight: normal;">${subtotalVal.toFixed(2)} ${texts.Currency || 'ج.م'}</span><span style="color: #2b8a3e; font-weight: bold;">${newSubtotal.toFixed(2)} ${texts.Currency || 'ج.م'}</span>`;
+        } else {
+            subtotalEl.innerHTML = `<strong>${subtotalVal.toFixed(2)} ${texts.Currency || 'ج.م'}</strong>`;
+        }
     }
     if (deliveryEl) {
-        deliveryEl.innerText = `${Number(summary.delivery || 0).toFixed(2)} ${texts.Currency || 'ج.م'}`;
+        const deliveryVal = Number(summary.delivery || 0);
+        const shippingDiscount = (window.promoShipping && window.promoShipping.amount) || 0;
+        if (shippingDiscount > 0) {
+            const newDelivery = Math.max(0, deliveryVal - shippingDiscount);
+            deliveryEl.innerHTML = `<span style="text-decoration: line-through; color: #888; margin-inline-end: 8px; font-weight: normal;">${deliveryVal.toFixed(2)} ${texts.Currency || 'ج.م'}</span><span style="color: #2b8a3e; font-weight: bold;">${newDelivery.toFixed(2)} ${texts.Currency || 'ج.م'}</span>`;
+        } else {
+            deliveryEl.innerHTML = `<strong>${deliveryVal.toFixed(2)} ${texts.Currency || 'ج.م'}</strong>`;
+        }
     }
     if (finalTotalEl) {
-        finalTotalEl.innerText = `${Number(summary.total || 0).toLocaleString()} ${texts.Currency || 'ج.م'}`;
+        const finalVal = Number(summary.total || 0);
+        finalTotalEl.innerText = `${finalVal.toFixed(2)} ${texts.Currency || 'ج.م'}`;
     }
 
     // Update Total Delivery Time in summary

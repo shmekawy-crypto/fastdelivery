@@ -23,6 +23,7 @@
         .table thead th {
             background-color: #007bff;
             color: white;
+            text-align: center;
         }
         .table tbody tr:nth-child(odd) {
             background-color: #f9f9f9;
@@ -32,6 +33,11 @@
         }
         .table td, .table th {
             vertical-align: middle !important;
+            text-align: center;
+        }
+        .table tfoot tr td {
+            font-weight: bold;
+            background-color: #f8f9fa;
         }
     </style>
     <form id="form1" runat="server">

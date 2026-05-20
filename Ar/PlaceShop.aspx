@@ -875,7 +875,7 @@
 
             #closeCartBtn {
                 position: absolute;
-                top: 1.25rem;
+                top: 0.5rem;
                 right: 1.25rem;
                 font-size: 1.8rem;
                 color: #bbb;
@@ -1295,6 +1295,31 @@
                 }
 
             }
+            .pay-badge.safe {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* التنسيق المميز لـ Fast Delivery */
+.highlight-fast {
+    background-color: #ffc107; /* لون أصفر مميز */
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    margin-left: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    text-transform: uppercase; /* عشان تظهر ككلمة قوية */
+}
         </style>
         <script>
             // Logic consolidated in initSidebarActiveState below
@@ -1331,6 +1356,9 @@
             </div>
             <div id="shopName" hidden>
                 <asp:Literal ID="ltshopName" runat="server"></asp:Literal>
+            </div>
+            <div id="minOrderValue" hidden>
+                <asp:Literal ID="ltMinOrderValue" runat="server"></asp:Literal>
             </div>
             <div id="addid" hidden>
                 <asp:Literal ID="ltaddid" runat="server"></asp:Literal>
@@ -1409,51 +1437,216 @@
                     </div>
 
                     <div class="shopPayMethods">
-                        <p class="pay-badge tracking">
+                     <%--   <p class="pay-badge tracking">
                             <i class="fa-solid fa-map-location-dot"></i>
                             <asp:Literal ID="ltLiveTracking" runat="server" Text="<%$ Resources:texts, LiveTracking %>">
                             </asp:Literal>
-                        </p>
+                        </p>--%>
 
                         <p class="pay-badge safe">
-                            <i class="fa-solid fa-shield"></i>
-                            <asp:Literal ID="ltSafeDelivery" runat="server" Text="<%$ Resources:texts, SafeDelivery %>">
-                            </asp:Literal>
-                        </p>
+    <i class="fa-solid fa-shield"></i>
+    <asp:Literal ID="ltSafeDelivery" runat="server" Text="<%$ Resources:texts, SafeDelivery %>" />
+    <span class="highlight-fast">
+        <i class="fa-solid fa-bolt"></i> Fast Delivery
+    </span>
+</p>
 
                         <p class="pay-badge free">
                             <i class="fa-solid fa-gift"></i>
                             <asp:Literal ID="ltFirstOrderFree" runat="server"
                                 Text="<%$ Resources:texts, FirstOrderFree %>"></asp:Literal>
                         </p>
+
                     </div>
 
                 </div>
             </article>
 
-            <section class="news-swipr">
-                <div class="swiper newsSwiper">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <img src="https://np.naukimg.com/cphoto/l45XrkFOujKTaHBdN6PUrTtURaQ/6AFPI5l/k2gAkQqVwFKHFwvhK7u32Kmseoy1Xu1tTnRJRtug8Q2lzX6Wp02NFCPzn2tkSW8b4Mm3yavA7NNZXdbZaFECMd/ZnVDpzp"
-                                alt="News Image" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb_FiZTdONoWw2NWQ_hk1FBfFb3NIhiWImUA&s"
-                                alt="News Image" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCL35UgrPqNPxqfmpoEq1ZFvdM7I7bz61B3w&s"
-                                alt="News Image" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx319C2Cuuz7TXEhCMHcSrpvwcLgqnO2ahzg&s"
-                                alt="News Image" />
-                        </div>
+           <section class="news-swipr">
+    <div class="swiper newsSwiper">
+        <div class="swiper-wrapper">
+            <asp:Repeater ID="rptRestaurantBanners" runat="server">
+                <ItemTemplate>
+                    <div class="swiper-slide">
+                        <%-- عند الضغط على إعلان المطعم، يتم استدعاء الدالة لجلب الأصناف المربوطة به داخل بوب أب --%>
+                        <img src='<%# ResolveUrl("~/" + Eval("PhotoUrl")) %>' 
+                             onclick='<%# "handleRestaurantBannerClick(" + Eval("id") + ");" %>' 
+                             alt="Restaurant Banner Image" style="cursor: pointer; width: 100%; object-fit: cover;" />
                     </div>
-                </div>
-            </section>
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
+    </div>
+</section>
+            <script>
+                function handleRestaurantBannerClick(bannerId) {
+                    const currentAddId = document.getElementById("addid")?.innerText.trim() || '0';
 
+                    Swal.fire({
+                        title: t.loading,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        url: "PlaceShop.aspx/GetRestaurantBannerProducts",
+                        data: JSON.stringify({ bannerId: bannerId }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.d && response.d.success && response.d.data && response.d.data.length > 0) {
+                                const items = response.d.data;
+                                const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+                                const shopName = document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '';
+                
+                                // جلب بيانات السلة الحالية لحساب الكميات النشطة مسبقاً داخل البوب أب
+                                const counts = {};
+                                if (window.cart && window.cart.items) {
+                                    window.cart.items.forEach(item => {
+                                        if (String(item.shopId) === shopId) {
+                                            counts[String(item.id)] = item.amount;
+                                        }
+                                    });
+                                }
+
+                                // بناء هيكل الـ HTML المطلوب والمطابق تماماً لتصميم الموقع الخاص بك
+                                let modalHtml = `
+                <div class="foodList" style="max-height: 75vh; overflow-y: auto; padding: 15px; direction: rtl; text-align: right;">
+                    <ul class="foodDrowdown" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.25rem;">`;
+
+                                items.forEach(item => {
+                                    const itemId = String(item.id);
+                                    const count = counts[itemId] || 0;
+                                    const hasCount = count > 0;
+
+                                    modalHtml += `
+                        <li class="foodItem" id="${item.id}" 
+                            data-product-name="${item.name}" 
+                            data-price="${item.price.toFixed(2)}" 
+                            data-has-addons="${item.hasAddons}" 
+                            data-is-custom="${item.isCustom}" 
+                            onclick="handleProductClick(this, event)"
+                            style="display: flex; flex-direction: row-reverse !important; justify-content: space-between; align-items: stretch; padding: 1.25rem; background: #fff; border-radius: 1.25rem; border: 1px solid #f2f2f2; margin-bottom: 1rem; transition: all 0.3s ease; gap: 1.5rem; cursor: pointer; position: relative;">
+                            
+                            <div class="product-qty-badge" style="display: ${hasCount ? 'flex' : 'none'}; position: absolute; top: 10px; right: 10px; background: #e88b0e; color: white; width: 26px; height: 26px; border-radius: 50%; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; box-shadow: 0 2px 8px rgba(255, 193, 25, 0.4); z-index: 5; border: 2px solid white;">${count}</div>
+                            
+                            <div class="foodDetailsContainer" style="display: flex; flex-direction: column; justify-content: space-between; flex: 1; text-align: start; height: auto; padding-block: 0.75rem;">
+                                <div class="foodText" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    <h4 class="foodName" style="font-size: 1.2rem; font-weight: 700; color: #1a1a1a; margin: 0; line-height: 1.2;">
+                                        ${item.name}
+                                    </h4>
+                                    <p class="foodContent" style="font-size: 0.95rem; color: #777; line-height: 1.5; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                        ${item.description || ''}
+                                    </p>
+                                    ${item.prepearMin > 0 ? `<small style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-utensils'></i> ${item.prepearMin} دقيقة</small>` : ''}
+                                </div>
+                                <div class="foodPricing" style="display: flex; align-items: center; gap: 0.75rem; margin-top: auto;">
+                                    <span class="foodNewPrice" style="font-size: 1.15rem; font-weight: 800; color: #1a1a1a; white-space: nowrap;">
+                                        ${item.price.toFixed(0)} ج.م
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="foodImage" style="position: relative; width: 150px; height: 120px; max-width: 150px; flex-shrink: 0; background-color: #f8f8f8; border-radius: 1.5rem; overflow: hidden;">
+                                <img src="${item.photoUrl || '/ar/images/placeholderImage.webp'}" onerror="this.src='/ar/images/placeholderImage.webp';" style="width: 100%; height: 100%; object-fit: cover;">
+                                <div class="addToCart" style="position: absolute; bottom: 10px; left: 10px; display: flex; justify-content: center; align-items: center; z-index: 2;">
+                                    <span class="addToCartBtn" onclick="handleAddToCartClick(event, this)" title="اضف الى العربة" style="display: ${hasCount ? 'none' : 'flex'}; width: 36px; height: 36px; background-color: #fff; color: #ff6b00; border-radius: 50%; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); font-size: 1.4rem; cursor: pointer;">
+                                        <i class="fa fa-plus"></i>
+                                    </span>
+                                    <div class="qty-control card-qty" style="display: ${hasCount ? 'flex' : 'none'}; background: #f8f9fa; border-radius: 20px; padding: 2px 8px; gap: 10px;" onclick="event.stopPropagation()">
+                                        <button onclick="handleCardQty(event, this, -1)" style="background: var(--fd-blue); border: none; color: white; cursor: pointer; padding: 4px; font-size: 0.8rem;"><i class="fa-solid fa-minus"></i></button>
+                                        <span class="qty-val" style="font-weight: 800; font-size: 0.9rem; color: #222; min-width: 15px; text-align: center;">${count}</span>
+                                        <button onclick="handleCardQty(event, this, 1)" style="background: var(--fd-blue); border: none; color: white; cursor: pointer; padding: 4px; font-size: 0.8rem;"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>`;
+                                });
+
+                                modalHtml += `
+                    </ul>
+                </div>`;
+
+                                Swal.fire({
+                                    title: 'العروض الحصرية المتاحة الآن',
+                                    html: modalHtml,
+                                    showConfirmButton: false,
+                                    showCancelButton: true,
+                                    cancelButtonText: 'إغلاق',
+                                    width: '600px',
+                                    background: '#f8f9fa',
+                                    didOpen: () => {
+                                        // إعادة ربط أحداث الإضافة والتعديل داخل السلة بعد فتح البوب أب مباشرة
+                                        const originalSync = window.syncProductBadges;
+                                        window.syncProductBadges = function() {
+                                            if(typeof originalSync === 'function') originalSync();
+                            
+                                            // تحديث رسوميات أزرار البوب أب بالتزامن مع السلة الأساسية للصفحة
+                                            if (window.cart && window.cart.items) {
+                                                const activeCounts = {};
+                                                window.cart.items.forEach(i => {
+                                                    if (String(i.shopId) === shopId) {
+                                                        activeCounts[String(i.id)] = i.amount;
+                                                    }
+                                                });
+                                
+                                                document.querySelectorAll('.swal2-html-container .foodItem').forEach(li => {
+                                                    const liId = li.getAttribute('id');
+                                                    const currentCount = activeCounts[liId] || 0;
+                                    
+                                                    const badge = li.querySelector('.product-qty-badge');
+                                                    if(badge) {
+                                                        badge.innerText = currentCount;
+                                                        badge.style.display = currentCount > 0 ? 'flex' : 'none';
+                                                    }
+                                    
+                                                    const addBtn = li.querySelector('.addToCartBtn');
+                                                    const qtyCtrl = li.querySelector('.card-qty');
+                                                    const qtyVal = li.querySelector('.qty-val');
+                                    
+                                                    if(addBtn && qtyCtrl) {
+                                                        if(currentCount > 0) {
+                                                            addBtn.style.display = 'none';
+                                                            qtyCtrl.style.display = 'flex';
+                                                            if(qtyVal) qtyVal.innerText = currentCount;
+                                                        } else {
+                                                            addBtn.style.display = 'flex';
+                                                            qtyCtrl.style.display = 'none';
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        };
+                                    },
+                                    willClose: () => {
+                                        // عند إغلاق المودال نقوم بتحديث العدادات الرئيسية لصفحة الأصناف لتجنب الاختلافات الرسومية
+                                        syncProductBadges();
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'تنبيه',
+                                    text: response.d?.message || 'لا توجد أصناف مرتبطة بهذا العرض حالياً.',
+                                    icon: 'info',
+                                    confirmButtonText: 'موافق'
+                                });
+                            }
+                        },
+                        error: function (err) {
+                            console.error(err);
+                            Swal.fire({
+                                title: t.errorTitle,
+                                text: t.connectionError,
+                                icon: 'error',
+                                confirmButtonText: 'موافق'
+                            });
+                        }
+                    });
+                }
+            </script>
             <div id="shopLists">
                 <ul id="shopListsOptions">
                     <li class="active">
@@ -2420,8 +2613,24 @@
                 transition: all 0.3s ease !important;
             }
 
+            #favIconNav.active i,
+            #favIconNav.is-favorite i,
             .fav-nav-icon.active i,
-            .favorite-heart.active i {
+            .fav-nav-icon.is-favorite i,
+            .favorite-heart.active i,
+            .favorite-heart.is-favorite i {
+                color: #ff4d4f !important;
+                font-weight: 900 !important;
+            }
+
+            #favIconNav i,
+            .fav-nav-icon i {
+                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease !important;
+            }
+
+            #favIconNav:hover i,
+            .fav-nav-icon:hover i {
+                transform: scale(1.2) !important;
                 color: #ff4d4f !important;
             }
 
@@ -3010,14 +3219,13 @@
                     isCustomProduct: isCustomProduct,
                     isCustomized: isCustomProduct || hasActualCustomizations,
                     hasActualCustomizations: hasActualCustomizations,
-                    customization: isCustomProduct
-                        ? {
-                            size: currentCustomization?.size || null,
-                            extras: currentCustomization?.extras || [],
-                            upsells: currentCustomization?.upsells || [],
-                            notes: notes || ''
-                        }
-                        : null,
+                    customization:
+                    {
+                        size: currentCustomization?.size || null,
+                        extras: currentCustomization?.extras || [],
+                        upsells: currentCustomization?.upsells || [],
+                        notes: notes || ''
+                    },
                     shopId: shopId,
                     shopName: shopName,
                     deliveryTime: deliveryTime,
@@ -3223,27 +3431,27 @@
                     event.stopPropagation();
                 }
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const shopId = urlParams.get('id');
+                // First try to get ID from element, fallback to URL param
+                const shopId = element?.getAttribute('data-id') || new URLSearchParams(window.location.search).get('id');
                 if (!shopId) return;
 
                 let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
                 const index = favorites.findIndex(f => String(f.id) === String(shopId));
 
                 if (index === -1) {
-                    // Add to favorites
+                    // Add to favorites - try element data attributes first, fallback to DOM selectors
                     const shopData = {
                         id: shopId,
-                        name: document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
-                        nameEn: '',
-                        img: document.querySelector('.shop-profile-img')?.src || document.querySelector('.availableShop img')?.src || '',
-                        desc: document.getElementById('shopFoodsContent')?.innerText.trim() || '',
-                        descEn: '',
-                        deliveryTime: document.querySelector('.timer')?.innerText.trim() || '',
-                        deliveryCost: document.getElementById('deliveryCostValue')?.innerText.trim() || '',
-                        rate: (() => { const raw = document.getElementById('rawRating')?.innerText.trim() || document.querySelector('.shopRating .rating-number')?.innerText.trim() || '0'; return parseFloat(raw.replace(/[^\d.]/g, '')).toFixed(1); })(),
-                        isOpened: document.getElementById('isOpened')?.innerText.trim() || '',
-                        url: window.location.href
+                        name: element?.getAttribute('data-name') || document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
+                        nameEn: element?.getAttribute('data-name-en') || '',
+                        img: element?.getAttribute('data-img') || document.querySelector('.shop-profile-img')?.src || document.querySelector('.availableShop img')?.src || '',
+                        desc: element?.getAttribute('data-desc') || document.getElementById('shopFoodsContent')?.innerText.trim() || '',
+                        descEn: element?.getAttribute('data-desc-en') || '',
+                        deliveryTime: element?.getAttribute('data-delivery-time') || document.querySelector('.timer')?.innerText.trim() || '',
+                        deliveryCost: element?.getAttribute('data-delivery-cost') || document.getElementById('deliveryCostValue')?.innerText.trim() || '',
+                        rate: element?.getAttribute('data-rate') || (() => { const raw = document.getElementById('rawRating')?.innerText.trim() || document.querySelector('.shopRating .rating-number')?.innerText.trim() || '0'; return parseFloat(raw.replace(/[^\d.]/g, '')).toFixed(1); })(),
+                        isOpened: element?.getAttribute('data-is-opened') || document.getElementById('isOpened')?.innerText.trim() || '',
+                        url: element?.getAttribute('data-url') || window.location.href
                     };
                     favorites.push(shopData);
                 } else {
@@ -3271,7 +3479,7 @@
                 const isFav = favorites.some(f => String(f.id) === String(shopId));
 
                 const hearts = [
-                    document.querySelector('[id$="shopHeartIcon"]'),
+                    document.querySelector('[id$="shopHeartIcon"]') || document.getElementById('shopHeartIcon'),
                     document.getElementById('favIconNav')
                 ];
 
@@ -3330,6 +3538,21 @@
             }
 
             function initFavorites() {
+                const cardHeart = document.querySelector('[id$="shopHeartIcon"]') || document.getElementById('shopHeartIcon');
+                const navFavBtn = document.getElementById('favIconNav');
+
+                if (cardHeart && navFavBtn) {
+                    // Copy all attributes (including data-attributes, classes, etc.)
+                    Array.from(cardHeart.attributes).forEach(attr => {
+                        if (attr.name !== 'id' && attr.name !== 'onclick' && attr.name !== 'style') {
+                            navFavBtn.setAttribute(attr.name, attr.value);
+                        }
+                    });
+
+                    // Make sure it has 'favorite-heart' class
+                    navFavBtn.classList.add('favorite-heart');
+                }
+
                 syncAllHearts(false);
             }
 
@@ -3903,7 +4126,7 @@
                 right: 10px;
                 background: #e88b0e;
                 color: white;
-                width: 28px;
+                width: 26px;
                 height: 26px;
                 border-radius: 50%;
                 display: none;
@@ -4536,6 +4759,60 @@
                 const mobileBtn = document.getElementById('mobileNavShare');
                 if (desktopBtn) desktopBtn.style.display = 'inline-block';
                 if (mobileBtn) mobileBtn.style.display = 'flex';
+
+                // Intercept Checkout Submit to check Min Order Limit
+                document.addEventListener('click', function (e) {
+                    const targetLink = e.target.closest('a[href*="checkout.aspx"], a[href*="CheckOut.aspx"], .confirmCartActions button.submit, .confirmCartActions .submit');
+                    if (targetLink) {
+                        const currentShopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+                        const minOrderVal = parseFloat(document.getElementById('minOrderValue')?.innerText.trim() || '0');
+
+                        if (minOrderVal > 0 && window.cart) {
+                            const shopItems = window.cart.items.filter(i => String(i.shopId).trim() === currentShopId);
+                            const shopSubtotal = shopItems.reduce((sum, item) => {
+                                const itemPrice = Number(item.price) || 0;
+                                let totalForItem = itemPrice * item.amount;
+
+                                if (item.customization) {
+                                    (item.customization.extras || []).forEach(e => {
+                                        totalForItem += (Number(e.price) || 0) * (e.qty || 1);
+                                    });
+                                    (item.customization.upsells || []).forEach(u => {
+                                        totalForItem += (Number(u.price) || 0) * (u.qty || 1);
+                                    });
+                                }
+                                return sum + totalForItem;
+                            }, 0);
+
+                            if (shopSubtotal < minOrderVal) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                const shopName = document.getElementById('shopName')?.innerText.trim() || 'المطعم';
+
+                                // Detect language
+                                const lang = '<%= System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower() %>';
+                                let errorMsg = '';
+                                if (lang === 'en') {
+                                    errorMsg = `Sorry, the minimum order from ${shopName} is ${minOrderVal.toFixed(4)} EGP. Your current order total is ${shopSubtotal.toFixed(0)} EGP.`;
+                                } else if (lang === 'ru') {
+                                    errorMsg = `Извините, минимальный заказ из ${shopName} составляет ${minOrderVal.toFixed(4)} EGP. Текущая сумма вашего заказа ${shopSubtotal.toFixed(0)} EGP.`;
+                                } else {
+                                    errorMsg = `عفواً، الحد الأدنى للطلب من مطعم ${shopName} هو ${minOrderVal.toFixed(4)} ج.م. إجمالي طلبك الحالي هو ${shopSubtotal.toFixed(0)} ج.م.`;
+                                }
+
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: lang === 'en' ? 'Minimum Order Limit' : lang === 'ru' ? 'Минимальный заказ' : 'الحد الأدنى للطلب',
+                                    text: errorMsg,
+                                    confirmButtonText: lang === 'en' ? 'OK' : lang === 'ru' ? 'ОК' : 'حسناً',
+                                    confirmButtonColor: 'var(--fd-blue, #0d6efd)'
+                                });
+                                return false;
+                            }
+                        }
+                    }
+                }, true); // Capture phase is critical to intercept before other event listeners
             });
         </script>
     </asp:Content>

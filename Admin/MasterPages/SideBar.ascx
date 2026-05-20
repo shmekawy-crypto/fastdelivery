@@ -77,6 +77,12 @@
 								</a>
 							
 							</li>
+     <li class="nav-item">
+								<a href="../pages/AdminBanners.aspx" id="AdminBanners" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
+									<span class="title">الإعلانات </span>
+								</a>
+							
+							</li>
     
      <li class="nav-item">
 								<a href="../pages/places.aspx" id="places" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>

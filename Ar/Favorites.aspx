@@ -1,4 +1,4 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Favorites.aspx.cs" Inherits="Ar_Favorites" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Favorites.aspx.cs" Inherits="Ar_Favorites" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
     <title><asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal></title>
 </asp:Content>
@@ -82,9 +82,13 @@ function loadFavorites() {
         const statusClass = shop.isOpened == "1" ? "status-badge open" : "status-badge closed";
 
         // Unicode escapes for Arabic:
-        // Open: \u0645\u0641\u062A\u0648\u062D
-        // Closed: \u0645\u063A\u0644\u0642
+        // Open: \u0645\u0641\u062A\u0648\u062D (مفتوح)
+        // Closed: \u0645\u063A\u0644\u0642 (مغلق)
         const statusText = shop.isOpened == "1" ? (isEn ? "Open" : "\u0645\u0641\u062A\u0648\u062D") : (isEn ? "Closed" : "\u0645\u063A\u0644\u0642");
+
+        // الـ Unicode المحدث هنا ليعني كلمة (خدمة توصيل) بدلاً من التوسيل القديمة
+        // خدمة توصيل: \u062E\u062F\u0645\u0629\x20\u062A\u0648\u0635\u064A\u0644
+        const deliveryLabel = isEn ? "Delivery" : "\u062E\u062F\u0645\u0629\x20\u062A\u0648\u0635\u064A\u0644";
 
         // Fix image path if needed
         let imgSrc = shop.img || 'images/placeholderImage.webp';
@@ -112,8 +116,8 @@ function loadFavorites() {
                     </div>
                     <p class="shopFoods">${desc}</p>
                     <div class="shopDelivery">
-                        <span class="deliveryTime">${isEn ? 'Receive in' : '\u064A\u0635\u0644 \u062E\u0644\u0627\u0644'} <span class="timer">${sanitize(shop.deliveryTime) || '--'}</span> ${isEn ? 'minutes' : '\u062F\u0642\u064A\u0642\u0629'}</span>
-                        <span class="deliveryPayment">${isEn ? 'Delivery' : '\u0627\u0644\u062A\u0648\u0633\u064A\u0644'}: <span class="deliveryPaymentAmount">${formatPrice(sanitize(shop.deliveryCost))}</span> ${isEn ? 'EGP' : '\u062C.\u0645'}</span>
+                        <span class="deliveryTime">${isEn ? 'Receive in' : '\u064A\u0635\u0644\x20\u062E\u0644\u0627\u0644'} <span class="timer">${sanitize(shop.deliveryTime) || '--'}</span> ${isEn ? 'minutes' : '\u062F\u0642\u064A\u0642\u0629'}</span>
+                        <span class="deliveryPayment">${deliveryLabel}: <span class="deliveryPaymentAmount">${formatPrice(sanitize(shop.deliveryCost))}</span> ${isEn ? 'EGP' : '\u062C.\u0645'}</span>
                     </div>
                 </div>
             </div>
@@ -122,10 +126,8 @@ function loadFavorites() {
     });
 }
 
-
-
 document.addEventListener('DOMContentLoaded', loadFavorites);
-</script>
+</script>>
 
 <style>
 

@@ -25,9 +25,11 @@ public partial class Places_MasterPages_Orders : System.Web.UI.Page
         int pid = Convert.ToInt32(Session["PlaceID"]);
         using (SqlConnection conn = new SqlConnection(connStr))
         {
+            // تم تعديل وعاء الحسبة المالية ليشمل الإضافات التابعة للمطعم الحالي بدقة متناهية
             string sql = @"SELECT O.*, U.Name as CustomerName, A.Mobile, A.Build, A.FloorNo, A.adepartmentNo,
                           (A.AddressName + ' - ' + A.StreetName) as FullAddress,
-                          ISNULL((SELECT SUM(Amount * Price) FROM Order_Details WHERE Order_id = O.id), 0) as TotalOrderCash
+                          ISNULL((SELECT SUM(od2.Amount * od2.Price) FROM Order_Details od2 JOIN MenuItems_Sizes mis2 ON od2.MenuItems_id = mis2.id JOIN MenuItems mi2 ON mis2.MenuItems_id = mi2.id WHERE od2.Order_id = O.id AND mi2.PlaceID = @pid), 0) +
+                          ISNULL((SELECT SUM(ode.Amount * ode.Price) FROM Order_Details_Extras ode JOIN Order_Details od3 ON ode.Order_Detail_id = od3.id JOIN MenuItems_Sizes mis3 ON od3.MenuItems_id = mis3.id JOIN MenuItems mi3 ON mis3.MenuItems_id = mi3.id WHERE od3.Order_id = O.id AND mi3.PlaceID = @pid), 0) as TotalOrderCash
                           FROM Orders O JOIN Addresses A ON O.Address_id = A.ID JOIN Users U ON A.UserID = U.Id
                           WHERE EXISTS (SELECT 1 FROM Order_Details OD JOIN MenuItems_Sizes MIS ON OD.MenuItems_id = MIS.id
                                       JOIN MenuItems MI ON MIS.MenuItems_id = MI.id WHERE OD.Order_id = O.id AND MI.PlaceID = @pid)
@@ -61,27 +63,34 @@ public partial class Places_MasterPages_Orders : System.Web.UI.Page
     {
         if (string.IsNullOrEmpty(e.CommandArgument.ToString())) return;
         int id = Convert.ToInt32(e.CommandArgument);
+        int pid = Convert.ToInt32(Session["PlaceID"]);
 
         if (e.CommandName == "ShowDetails")
         {
             lblModalOrderID.Text = id.ToString();
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                SqlCommand cmd = new SqlCommand(@"SELECT O.Odate, U.Name, A.Mobile, A.Build, A.FloorNo, A.adepartmentNo, A.StreetName, A.AddressName,
-                                                 ISNULL((SELECT SUM(Amount * Price) FROM Order_Details WHERE Order_id = O.id), 0) as GrandTotal
-                                                 FROM Orders O JOIN Addresses A ON O.Address_id = A.ID JOIN Users U ON A.UserID = U.Id
+                // تم إزالة أعمدة بيانات العميل من الاستعلام والاكتفاء بالتوقيت والمبالغ وأوقات التحضير لحماية الخصوصية
+                SqlCommand cmd = new SqlCommand(@"SELECT O.Odate, 
+                                                 ISNULL((SELECT SUM(od2.Amount * od2.Price) FROM Order_Details od2 JOIN MenuItems_Sizes mis2 ON od2.MenuItems_id = mis2.id JOIN MenuItems mi2 ON mis2.MenuItems_id = mi2.id WHERE od2.Order_id = O.id AND mi2.PlaceID = @pid), 0) +
+                                                 ISNULL((SELECT SUM(ode.Amount * ode.Price) FROM Order_Details_Extras ode JOIN Order_Details od3 ON ode.Order_Detail_id = od3.id JOIN MenuItems_Sizes mis3 ON od3.MenuItems_id = mis3.id JOIN MenuItems mi3 ON mis3.MenuItems_id = mi3.id WHERE od3.Order_id = O.id AND mi3.PlaceID = @pid), 0) as GrandTotal,
+                                                 ISNULL((SELECT MAX(mi4.PrepearMin) FROM Order_Details od4 JOIN MenuItems_Sizes mis4 ON od4.MenuItems_id = mis4.id JOIN MenuItems mi4 ON mis4.MenuItems_id = mi4.id WHERE od4.Order_id = O.id AND mi4.PlaceID = @pid), 0) as MaxPrepareTime
+                                                 FROM Orders O
                                                  WHERE O.id = @oid", conn);
                 cmd.Parameters.AddWithValue("@oid", id);
+                cmd.Parameters.AddWithValue("@pid", pid);
                 conn.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.Read())
                 {
                     lblModalOrderTime.Text = Convert.ToDateTime(dr["Odate"]).ToString("yyyy-MM-dd HH:mm");
-                    lblCustName.Text = dr["Name"].ToString();
-                    lblCustPhone.Text = dr["Mobile"].ToString();
-                    lblModalAddress.Text = string.Format("{0}, {1}, عمارة {2}, دور {3}, شقة {4}", dr["AddressName"], dr["StreetName"], dr["Build"], dr["FloorNo"], dr["adepartmentNo"]);
                     lblGrandTotal.Text = Convert.ToDecimal(dr["GrandTotal"]).ToString("N2");
+
+                    // تمرير أعلى وقت تحضير للواجهة لعرضه برمجياً
+                    int maxPrepTime = Convert.ToInt32(dr["MaxPrepareTime"]);
+                    lblTotalPrepareTime.Text = maxPrepTime > 0 ? maxPrepTime.ToString() : "---";
                 }
+                dr.Close();
                 conn.Close();
             }
             BindOrderItems(id);
@@ -90,46 +99,28 @@ public partial class Places_MasterPages_Orders : System.Web.UI.Page
         }
         else if (e.CommandName == "NextStep")
         {
-            UpdateStatus(id); BindOrders(); upOrders.Update();
+            // تم إيقاف تغيير الحالة من المطعم بناءً على رغبتك، وتم الإبقاء على الهيكل فارغاً لمنع الأخطاء البرمجية
         }
     }
 
     private void UpdateStatus(int id)
     {
-        using (SqlConnection conn = new SqlConnection(connStr))
-        {
-            conn.Open();
-            SqlCommand cmd = new SqlCommand("SELECT Accepted, Prepared, InWay, Delivered FROM Orders WHERE id = @id", conn);
-            cmd.Parameters.AddWithValue("@id", id);
-            SqlDataReader dr = cmd.ExecuteReader();
-            string field = "", timeField = "";
-            if (dr.Read())
-            {
-                if (!Convert.ToBoolean(dr["Accepted"])) { field = "Accepted"; timeField = "AcceptedTime"; }
-                else if (!Convert.ToBoolean(dr["Prepared"])) { field = "Prepared"; timeField = "PreparedTime"; }
-                else if (!Convert.ToBoolean(dr["InWay"])) { field = "InWay"; timeField = "InWayTime"; }
-                else if (!Convert.ToBoolean(dr["Delivered"])) { field = "Delivered"; timeField = "DeliveredTime"; }
-            }
-            dr.Close();
-            if (field != "")
-            {
-                string up = string.Format("UPDATE Orders SET {0} = 1, {1} = GETDATE() WHERE id = @id", field, timeField);
-                SqlCommand cmdUp = new SqlCommand(up, conn);
-                cmdUp.Parameters.AddWithValue("@id", id); // تم إصلاح الخطأ هنا
-                cmdUp.ExecuteNonQuery();
-            }
-            conn.Close();
-        }
+        // تم إيقاف اتخاذ الإجراء بناءً على طلبك
     }
 
     private void BindOrderItems(int id)
     {
+        int pid = Convert.ToInt32(Session["PlaceID"]);
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            SqlDataAdapter da = new SqlDataAdapter(@"SELECT OD.id as DetailID, MI.Name as ItemName, S.Name as SizeName, OD.Amount, OD.Price 
+            // الكويري المطور لجلب وقت تحضير الصنف مع الحسبة المالية شاملة أسعار الإضافات التابعة له
+            SqlDataAdapter da = new SqlDataAdapter(@"SELECT OD.id as DetailID, MI.Name as ItemName, S.Name as SizeName, OD.Amount, OD.Price, MI.PrepearMin,
+                                                   (OD.Amount * OD.Price) + ISNULL((SELECT SUM(ode.Amount * ode.Price) FROM Order_Details_Extras ode WHERE ode.Order_Detail_id = OD.id), 0) as LineTotal
                                                    FROM Order_Details OD JOIN MenuItems_Sizes MIS ON OD.MenuItems_id = MIS.id
                                                    JOIN MenuItems MI ON MIS.MenuItems_id = MI.id JOIN Sizes S ON MIS.Size_id = S.id
-                                                   WHERE OD.Order_id = " + id, conn);
+                                                   WHERE OD.Order_id = @id AND MI.PlaceID = @pid", conn);
+            da.SelectCommand.Parameters.AddWithValue("@id", id);
+            da.SelectCommand.Parameters.AddWithValue("@pid", pid);
             DataTable dt = new DataTable(); da.Fill(dt); gvOrderItems.DataSource = dt; gvOrderItems.DataBind();
         }
     }
@@ -142,9 +133,10 @@ public partial class Places_MasterPages_Orders : System.Web.UI.Page
             Repeater rpt = (Repeater)e.Row.FindControl("rptExtras");
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                SqlDataAdapter da = new SqlDataAdapter(@"SELECT E.Name as ExtraName, ODE.Amount FROM Order_Details_Extras ODE
+                SqlDataAdapter da = new SqlDataAdapter(@"SELECT E.Name as ExtraName, ODE.Amount, ODE.Price FROM Order_Details_Extras ODE
                                                        JOIN MenuItems_Extras MIE ON ODE.MenuItems_Extra_id = MIE.id
-                                                       JOIN Extras E ON MIE.Extra_id = E.id WHERE ODE.Order_Detail_id = " + detailId, conn);
+                                                       JOIN Extras E ON MIE.Extra_id = E.id WHERE ODE.Order_Detail_id = @did", conn);
+                da.SelectCommand.Parameters.AddWithValue("@did", detailId);
                 DataTable dt = new DataTable(); da.Fill(dt); rpt.DataSource = dt; rpt.DataBind();
             }
         }
@@ -154,18 +146,19 @@ public partial class Places_MasterPages_Orders : System.Web.UI.Page
 
     public string GetNextStepText(object acc, object prep, object way, object del)
     {
-        if (Convert.ToBoolean(del)) return "تم التسليم";
-        if (!Convert.ToBoolean(acc)) return "قبول الطلب";
-        if (!Convert.ToBoolean(prep)) return "تم التحضير";
-        if (!Convert.ToBoolean(way)) return "خرج للتوصيل";
-        return "تأكيد التسليم";
+        if (Convert.ToBoolean(del)) return "تم التسليم للعميل";
+        if (Convert.ToBoolean(way)) return "خرج للتوصيل مع المندوب";
+        if (Convert.ToBoolean(prep)) return "تم تحضيره في المطبخ";
+        if (Convert.ToBoolean(acc)) return "تم قبوله وبانتظار التحضير";
+        return "بانتظار قبول الإدارة";
     }
 
     public string GetNextStepClass(object acc, object prep, object way, object del)
     {
-        if (Convert.ToBoolean(del)) return "btn-default disabled";
-        if (!Convert.ToBoolean(acc)) return "btn-primary";
-        if (!Convert.ToBoolean(prep)) return "btn-warning";
-        return "btn-info";
+        if (Convert.ToBoolean(del)) return "badge-success text-white";
+        if (Convert.ToBoolean(way)) return "badge-info text-white";
+        if (Convert.ToBoolean(prep)) return "badge-warning text-dark";
+        if (Convert.ToBoolean(acc)) return "badge-primary text-white";
+        return "badge-danger text-white";
     }
 }

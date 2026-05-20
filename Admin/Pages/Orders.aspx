@@ -136,7 +136,7 @@ padding: 0;
     })
 	 
  </script>
-       
+        
            <div class="page-bar">
 						<div class="page-title-breadcrumb">
 							<div class=" pull-right">
@@ -219,8 +219,8 @@ padding: 0;
         <div style="font-size: 11px; line-height: 1.5; text-align: right; min-width: 140px;">
             <span class="text-muted">طريقة الاستلام:</span> <%# GetDeliveryMethodName(Eval("DeliveryMethod")) %><br />
             <span class="text-muted">طريقة الدفع:</span> <%# GetPaymentMethodName(Eval("PaymentMethod")) %><br />
-            <span class="text-muted">رقم المحفظة:</span> <%# Eval("WalletNumber") != DBNull.Value ? Eval("WalletNumber") : "-" %><br />
-            <span class="text-muted">طريقة التواصل:</span> <%# GetContactMethodName(Eval("ContactMehod")) %><br />
+            <span class="text-muted">رقم المحفظة:</span> <%# Eval("WalletNumber") != DBNull.Value && !string.IsNullOrEmpty(Eval("WalletNumber").ToString()) ? Eval("WalletNumber") : "-" %><br />
+            <span class="text-muted">طريقة التواصل:</span> <%# GetContactMethodName(Eval("ContactMethod")) %><br />
             <span class="text-muted">ميعاد الاستلام:</span> <%# Eval("ODTime", "{0:yyyy-MM-dd HH:mm}") %><br />
             <asp:HyperLink ID="lnkPhoto" runat="server" NavigateUrl='<%# Eval("TransferPhoto") %>' Target="_blank" Visible='<%# Eval("TransferPhoto") != DBNull.Value && !string.IsNullOrEmpty(Eval("TransferPhoto").ToString()) %>' CssClass="badge badge-warning mt-1">عرض الإيصال</asp:HyperLink>
         </div>
@@ -258,10 +258,10 @@ padding: 0;
                                     </EditItemTemplate>
                                     <ItemTemplate>
                                                    <asp:HiddenField ID="hfAccepted" Value='<%# Bind("id") %>'  runat="server"/>
-		                                <label class="switchToggle">
+		                                 <label class="switchToggle">
                                                              <asp:CheckBox ID="CheckBoxAccepted"  runat="server" Checked='<%# Bind("Accepted") %>'   AutoPostBack="true"  OnCheckedChanged="Accepted_CheckedChanged" />
                                                                       <span class="slider green round"></span>
-                                                    </label>
+                                                     </label>
 
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -271,10 +271,10 @@ padding: 0;
                                     </EditItemTemplate>
                                     <ItemTemplate>
                                                    <asp:HiddenField ID="hfPrepared" Value='<%# Bind("id") %>'  runat="server"/>
-		                                <label class="switchToggle">
+		                                 <label class="switchToggle">
                                                              <asp:CheckBox ID="ChPrepared"  runat="server" Checked='<%# Bind("Prepared") %>'   AutoPostBack="true"  OnCheckedChanged="Prepared_CheckedChanged" />
                                                                       <span class="slider green round"></span>
-                                                    </label>
+                                                     </label>
 
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -284,10 +284,10 @@ padding: 0;
                                     </EditItemTemplate>
                                     <ItemTemplate>
                                                    <asp:HiddenField ID="hfInWay" Value='<%# Bind("id") %>'  runat="server"/>
-		                                <label class="switchToggle">
+		                                 <label class="switchToggle">
                                                              <asp:CheckBox ID="ChInWay"  runat="server" Checked='<%# Bind("InWay") %>'   AutoPostBack="true"  OnCheckedChanged="InWay_CheckedChanged" />
                                                                       <span class="slider green round"></span>
-                                                    </label>
+                                                     </label>
 
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -297,10 +297,10 @@ padding: 0;
                                     </EditItemTemplate>
                                     <ItemTemplate>
                                                    <asp:HiddenField ID="hf" Value='<%# Bind("id") %>'  runat="server"/>
-		                                <label class="switchToggle">
+		                                 <label class="switchToggle">
                                                              <asp:CheckBox ID="CheckBox2"  runat="server" Checked='<%# Bind("Delivered") %>'   AutoPostBack="true"  OnCheckedChanged="CheckBox1_CheckedChanged" />
                                                                       <span class="slider green round"></span>
-                                                    </label>
+                                                     </label>
 
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -343,7 +343,7 @@ padding: 0;
 
         <script>
 
-              Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(function(evt, args) {
+             Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(function(evt, args) {
                  $('#<%= ddlGov.ClientID %>').select2({ width: '100%', dir: 'rtl' });
                 $('#<%= ddlArea.ClientID %>').select2({ width: '100%', dir: 'rtl' });
 

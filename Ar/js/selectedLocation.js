@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let filteredShops = [...shops];
 
+    // Track the selected category filter
+    if (!window.selectedCategoryId) {
+        window.selectedCategoryId = '0';
+    }
+
     // Fix: Ensure perPage is always recalculating correctly
     const getPerPage = () => (window.innerWidth <= 600 ? 1000 : 1000);
     let perPage = getPerPage();
@@ -78,6 +83,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const time = parseDeliveryTime(shop);
             if (filterFast?.checked && time > 30) return false;
 
+            // Add category filter
+            const categoryId = window.selectedCategoryId || '0';
+            if (categoryId !== '0') {
+                const types = shop.getAttribute('data-types');
+                if (!types) return false;
+                const typesArray = types.split(',');
+                if (typesArray.indexOf(categoryId) === -1) return false;
+            }
+
             return true;
         });
 
@@ -86,6 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
         createPagination();
         showPage(1);
     }
+
+    // Export applyFilters so it can be called from filterByJS
+    window.applyFiltersWithCategory = applyFilters;
 
     // ---------------- Sorting ----------------
 
@@ -215,8 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (el) el.addEventListener("click", () => sortAndShow(id));
     });
 
-    searchInput?.addEventListener("input", applyFilters);
-    filterBtn?.addEventListener("click", applyFilters);
+    searchInput?.addEventListener("input", window.applyFiltersWithCategory);
+    filterBtn?.addEventListener("click", window.applyFiltersWithCategory);
 
     window.addEventListener("resize", () => {
         const newPerPage = getPerPage();

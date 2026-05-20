@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="تفاصيل الطلب" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="OrderDetails.aspx.cs" Inherits="Ar_OrderDetails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
-    تفاصيل الطلب
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
@@ -197,7 +196,7 @@
     <style>
         /* التنسيقات العامة للحاوية */
         .order-details-wrapper { 
-            padding-top: 110px !important; /* عشان ما يغطيش عليه الهيدر */
+            padding-top: 50px !important; /* عشان ما يغطيش عليه الهيدر */
             padding-bottom: 50px;
             background-color: #fcfcfc; 
             min-height: 100vh; 

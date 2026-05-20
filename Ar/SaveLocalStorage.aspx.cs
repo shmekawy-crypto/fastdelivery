@@ -13,13 +13,12 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
 {
     [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public static object SaveLocalStorage(string cart, string action, int id = 0, string deliveryCost = null, string paymentMethod = null, string scheduledTime = null, string contactMethod = null, string orderType = null, string payerPhone = null)
+    public static object SaveLocalStorage(string cart, string action, int id = 0, string deliveryCost = null, string paymentMethod = null, string scheduledTime = null, string contactMethod = null, string orderType = null, string payerPhone = null, string totalCost = null, string orderCoupon = null, string deliveryCoupon = null, string paymentProofBase64 = null)
     {
         try
         {
             JArray items = string.IsNullOrEmpty(cart) ? new JArray() : JArray.Parse(cart);
             DataTable dt = ConvertJArrayToDataTable(items);
-
 
             if (dt.Rows.Count == 0)
             {
@@ -41,13 +40,13 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
 
             // 1. الأماكن المتاحة الآن بناءً على الجدول الزمني
             string sqlAvailable = @"
-                SELECT dbo.PlacesDeliverySchedule.PlacesId
-                FROM dbo.PlacesDeliverySchedule 
-                INNER JOIN dbo.DaysOfWeek ON dbo.PlacesDeliverySchedule.DayId = dbo.DaysOfWeek.Id
-                WHERE (dbo.DaysOfWeek.Dayorder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE())) 
-                AND (dbo.PlacesDeliverySchedule.IsActive = 1) 
-                AND (CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN 
-                dbo.PlacesDeliverySchedule.StartTime AND dbo.PlacesDeliverySchedule.EndTime))";
+        SELECT dbo.PlacesDeliverySchedule.PlacesId
+        FROM dbo.PlacesDeliverySchedule 
+        INNER JOIN dbo.DaysOfWeek ON dbo.PlacesDeliverySchedule.DayId = dbo.DaysOfWeek.Id
+        WHERE (dbo.DaysOfWeek.Dayorder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE())) 
+        AND (dbo.PlacesDeliverySchedule.IsActive = 1) 
+        AND (CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN 
+        dbo.PlacesDeliverySchedule.StartTime AND dbo.PlacesDeliverySchedule.EndTime))";
 
             // 2. جلب الاسم والحد الأدنى للطلب (MinOrder)
             string idsCsv = string.Join(",", ids);
@@ -73,7 +72,9 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
             foreach (DataRow row in dtAvailable.Rows)
                 availableIds.Add(Convert.ToInt32(row["PlacesId"]));
 
-            // التحقق من (المتاح) و (الحد الأدنى للطلب)
+            // التحقق من (المتاح) و (الحد الأدنى للطلب) وحساب إجماليات المطاعم مسبقاً
+            Dictionary<int, decimal> placeTotals = new Dictionary<int, decimal>();
+
             foreach (DataRow placeRow in dtNames.Rows)
             {
                 int pId = Convert.ToInt32(placeRow["Id"]);
@@ -99,7 +100,10 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
                     }
                 }
 
-                // ثالثاً: مقارنة الإجمالي بالحد الأدنى
+                // تخزين الإجمالي لاستخدامه لاحقاً في فحص الكوبون
+                placeTotals.Add(pId, placeTotal);
+
+                // ثالثاً: مقارنة الإجمالي بالحد الأدنى للمطعم
                 if (placeTotal < minOrder)
                 {
                     string minOrderMsg = string.Format("عفواً، الحد الأدنى للطلب من مطعم {0} هو {1} ج.م. إجمالي طلبك الحالي هو {2} ج.م.",
@@ -108,8 +112,152 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
                 }
             }
 
-            // إذا مرت كل الفحوصات بسلام، نبدأ عملية الحفظ
-            SaveOrderAndDetails(dt, Convert.ToDecimal(deliveryCost), paymentMethod, scheduledTime, contactMethod, orderType, payerPhone);
+            // متغيرات لتخزين النسب المئوية الممررة لدالة الحفظ
+            decimal orderDiscountPercent = 0;
+            decimal deliveryDiscountPercent = 0;
+
+            // ==========================================
+            // 1. التحقق من كوبون المطعم (Order Coupon)
+            // ==========================================
+            if (!string.IsNullOrEmpty(orderCoupon))
+            {
+                DataTable dtCoupon = new DataTable();
+                string sqlCoupon = @"SELECT TOP 1 PlaceID, ISNULL(MinOrderAmount, 0) AS MinOrderAmount, DiscountType, DiscountPercentage, IsActive, ExpiryDate 
+                                 FROM Coupons 
+                                 WHERE CouponCode = @CouponCode";
+
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+                    using (SqlCommand cmdCoupon = new SqlCommand(sqlCoupon, conn))
+                    {
+                        cmdCoupon.Parameters.AddWithValue("@CouponCode", orderCoupon.Trim());
+                        using (SqlDataReader drCoupon = cmdCoupon.ExecuteReader())
+                        {
+                            dtCoupon.Load(drCoupon);
+                        }
+                    }
+                }
+
+                if (dtCoupon.Rows.Count == 0)
+                {
+                    return new { success = false, error = "كود كوبون الخصم غير صحيح أو غير موجود." };
+                }
+
+                DataRow couponRow = dtCoupon.Rows[0];
+                bool isCouponActive = couponRow["IsActive"] != DBNull.Value && Convert.ToBoolean(couponRow["IsActive"]);
+                DateTime expiryDate = Convert.ToDateTime(couponRow["ExpiryDate"]);
+                int discountType = Convert.ToInt32(couponRow["DiscountType"]);
+
+                if (!isCouponActive || expiryDate < DateTime.Now)
+                {
+                    return new { success = false, error = "عفواً، كوبون الخصم منتهي الصلاحية أو غير فعال حالياً." };
+                }
+
+                // التحقق من أن الكوبون من نوع مطعم (1)
+                if (discountType != 1)
+                {
+                    return new { success = false, error = "عفواً، هذا الكوبون مخصص لخصم مصاريف التوصيل فقط ولا يمكن تطبيقه ككوبون خصم أصناف." };
+                }
+
+                decimal couponMinOrderAmount = Convert.ToDecimal(couponRow["MinOrderAmount"]);
+
+                if (couponRow["PlaceID"] != DBNull.Value)
+                {
+                    int couponPlaceId = Convert.ToInt32(couponRow["PlaceID"]);
+
+                    if (!placeTotals.ContainsKey(couponPlaceId))
+                    {
+                        return new { success = false, error = "هذا الكوبون غير مخصص للمطاعم الموجودة في سلة الطلبات الحالية." };
+                    }
+
+                    decimal targetedPlaceTotal = placeTotals[couponPlaceId];
+                    if (targetedPlaceTotal < couponMinOrderAmount)
+                    {
+                        return new { success = false, error = string.Format("عفواً، لتطبيق هذا الكوبون يجب أن يكون إجمالي الطلب من المطعم المخصص {0} ج.م. على الأقل. إجمالي طلبك الحالي منه هو {1} ج.م.", couponMinOrderAmount, targetedPlaceTotal) };
+                    }
+                }
+                else
+                {
+                    if (ids.Count > 1)
+                    {
+                        return new { success = false, error = "عفواً، لا يمكن تطبيق الكوبونات العامة عند الشراء من أكثر من مطعم في نفس الطلب." };
+                    }
+
+                    decimal totalCartCost = 0;
+                    foreach (var kvp in placeTotals)
+                    {
+                        totalCartCost += kvp.Value;
+                    }
+
+                    if (totalCartCost < couponMinOrderAmount)
+                    {
+                        return new { success = false, error = string.Format("عفواً، الحد الأدنى لتفعيل هذا الكوبون هو إجمالي طلب بقيمة {0} ج.م.", couponMinOrderAmount) };
+                    }
+                }
+
+                orderDiscountPercent = Convert.ToDecimal(couponRow["DiscountPercentage"]);
+            }
+
+            // ==========================================
+            // 2. التحقق من كوبون التوصيل (Delivery Coupon)
+            // ==========================================
+            if (!string.IsNullOrEmpty(deliveryCoupon))
+            {
+                DataTable dtDelCoupon = new DataTable();
+                string sqlDelCoupon = @"SELECT TOP 1 ISNULL(MinOrderAmount, 0) AS MinOrderAmount, DiscountType, DiscountPercentage, IsActive, ExpiryDate 
+                                    FROM Coupons 
+                                    WHERE CouponCode = @CouponCode";
+
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+                    using (SqlCommand cmdDelCoupon = new SqlCommand(sqlDelCoupon, conn))
+                    {
+                        cmdDelCoupon.Parameters.AddWithValue("@CouponCode", deliveryCoupon.Trim());
+                        using (SqlDataReader drDelCoupon = cmdDelCoupon.ExecuteReader())
+                        {
+                            dtDelCoupon.Load(drDelCoupon);
+                        }
+                    }
+                }
+
+                if (dtDelCoupon.Rows.Count == 0)
+                {
+                    return new { success = false, error = "كود كوبون التوصيل غير صحيح أو غير موجود." };
+                }
+
+                DataRow delCouponRow = dtDelCoupon.Rows[0];
+                bool isDelCouponActive = delCouponRow["IsActive"] != DBNull.Value && Convert.ToBoolean(delCouponRow["IsActive"]);
+                DateTime delExpiryDate = Convert.ToDateTime(delCouponRow["ExpiryDate"]);
+                int delDiscountType = Convert.ToInt32(delCouponRow["DiscountType"]);
+
+                if (!isDelCouponActive || delExpiryDate < DateTime.Now)
+                {
+                    return new { success = false, error = "عفواً، كوبون التوصيل منتهي الصلاحية أو غير فعال حالياً." };
+                }
+
+                // التحقق من أن الكوبون من نوع دليفري (0)
+                if (delDiscountType != 0)
+                {
+                    return new { success = false, error = "عفواً، هذا الكوبون مخصص لخصم المطاعم والأصناف وليس لمصاريف التوصيل." };
+                }
+
+                // التحقق من شرط الحد الأدنى المالي على مصاريف التوصيل الحالية المرسلة للدالة
+                decimal delMinOrderAmount = Convert.ToDecimal(delCouponRow["MinOrderAmount"]);
+                decimal currentDeliveryCost = Convert.ToDecimal(deliveryCost);
+
+                if (currentDeliveryCost < delMinOrderAmount)
+                {
+                    return new { success = false, error = string.Format("عفواً، الحد الأدنى لمصاريف الشحن لتشغيل هذا الكوبون هو {0} ج.م.", delMinOrderAmount) };
+                }
+
+                deliveryDiscountPercent = Convert.ToDecimal(delCouponRow["DiscountPercentage"]);
+            }
+            // ==========================================
+
+            // تمرير القيم والنسب المئوية المستخرجة (أو 0 في حال انعدامها) لـ دالة الحفظ مع الحفاظ على ترتيب البرامترات الأصلي
+            SaveOrderAndDetails(dt, Convert.ToDecimal(deliveryCost), paymentMethod, scheduledTime, contactMethod, orderType, payerPhone, orderCoupon, deliveryCoupon, paymentProofBase64, orderDiscountPercent, deliveryDiscountPercent);
 
             return new
             {
@@ -122,7 +270,52 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
             return new { success = false, error = ex.Message };
         }
     }
+    public static string SaveBase64AsImage(string base64String)
+    {
+        // التحقق من أن المتغير ليس فارغاً أو نال تفادياً لانهيار الكود
+        if (string.IsNullOrEmpty(base64String))
+        {
+            return null;
+        }
 
+        try
+        {
+            // 1. تنظيف النص: إذا كان النص قادماً من الجافا سكريبت عبر FileReader فقد يحتوي على الرأس (Data URI)
+            // نقوم بفصل الرأس والاحتفاظ بالنص النقي فقط
+            if (base64String.Contains(","))
+            {
+                base64String = base64String.Split(',')[1];
+            }
+
+            // 2. معالجة الفراغات: أحياناً أثناء النقل عبر الأجاكس تتحول علامات الـ "+" إلى مسافات فارغة
+            // هذا التبديل يضمن عدم حدوث خطأ "Invalid length for a Base-64 char array"
+            base64String = base64String.Replace(" ", "+");
+
+            // 3. تحويل نص الـ Base64 النقي إلى مصفوفة بايتات (byte array)
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+
+            // 4. توليد اسم فريد للصورة وتحديد مسار الحفظ داخل مجلد الـ uploads بالموقع
+            string fileName = Guid.NewGuid().ToString() + ".png";
+            string folderPath = HttpContext.Current.Server.MapPath("~/ar/images/receipts/");
+
+            // التأكد من أن المجلد موجود على السيرفر، وإذا لم يكن موجوداً نقوم بإنشائه فوراً
+            
+            // المسار الكامل للحفظ الفيزيائي على القرص الصلب
+            string fullPath =System.IO.Path.Combine(folderPath, fileName);
+
+            // 5. كتابة البايتات وحفظ الملف نهائياً
+            System.IO.File.WriteAllBytes(fullPath, imageBytes);
+
+            // إرجاع المسار النسبي لحفظه في قاعدة البيانات (مثل جدول Orders في عمود إثبات الدفع)
+            return "ar/images/receipts/" + fileName;
+        }
+        catch (Exception ex)
+        {
+            // تسجيل الخطأ أو التعامل معه حسب طبيعة النظام لديك
+            string errorLog = ex.Message;
+            return null;
+        }
+    }
     public static DataTable ConvertJArrayToDataTable(JArray items)
     {
         DataTable dt = new DataTable();
@@ -146,7 +339,7 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
         return dt;
     }
 
-    public static void SaveOrderAndDetails(DataTable dt, decimal deliveryCost, string paymentMethod, string scheduledTime, string contactMethod, string orderType, string payerPhone)
+    public static void SaveOrderAndDetails(DataTable dt, decimal deliveryCost, string paymentMethod, string scheduledTime, string contactMethod, string orderType, string payerPhone,string orderCoupon,string deliveryCoupon,string paymentProofBase64,decimal orderDiscountPercent, decimal deliveryDiscountPercent)
     {
 
         int paymentMethodInt = 0; // القيمة الافتراضية Cash
@@ -193,6 +386,13 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
             }
         }
 
+        object transferPhotoValue = DBNull.Value;
+
+        if (!string.IsNullOrEmpty(paymentProofBase64))
+        {
+            // استدعاء الدالة وحفظ الصورة أولاً قبل الدخول في تفاصيل برامترات قاعدة البيانات
+            transferPhotoValue = SaveBase64AsImage(paymentProofBase64);
+        }
         using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
         {
             con.Open();
@@ -202,8 +402,8 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
                 int newOrderId = 0;
                 // 1. إدخال الطلب الرئيسي في جدول Orders
                 using (SqlCommand cmd = new SqlCommand(@"
-                INSERT INTO Orders (Address_id, Odate, DeliveryCost, delivered,paymentMethod,contactMethod,DeliveryMethod,WalletNumber,ODTime)
-                VALUES (@Address_id, GETDATE(), @DeliveryCost, 0,@paymentMethod,@contactMethod,@DeliveryMethod,@WalletNumber,@ODTime);
+                INSERT INTO Orders (Address_id, Odate, DeliveryCost, delivered,paymentMethod,contactMethod,DeliveryMethod,WalletNumber,ODTime,TransferPhoto,CoponDiscountR,CoponDiscountD,CoponDiscountRU,CoponDiscountDU)
+                VALUES (@Address_id, GETDATE(), @DeliveryCost, 0,@paymentMethod,@contactMethod,@DeliveryMethod,@WalletNumber,@ODTime,@TransferPhoto,@CoponDiscountR,@CoponDiscountD,@CoponDiscountRU,@CoponDiscountDU);
                 SELECT SCOPE_IDENTITY();", con, trans))
                 {
                     cmd.Parameters.AddWithValue("@Address_id", dt.Rows[0]["addid"]);
@@ -211,9 +411,13 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@paymentMethod", paymentMethodInt);
                     cmd.Parameters.AddWithValue("@contactMethod", contactMethodInt);
                     cmd.Parameters.AddWithValue("@DeliveryMethod", DeliveryMethodInt);
-                    cmd.Parameters.AddWithValue("@WalletNumber", payerPhone);
+                    cmd.Parameters.AddWithValue("@WalletNumber", string.IsNullOrEmpty(payerPhone) ? (object)DBNull.Value : payerPhone);
+                    cmd.Parameters.AddWithValue("@TransferPhoto", transferPhotoValue);
+                    cmd.Parameters.AddWithValue("@CoponDiscountR", orderDiscountPercent);
+                    cmd.Parameters.AddWithValue("@CoponDiscountD", deliveryDiscountPercent);
+                    cmd.Parameters.AddWithValue("@CoponDiscountRU", string.IsNullOrEmpty(orderCoupon) ? (object)DBNull.Value : orderCoupon);
+                    cmd.Parameters.AddWithValue("@CoponDiscountDU", string.IsNullOrEmpty(deliveryCoupon) ? (object)DBNull.Value : deliveryCoupon);
                     cmd.Parameters.AddWithValue("@ODTime", scheduledDateTime);
-
                     newOrderId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
@@ -226,6 +430,8 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
                     string sizeName = "";
 
                     // قراءة عمود الـ customization كـ JSON
+
+                  
                     string jsonCust = row["customization"] != null ? row["customization"].ToString() : "";
                     JObject custObj = null;
 
